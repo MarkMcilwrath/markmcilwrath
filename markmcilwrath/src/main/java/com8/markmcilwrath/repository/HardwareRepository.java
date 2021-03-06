@@ -11,5 +11,5 @@ public interface HardwareRepository extends CrudRepository<HardwareEntity, Long>
     HardwareEntity findByHardwareID (String uuid);
 
     @Transactional
-    void deleteByHardwareId(String uuid);
+    void deleteByHardwareID(String uuid);
 }

@@ -15,7 +15,7 @@ public class Config {
 
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("root");
-        dataSource.setPassword("root");
+        dataSource.setPassword("root1234");
         dataSource.setUrl(
                 "jdbc:mysql://localhost:3306/com668?createDatabaseIfNotExist=true");
 

@@ -7,18 +7,18 @@ public class Hardware {
     private String uuid;
     private String name;
     private String version;
-    private List<License> assets;
+   // private List<License> assets;
 
     public Hardware(
             String uuid,
             String name,
-            String version,
-            List assets
+            String version
+          //  List assets
     )
     {
         this.uuid = uuid;
         this.name = name;
         this.version = version;
-        this.assets = assets;
+     //   this.assets = assets;
     }
 }
