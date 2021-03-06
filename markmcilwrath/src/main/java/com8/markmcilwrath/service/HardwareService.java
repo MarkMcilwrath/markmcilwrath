@@ -19,10 +19,10 @@ public class HardwareService {
         this.hardwareRepository = hardwareRepository;
     }
 
-    public Hardware save(String name, String version){
+    public Hardware save(String name, String version) {
         HardwareEntity createEntity = new HardwareEntity(UUID.randomUUID().toString(), name, version);
-        HardwareEntity hardwareEntity = hardwareRepository.save(createEntity);
-        return new Hardware(createEntity.getHardwareID(), createEntity.getName(), createEntity.getVersion());
+        HardwareEntity createdEntity = hardwareRepository.save(createEntity);
+        return new Hardware(createdEntity.getHardwareID(), createdEntity.getName(), createdEntity.getVersion());
     }
 
     public void delete(String uuid){

@@ -23,7 +23,29 @@ public class HardwareController {
     private HardwareService hardwareService;
 
     public HardwareController(HardwareService hardwareService){
-        this.hardwareService= hardwareService;
+        this.hardwareService = hardwareService;
     }
 
+   /*@PostMapping
+    public ResponseEntity<Hardware> addHardware(@RequestBody Hardware hardware) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                hardwareService.save(hardware.getClass().)
+        );
+    } */
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteHardware(@PathVariable String hardwareID){
+        hardwareService.delete(hardwareID);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Hardware> getHardware(@PathVariable String hardwareID) throws NotFoundException {
+        return ResponseEntity.ok().body(hardwareService.getHardware(hardwareID));
+    }
+
+    @GetMapping
+    public ResponseEntity<Set<Hardware>> getHardwares() {
+        return ResponseEntity.ok().body(hardwareService.getAllHardware());
+    }
 }
