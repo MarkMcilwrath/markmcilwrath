@@ -49,7 +49,8 @@ public class UserService {
     public Set<User> getAllUsers() {
         Iterable<UserEntity> entityList = userRepository.findAll();
         Set<User> users = new HashSet<>();
-        for (UserEntity entity : entityList) {
+        for (UserEntity entity : entityList)
+        {
             User user = new User(entity.getUserId(), entity.getFirstName(), entity.getLastName(),
                     entity.getEmail(), entity.isAdmin());
             users.add(user);

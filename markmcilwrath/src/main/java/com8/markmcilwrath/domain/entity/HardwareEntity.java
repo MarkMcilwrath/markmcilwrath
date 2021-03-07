@@ -40,13 +40,13 @@ public class HardwareEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    @Column(name = "hardware_name", nullable = false, unique = true)
+    @Column(name = "hardware_name", nullable = false)
     private String name;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    @Column(name = "hardware_version", nullable = false, unique = true)
+    @Column(name = "hardware_version", nullable = false)
     private String version;
 
     public HardwareEntity(String hardwareID, String name, String version) {
