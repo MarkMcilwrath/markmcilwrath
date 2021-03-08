@@ -2,7 +2,6 @@ package com8.markmcilwrath.service;
 
 import com8.markmcilwrath.domain.Software;
 import com8.markmcilwrath.domain.entity.SoftwareEntity;
-import com8.markmcilwrath.domain.entity.UserEntity;
 import com8.markmcilwrath.repository.SoftwareRepository;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,8 @@ import java.util.UUID;
 @Service
 public class SoftwareService {
     private SoftwareRepository softwareRepository;
-    public SoftwareService (SoftwareRepository softwareRepository)
-    {
+
+    public SoftwareService (SoftwareRepository softwareRepository) {
         this.softwareRepository = softwareRepository;
     }
 

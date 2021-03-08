@@ -7,7 +7,7 @@ public class Hardware {
     private String uuid;
     private String name;
     private String version;
-   // private List<License> assets;
+   // private List<Assets> assets;
 
     public Hardware(
             String uuid,

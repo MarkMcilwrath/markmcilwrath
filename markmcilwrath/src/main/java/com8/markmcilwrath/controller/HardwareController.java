@@ -39,9 +39,9 @@ public class HardwareController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<Hardware> getHardware(@PathVariable String hardwareID) throws NotFoundException {
-        return ResponseEntity.ok().body(hardwareService.getHardware(hardwareID));
+    @GetMapping("/{hardwareId}")
+    public ResponseEntity<Hardware> getHardware(@PathVariable String hardwareId) throws NotFoundException {
+        return ResponseEntity.ok().body(hardwareService.getHardware(hardwareId));
     }
 
     @GetMapping

@@ -16,6 +16,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+
+@Entity
+@Table(name = "software")
+@EqualsAndHashCode()
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class SoftwareEntity implements Serializable {
 
     @Id
