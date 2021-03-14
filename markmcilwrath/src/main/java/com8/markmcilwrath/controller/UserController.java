@@ -16,32 +16,31 @@ import java.util.Set;
 public class UserController {
 
     private UserService userService;
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-
 //    @PostMapping
-//    public ResponseEntity<User> addUser(@Valid @RequestBody User user)
-//    {
+//    public ResponseEntity<User> addUser(@Valid @RequestBody
+////                                            @ModelAttribute
+//                                                    User user) {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(
-//                userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin())
-//        );
+//                userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
+//    }
+
+
+//    @PostMapping("/users")
+//    public String addUser1(@Valid @ModelAttribute User user, Model model)
+//    {
+//        model.addAttribute("user", user);
+//        return "result";
 //    }
 
     @PostMapping("/users")
-    public String addUser1(@Valid @ModelAttribute User user, Model model)
+    public ResponseEntity<String> addUser1(@Valid @RequestBody User user)
     {
-        model.addAttribute("user", user);
-        return "result";
+        return ResponseEntity.ok("User is Valid");
     }
-
-//    @PostMapping("/users")
-//    public ResponseEntity<String> addUser1(@Valid @RequestBody @ModelAttribute User user)
-//    {
-//        return ResponseEntity.ok("User is Valid");
-//    }
 
 
 //    @DeleteMapping("/{userId}")
@@ -50,15 +49,15 @@ public class UserController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-//    @GetMapping("/{userId}")
-//    public ResponseEntity<User> getUser(@PathVariable String userId) throws NotFoundException {
-//        return ResponseEntity.ok().body(userService.getUser(userId));
-//    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable String userId) throws NotFoundException {
+        return ResponseEntity.ok().body(userService.getUser(userId));
+    }
 
-//    @GetMapping()
-//    public ResponseEntity<Set<User>> getUsers() {
-//        return ResponseEntity.ok().body(userService.getAllUsers());
-//    }
+    @GetMapping()
+    public ResponseEntity<Set<User>> getUsers() {
+        return ResponseEntity.ok().body(userService.getAllUsers());
+    }
 
 
 }

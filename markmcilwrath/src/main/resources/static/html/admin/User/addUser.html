@@ -1,28 +1,57 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<!DOCTYPE html>
 <html>
 <head>
+    <link rel="shortcut icon" href="#">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <body>
-<h3>Welcome, Enter The Employee Details</h3>
-<form:form method="POST"
-           action="/spring-mvc-xml/addEmployee" modelAttribute="employee">
-    <table>
-        <tr>
-            <td><form:label path="firstname">First Name</form:label></td>
-            <td><form:input path="firstname"/></td>
-        </tr>
-        <tr>
-            <td><form:label path="lastname">Last Name</form:label></td>
-            <td><form:input path="lastname"/></td>
-        </tr>
-        <tr>
-            <td><form:label path="email">Email</form:label></td>
-            <td><form:input path="Email"/></td>
-        </tr>
-        <tr>
-            <td><input type="submit" value="Submit"/></td>
-        </tr>
-    </table>
-</form:form>
+
+<form id="addUserForm" name="addUserForm">
+    <div>
+    <label for="firstname">First Name:</label>
+    <input type="text" id="firstname" name="firstname">
+    </div>
+    <div>
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname">
+    </div>
+    <div>
+        <label for="email"> Email:</label>
+        <input type="email" id="email" name="email">
+    </div>
+</form>
+<form>
+    <div>
+        <label for="admin"> Admin:</label>
+        <input type="checkbox" name="admin" id="admin" value="false">
+    </div>
+</form>
+<button class="button1" onclick="myFunction()">Submit Form</button>
+<script>
+    function myFunction()
+    {
+    let myForm = document.getElementById('addUserForm');
+    let formData = new FormData(myForm);
+
+    var checkBox = document.getElementById("admin");
+    if (checkBox.checked == true)
+        {
+        formData.append('admin', "true");
+        }
+        else
+        {
+        formData.append('admin', "false");
+        }
+    var object = {};
+    formData.forEach(function(value, key)
+    {
+    object[key] = value;
+    });
+    var userData = JSON.stringify(object);
+    console.log(userData);
+  }
+</script>
+<script>
+</script>
 </body>
 </html>
