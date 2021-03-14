@@ -20,13 +20,11 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<User> addUser(@Valid @RequestBody
-////                                            @ModelAttribute
-//                                                    User user) {
-//        return ResponseEntity.status(HttpStatus.CREATED).body(
-//                userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
-//    }
+    @PostMapping("/add")
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
+    }
 
 
 //    @PostMapping("/users")
@@ -36,11 +34,11 @@ public class UserController {
 //        return "result";
 //    }
 
-    @PostMapping("/users")
-    public ResponseEntity<String> addUser1(@Valid @RequestBody User user)
-    {
-        return ResponseEntity.ok("User is Valid");
-    }
+//    @PostMapping("/users")
+//    public ResponseEntity<String> addUser1(@Valid @RequestBody User user)
+//    {
+//        return ResponseEntity.ok("User is Valid");
+//    }
 
 
 //    @DeleteMapping("/{userId}")
