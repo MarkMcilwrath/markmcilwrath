@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#search">Delete User</button>
+
+<div id="search" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Search User ID</h4>
+            </div>
+            <div class="modal-body">
+                <form id="userEmailForm" name="userEmailForm">
+                    <div>
+                        <label for="userEmail">User Email</label>
+                        <input type="email" id="userEmail" name="userEmail">
+                        <button type="button" class="btn btn-info btn-lg" onclick="searchID()" data-toggle="modal" data-target="#del">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="del" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit User Details</h4>
+            </div>
+            <div class="modal-body">
+                <div id="info">
+                </div>
+                <button type="button" class="btn btn-info btn-lg" >Delete</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var object;
+
+    function searchID()
+    {
+    let myForm = document.getElementById('userEmailForm');
+    let formData = new FormData(myForm);
+
+    formData.forEach(function(value, key)
+    {
+    object = value;
+    });
+    console.log(object);
+    getUser();
+    }
+
+    function getUser()
+    {
+        var xmlHttp = new XMLHttpRequest();
+        var theURL = "http://localhost:8080/user/email/" + object;
+        xmlHttp.onreadystatechange = function()
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+                document.getElementById("info").innerHTML =
+                this.responseText;
+            }
+        };
+        xmlHttp.open("GET", theURL , true);
+        xmlHttp.send();
+    }
+
+     function deleteUser()
+    {
+        var xmlHttp = new XMLHttpRequest();
+        var theURL = "http://localhost:8080/user/email/" + object;
+        xmlHttp.onreadystatechange = function()
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+                document.getElementById("info").innerHTML =
+                this.responseText;
+            }
+        };
+        xmlHttp.open("GET", theURL , true);
+        xmlHttp.send();
+    }
+
+</script>
+</body>
+</html>

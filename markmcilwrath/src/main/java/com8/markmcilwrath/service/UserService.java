@@ -12,7 +12,10 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+
+
     private UserRepository userRepository;
+
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -30,11 +33,30 @@ public class UserService {
         userRepository.deleteByUserId(uuid);
     }
 
+    public void deleteByEmail(String email) {
+        userRepository.deleteByEmail(email);
+    }
+
+
+
     public User getUser(String uuid) throws NotFoundException {
         UserEntity entity = userRepository.findByUserId(uuid);
 
         if (entity == null) {
-            throw new NotFoundException("Vendore: " + uuid + "Not found");
+            throw new NotFoundException("User: " + uuid + " Not found");
+        }
+
+        User user = new User(entity.getUserId(), entity.getFirstName(), entity.getLastName(),
+                entity.getEmail(), entity.isAdmin());
+        return user;
+
+    }
+
+    public User getUserByEmail(String email) throws NotFoundException {
+        UserEntity entity = userRepository.findByEmail(email);
+
+        if (entity == null) {
+            throw new NotFoundException("User: " + email + " Not found");
         }
 
         User user = new User(entity.getUserId(), entity.getFirstName(), entity.getLastName(),

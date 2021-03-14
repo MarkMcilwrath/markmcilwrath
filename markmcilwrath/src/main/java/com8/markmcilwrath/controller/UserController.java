@@ -41,15 +41,26 @@ public class UserController {
 //    }
 
 
-//    @DeleteMapping("/{userId}")
-//    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
-//        userService.delete(userId);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+        userService.delete(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/Delete/{email}")
+    public ResponseEntity<Void> deleteUserByEmail(@PathVariable String email) {
+        userService.delete(email);
+        return ResponseEntity.noContent().build();
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUser(@PathVariable String userId) throws NotFoundException {
         return ResponseEntity.ok().body(userService.getUser(userId));
+    }
+
+    @GetMapping("/email/{userEmail}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String userEmail) throws NotFoundException {
+        return ResponseEntity.ok().body(userService.getUserByEmail(userEmail));
     }
 
     @GetMapping()
