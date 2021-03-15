@@ -26,19 +26,11 @@ public class UserController {
                 userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
     }
 
-
-//    @PostMapping("/users")
-//    public String addUser1(@Valid @ModelAttribute User user, Model model)
-//    {
-//        model.addAttribute("user", user);
-//        return "result";
-//    }
-
-//    @PostMapping("/users")
-//    public ResponseEntity<String> addUser1(@Valid @RequestBody User user)
-//    {
-//        return ResponseEntity.ok("User is Valid");
-//    }
+    @PutMapping("/add")
+    public ResponseEntity<User> editUser(@Valid @RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
+    }
 
 
     @DeleteMapping("/{userId}")

@@ -28,16 +28,22 @@
             <div class="modal-body">
                 <form id="editUserForm" name="editUserForm">
                     <div>
-                        <label for="userfirstname">First Name</label>
-                        <input type="text" id="userfirstname" name="userfirstname" value="blank">
+                        <label for="firstname">First Name</label>
+                        <input type="text" id="firstname" name="firstname" value="blank">
                     </div>
                     <div>
-                        <label for="userlastname">last Name</label>
-                        <input type="text" id="userlastname" name="userlastname" value="blank">
+                        <label for="lastname">last Name</label>
+                        <input type="text" id="lastname" name="lastname" value="blank">
                     </div>
                     <div>
-                        <label for="email"> Email</label>
+                        <label for="email">Email</label>
                         <input type="email" id="email" name="email" value="blank">
+                    </div>
+                </form>
+                <form>
+                    <div>
+                        <label for="admin"> Admin:</label>
+                        <input type="checkbox" name="admin" id="admin">
                     </div>
                 </form>
 
@@ -51,8 +57,8 @@
 </div>
 
 <script>
-    var myList;
     var object;
+
     function searchID()
     {
         let myForm = document.getElementById('userEmailForm');
@@ -68,12 +74,17 @@
             if (this.readyState == 4 && this.status == 200)
             {
                     var myObj = JSON.parse(this.responseText);
+                    console.log(myObj);
                     var fNameHold = myObj.firstname;
                     var lNameHold = myObj.lastname;
                     var emailHold = myObj.email;
-                    document.getElementById("userfirstname").value = fNameHold;
-                    document.getElementById("userlastname").value = lNameHold;
+                    var adminHold = myObj.admin;
+
+                    document.getElementById("firstname").value = fNameHold;
+                    document.getElementById("lastname").value = lNameHold;
                     document.getElementById("email").value = emailHold;
+                    document.getElementById("admin").checked = adminHold;
+                    
             }
         };
         xmlHttp.open("GET", theURL , true);
@@ -84,6 +95,44 @@
         object = null;
         }
 
+    function saveForm()
+    {
+        let myForm = document.getElementById('editUserForm');
+        let formData = new FormData(myForm);
+
+        var checkBox = document.getElementById("admin");
+        if (checkBox.checked == true)
+            {
+            formData.append('admin', "true");
+            }
+            else
+            {
+            formData.append('admin', "false");
+            }
+        var object = {};
+        formData.forEach(function(value, key)
+        {
+        object[key] = value;
+        });
+        var userData = JSON.stringify(object);
+
+        console.log(userData);
+
+        // var xmlHttp = new XMLHttpRequest();
+        // var theUrl = 
+        // xhr.open("PUT", url+'/12', true);
+        // xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+        // xhr.onload = function () {
+        //     var users = JSON.parse(xhr.responseText);
+        //     if (xhr.readyState == 4 && xhr.status == "200") {
+        //         console.table(users);
+        //     } else {
+        //         console.error(users);
+        //     }
+        // }
+        // xhr.send(json);
+
+    }
 
 
 </script>
