@@ -16,5 +16,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     @Transactional
     void deleteByUserId(String uuid);
+
+    @Transactional
     void deleteByEmail(String email);
 }

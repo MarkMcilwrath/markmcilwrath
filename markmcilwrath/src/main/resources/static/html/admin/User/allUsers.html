@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head >
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<body>
-<body onLoad="buildHtmlTable()">
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#all">All Users</button>
+<body onload="start()">
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#all" >All Users</button>
 <div id="all" class="modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
@@ -29,14 +28,27 @@
     </div>
 </div>
 
-
 </body>
 <script>
-    var myList=[{"name" : "abc", "age" : 50},
-            {"age" : "25", "hobby" : "swimming"},
-            {"name" : "xyz", "hobby" : "programming"}];
+var myList = [{"uuid":"2567c9a9-1ea3-44f9-a722-c61013fc6cae","firstname":"Mark","lastname":"test","email":"Mark@test.com","admin":true},{"uuid":"db0beac0-2e69-44f9-b4f5-7c4221ef1bce","firstname":"Mark","lastname":"Mcilwrath","email":"MarkM@gmail.com","admin":false},{"uuid":"132307fa-1cca-46e0-a3a0-c925962b74fd","firstname":"Jordan","lastname":"Mcilwrath","email":"JMcilwrath@hotmail.com","admin":false}];
+function getUser()
+    {
+        var xmlHttp = new XMLHttpRequest();
+        var theURL = "http://localhost:8080/user"
+        xmlHttp.onreadystatechange = function()
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+            console.log(xmlHttp.responseText);
+            }
+        };
+        xmlHttp.open("GET", theURL , true);
+        xmlHttp.send();
+    }
 
-function buildHtmlTable() {
+
+function buildHtmlTable()
+{
      var columns = addAllColumnHeaders(myList);
      for (var i = 0 ; i < myList.length ; i++) {
          var row$ = $('<tr/>');
@@ -67,6 +79,13 @@ function buildHtmlTable() {
 
      return columnSet;
  }
+
+    function start()
+    {
+<!--        getUser();-->
+        buildHtmlTable();
+    }
+
 </script>
 </body>
 </html>

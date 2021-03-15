@@ -17,42 +17,28 @@
         <button type="button" class="btn btn-info btn-lg" onclick="searchID()">Search</button>
     </div>
 </form>
+</table>
 
-<div id="edit" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Edit User</h4>
-            </div>
-            <div class="modal-body">
-                <form id="editUserForm" name="editUserForm">
-                    <div>
-                        <label for="userfirstname">First Name</label>
-                        <input type="text" id="userfirstname" name="userfirstname" value="blank">
-                    </div>
-                    <div>
-                        <label for="userlastname">last Name</label>
-                        <input type="text" id="userlastname" name="userlastname" value="blank">
-                    </div>
-                    <div>
-                        <label for="email"> Email</label>
-                        <input type="email" id="email" name="email" value="blank">
-                    </div>
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type ="button" class="btn btn-default" onclick="saveForm()">Submit</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
+<div>
+    <label for="userfirstname">First Name</label>
+    <input type="text" id="userfirstname" name="userfirstname" value="blank">
+</div>
+<div>
+    <label for="userlastname">last Name</label>
+    <input type="text" id="userlastname" name="userlastname" value="blank">
+</div>
+<div>
+    <label for="email"> Email</label>
+    <input type="email" id="email" name="email" value="blank">
 </div>
 
+
+
+
 <script>
-    var myList;
     var object;
+    var myList;
+
     function searchID()
     {
         let myForm = document.getElementById('userEmailForm');
@@ -78,13 +64,43 @@
         };
         xmlHttp.open("GET", theURL , true);
         xmlHttp.send();
-
-        $("#edit").modal()
-        document.getElementById("userEmail").value = "";
-        object = null;
         }
 
+function buildHtmlTable() {
+     var columns = addAllColumnHeaders(myList);
 
+     for (var i = 0 ; i < myList.length ; i++) {
+         var row$ = $('<tr/>');
+         for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
+             var cellValue = myList[i][columns[colIndex]];
+
+             if (cellValue == null) { cellValue = ""; }
+
+             row$.append($('<td/>').html(cellValue));
+         }
+         $("#excelDataTable").append(row$);
+     }
+ }
+
+
+ function addAllColumnHeaders(myList)
+ {
+     var columnSet = [];
+     var headerTr$ = $('<tr/>');
+
+     for (var i = 0 ; i < myList.length ; i++) {
+         var rowHash = myList[i];
+         for (var key in rowHash) {
+             if ($.inArray(key, columnSet) == -1){
+                 columnSet.push(key);
+                 headerTr$.append($('<th/>').html(key));
+             }
+         }
+     }
+     $("#excelDataTable").append(headerTr$);
+
+     return columnSet;
+ }
 
 </script>
 
