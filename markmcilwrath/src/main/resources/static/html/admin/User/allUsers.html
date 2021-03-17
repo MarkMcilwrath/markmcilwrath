@@ -5,9 +5,16 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        table, td, th
+        {
+        border: 1px  black;
+        border-spacing: 5px;
+        }
+    </style>
 </head>
 <body onload="start()">
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#all" >All Users</button>
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#all" onclick='tableFromJson()' >All Users</button>
 <div id="all" class="modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
@@ -16,9 +23,7 @@
                 <h4 class="modal-title">All User</h4>
             </div>
             <div class="modal-body">
-                <table class="table" id="excelDataTable" border="1">
-                </table>
-
+                <p id='showData'></p>
             </div>
             <div class="modal-footer">
                 <button type ="button" class="btn btn-default" onclick="saveForm()">Submit</button>
@@ -27,10 +32,10 @@
         </div>
     </div>
 </div>
-
 </body>
 <script>
-var myList = [{"uuid":"2567c9a9-1ea3-44f9-a722-c61013fc6cae","firstname":"Mark","lastname":"test","email":"Mark@test.com","admin":true},{"uuid":"db0beac0-2e69-44f9-b4f5-7c4221ef1bce","firstname":"Mark","lastname":"Mcilwrath","email":"MarkM@gmail.com","admin":false},{"uuid":"132307fa-1cca-46e0-a3a0-c925962b74fd","firstname":"Jordan","lastname":"Mcilwrath","email":"JMcilwrath@hotmail.com","admin":false}];
+var myList;
+var tableData
 function getUser()
     {
         var xmlHttp = new XMLHttpRequest();
@@ -39,51 +44,64 @@ function getUser()
         {
             if (this.readyState == 4 && this.status == 200)
             {
-            console.log(xmlHttp.responseText);
+             myList = (this.responseText);
+             console.log(myList);
+             tableData = JSON.parse(myList);
+             console.log(tableData);
             }
         };
         xmlHttp.open("GET", theURL , true);
         xmlHttp.send();
     }
 
+    function tableFromJson()
+    {
 
-function buildHtmlTable()
-{
-     var columns = addAllColumnHeaders(myList);
-     for (var i = 0 ; i < myList.length ; i++) {
-         var row$ = $('<tr/>');
-         for (var colIndex = 0 ; colIndex < columns.length ; colIndex++) {
-             var cellValue = myList[i][columns[colIndex]];
-             if (cellValue == null) { cellValue = ""; }
-             row$.append($('<td/>').html(cellValue));
-         }
-         $("#excelDataTable").append(row$);
-     }
- }
 
- function addAllColumnHeaders(myList)
- {
-     var columnSet = [];
-     var headerTr$ = $('<tr/>');
+        var col = [];
+        for (var i = 0; i < tableData.length; i++) {
+            for (var key in tableData[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
 
-     for (var i = 0 ; i < myList.length ; i++) {
-         var rowHash = myList[i];
-         for (var key in rowHash) {
-             if ($.inArray(key, columnSet) == -1){
-                 columnSet.push(key);
-                 headerTr$.append($('<th/>').html(key));
-             }
-         }
-     }
-     $("#excelDataTable").append(headerTr$);
 
-     return columnSet;
- }
+        var table = document.createElement("table");
+
+
+        var tr = table.insertRow(-1);
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+
+        for (var i = 0; i < tableData.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = tableData[i][col[j]];
+            }
+        }
+
+
+        var divShowData = document.getElementById('showData');
+        divShowData.innerHTML = "";
+        divShowData.appendChild(table);
+
+
+    }
+
 
     function start()
     {
-<!--        getUser();-->
-        buildHtmlTable();
+        getUser();
     }
 
 </script>

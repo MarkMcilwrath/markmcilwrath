@@ -40,7 +40,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type ="button" class="btn btn-default" onclick="saveForm()">Submit</button>
+                <button type ="button" class="btn btn-default" value="Submit" onclick=" validateForm()">Submit</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -48,8 +48,40 @@
 </div>
 
 <script>
-    function saveForm()
+
+    function validateForm()
     {
+        var vFirstname = document.forms["addUserForm"]["firstname"].value;
+        console.log(vFirstname);
+        var vLastname = document.forms["addUserForm"]["lastname"].value;
+        var vEmail = document.forms["addUserForm"]["email"].value;
+
+        if (vFirstname == "")
+        {
+            alert("First name must be filled out");
+            console.log("false");
+        }
+        else if (vLastname == "")
+        {
+            alert("Last name must be filled out");
+            console.log("false");
+        }
+        else if (vEmail == "")
+        {
+            alert("Email must be filled out");
+            console.log("false");
+        }
+        else
+        {
+            console.log("true");
+            saveForm();
+        }
+    }
+
+    function saveForm()
+    
+    {
+
     let myForm = document.getElementById('addUserForm');
     let formData = new FormData(myForm);
 
@@ -68,13 +100,15 @@
     object[key] = value;
     });
     var userData = JSON.stringify(object);
+    console.log(userData);
 
-    var xmlHttp = new XMLHttpRequest();
-    var theUrl = "http://localhost:8080/user/add";
-    xmlHttp.open("POST", theUrl);
-    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlHttp.send(userData);
+<!--    var xmlHttp = new XMLHttpRequest();-->
+<!--    var theUrl = "http://localhost:8080/user/add";-->
+<!--    xmlHttp.open("POST", theUrl);-->
+<!--    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");-->
+<!--    xmlHttp.send(userData);-->
     }
+
 
 </script>
 <script>

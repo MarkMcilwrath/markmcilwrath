@@ -26,13 +26,6 @@ public class UserController {
                 userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
     }
 
-    @PutMapping("/add")
-    public ResponseEntity<User> editUser(@Valid @RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
-    }
-
-
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
         userService.delete(userId);
