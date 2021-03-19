@@ -44,6 +44,19 @@ public class VendorService {
 
     }
 
+    public Vendor getVendorByName(String name) throws NotFoundException {
+        VendorEntity entity = vendoreRepository.findByName(name);
+
+        if (entity == null) {
+            throw new NotFoundException("Vendor: " + name + "Not found");
+        }
+
+        Vendor vendor = new Vendor(entity.getVendorId(), entity.getName());
+        return vendor;
+
+    }
+
+
     public Set<Vendor> getAllVendors() {
         Iterable<VendorEntity> entityList = vendoreRepository.findAll();
         Set<Vendor> vendorSet = new HashSet<>();

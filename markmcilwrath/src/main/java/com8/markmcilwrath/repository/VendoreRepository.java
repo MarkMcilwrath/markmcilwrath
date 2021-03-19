@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 public interface VendoreRepository extends CrudRepository<VendorEntity, Long> {
 
     VendorEntity findByName(String name);
-
     VendorEntity findByVendorId(String uuid);
 
 

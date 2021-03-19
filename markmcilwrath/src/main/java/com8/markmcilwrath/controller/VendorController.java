@@ -5,13 +5,9 @@ import com8.markmcilwrath.service.VendorService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
@@ -19,15 +15,15 @@ import java.util.Set;
 public class VendorController {
 
     private VendorService vendorService;
-
     public VendorController(VendorService vendorService) {
         this.vendorService = vendorService;
     }
 
 
-    @PostMapping("/{vendorName}")
-    public ResponseEntity<Vendor> addVendor(@PathVariable String vendorName) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(vendorService.save(vendorName));
+    @PostMapping("/add")
+    public ResponseEntity<Vendor> addVendor(@Valid @RequestBody Vendor vendor) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                vendorService.save(vendor.getName()));
     }
 
 
@@ -40,6 +36,11 @@ public class VendorController {
     @GetMapping("/{vendorId}")
     public ResponseEntity<Vendor> getVendor(@PathVariable String vendorId) throws NotFoundException {
         return ResponseEntity.ok(vendorService.getVendor(vendorId));
+    }
+
+    @GetMapping("/{vendorName}")
+    public ResponseEntity<Vendor> getVendorByName(@PathVariable String vendorName) throws NotFoundException {
+        return ResponseEntity.ok(vendorService.getVendorByName(vendorName));
     }
 
     @GetMapping()
