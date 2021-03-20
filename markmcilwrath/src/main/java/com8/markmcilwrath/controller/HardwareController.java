@@ -1,6 +1,7 @@
 package com8.markmcilwrath.controller;
 
 import com8.markmcilwrath.domain.Hardware;
+import com8.markmcilwrath.domain.User;
 import com8.markmcilwrath.service.HardwareService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
@@ -26,12 +28,12 @@ public class HardwareController {
         this.hardwareService = hardwareService;
     }
 
-   /*@PostMapping
-    public ResponseEntity<Hardware> addHardware(@RequestBody Hardware hardware) {
+
+    @PostMapping("/add")
+    public ResponseEntity<Hardware> addHardware(@Valid @RequestBody Hardware hardware) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                hardwareService.save(hardware.getClass().)
-        );
-    } */
+                hardwareService.save(hardware.getName(), hardware.getVersion()));
+    }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteHardware(@PathVariable String hardwareID){

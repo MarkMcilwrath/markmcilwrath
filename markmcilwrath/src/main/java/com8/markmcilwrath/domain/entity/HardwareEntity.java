@@ -23,6 +23,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class HardwareEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter

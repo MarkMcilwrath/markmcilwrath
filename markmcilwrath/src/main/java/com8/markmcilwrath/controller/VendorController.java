@@ -39,15 +39,15 @@ public class VendorController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-//    @GetMapping("/{vendorId}")
-//    public ResponseEntity<Vendor> getVendor(@PathVariable String vendorId) throws NotFoundException {
-//        return ResponseEntity.ok(vendorService.getVendor(vendorId));
-//    }
-
-    @GetMapping("/{vendorName}")
-    public ResponseEntity<Vendor> getVendorByName(@PathVariable String vendorName) throws NotFoundException {
-        return ResponseEntity.ok(vendorService.getVendorByName(vendorName));
+    @GetMapping("/{vendorId}")
+    public ResponseEntity<Vendor> getVendor(@PathVariable String vendorId) throws NotFoundException {
+        return ResponseEntity.ok(vendorService.getVendor(vendorId));
     }
+
+//    @GetMapping("/{vendorName}")
+//    public ResponseEntity<Vendor> getVendorByName(@PathVariable String vendorName) throws NotFoundException {
+//        return ResponseEntity.ok(vendorService.getVendorByName(vendorName));
+//    }
 
     @GetMapping()
     public ResponseEntity<Set<Vendor>> getVendors() {

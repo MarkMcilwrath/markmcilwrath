@@ -53,7 +53,7 @@ public class UserEntity implements Serializable {
 
     @Getter
     @Setter
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
 
