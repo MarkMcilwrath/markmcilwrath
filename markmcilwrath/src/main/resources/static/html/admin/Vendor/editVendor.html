@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body onload="dropDown()">
+
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#selectVendor">Edit Vendor</button>
+
+  <div id="selectVendor" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 id="title" class="modal-title">Select Vendor</h4>
+                  </div>
+                      <div class="modal-body">
+                          <select class="selectpicker" id="ddList" name="locality" onchange="searchVendor()" ></select>
+                      </div>
+                  <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="editVendorModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="title" class="modal-title">Edit Vendor</h4>
+            </div>
+            <div class="modal-body">
+                <form id="editVendorForm" name="editVendorForm">
+                    <div>
+                        <label for="name">Vendor Name: </label>
+                        <input type="text" id="name" name="name" value="blank">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type ="button" class="btn btn-default" onclick="validateForm()">Submit Changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+  var object;
+
+  function searchVendor()
+  {
+    var selected = (document.getElementById("ddList"));
+    var name = selected.value;
+
+    var xmlHttp = new XMLHttpRequest();
+    var theURL = "http://localhost:8080/vendor/" + name;
+
+    xmlHttp.onreadystatechange = function()
+    {
+        if (this.readyState == 4 && this.status == 200)
+          {
+            myObj = JSON.parse(this.responseText);
+            var nameHold = myObj.name;
+            document.getElementById("name").value = nameHold;
+            $("#editVendorModal").modal()
+            }
+            else if (this.readyState == 4 && this.status != 200)
+            { 
+            alert("Error");
+            }
+        };
+        xmlHttp.open("GET", theURL , true);
+        xmlHttp.send();
+
+  }
+
+  function validateForm()
+    {
+        var vName = document.forms["editVendorForm"]["name"].value;
+
+        if (vName == "")
+        {
+          alert("Name Missing");
+        }
+        else
+        {
+        }
+    }
+
+  function dropDown()
+  {
+    let dropdown = document.getElementById('ddList');
+    dropdown.length = 0;
+
+    let defaultOption = document.createElement('option');
+    defaultOption.text = 'Select Vendor';
+
+    dropdown.add(defaultOption);
+    dropdown.selectedIndex = 0;
+
+    const url = 'http://localhost:8080/vendor';
+
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function() {
+      if (request.status === 200) {
+        const data = JSON.parse(request.responseText);
+        let option;
+        for (let i = 0; i < data.length; i++) {
+          option = document.createElement('option');
+          option.text = data[i].name;
+          option.value = data[i].name;
+          dropdown.add(option);
+        }
+       } else {
+      }   
+    }
+
+    request.onerror = function() {
+      console.error('An error occurred fetching the JSON from ' + url);
+    };
+
+    request.send();
+  }
+       
+</script>
+</html>

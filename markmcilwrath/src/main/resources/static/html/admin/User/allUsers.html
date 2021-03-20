@@ -13,7 +13,7 @@
         }
     </style>
 </head>
-<body onload="start()">
+<body onload="getUser()">
 <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#all" onclick='tableFromJson()' >All Users</button>
 <div id="all" class="modal fade" role="dialog">
     <div class="modal-dialog modal-dialog-scrollable">
@@ -94,15 +94,9 @@ function getUser()
         var divShowData = document.getElementById('showData');
         divShowData.innerHTML = "";
         divShowData.appendChild(table);
-
-
     }
 
 
-    function start()
-    {
-        getUser();
-    }
 
 </script>
 </body>

@@ -33,10 +33,16 @@ public class VendorController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{vendorId}")
-    public ResponseEntity<Vendor> getVendor(@PathVariable String vendorId) throws NotFoundException {
-        return ResponseEntity.ok(vendorService.getVendor(vendorId));
-    }
+//    @DeleteMapping("/{name}")
+//    public ResponseEntity<Void> deleteVendorByName(@PathVariable String name) {
+//        vendorService.deleteVendorByName(name);
+//        return ResponseEntity.noContent().build();
+//    }
+
+//    @GetMapping("/{vendorId}")
+//    public ResponseEntity<Vendor> getVendor(@PathVariable String vendorId) throws NotFoundException {
+//        return ResponseEntity.ok(vendorService.getVendor(vendorId));
+//    }
 
     @GetMapping("/{vendorName}")
     public ResponseEntity<Vendor> getVendorByName(@PathVariable String vendorName) throws NotFoundException {

@@ -20,8 +20,8 @@
             <div class="modal-body">
                 <form id="addVendorForm" name="addVendorForm">
                     <div>
-                        <label for="vendorName">First Name:</label>
-                        <input type="text" id="vendorName" name="vendorName">
+                        <label for="name">Vendor Name:</label>
+                        <input type="text" id="name" name="name">
                     </div>
                 </form>
             </div>
@@ -32,6 +32,46 @@
         </div>
     </div>
 </div>
+
+<script>
+	function validateForm()
+    {
+        var vName = document.forms["addVendorForm"]["name"].value;
+
+        if (vName == "")
+        {
+            alert("First name must be filled out");
+        }
+        else
+        {
+            saveForm();
+        }
+    }
+
+    function saveForm()
+    {
+
+    let myForm = document.getElementById('addVendorForm');
+    let formData = new FormData(myForm);
+
+    var object = {};
+    formData.forEach(function(value, key)
+    {
+    object[key] = value;
+    });
+    var vendorData = JSON.stringify(object);
+    console.log(vendorData);
+
+    var xmlHttp = new XMLHttpRequest();
+    var theUrl = "http://localhost:8080/vendor/add";
+    xmlHttp.open("POST", theUrl);
+    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlHttp.send(vendorData);
+    document.getElementById("name").value = "";
+    alert("Vendor Added");
+	
+	}
+</script>
 
 </body>
 </html>

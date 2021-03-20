@@ -14,4 +14,7 @@ public interface VendoreRepository extends CrudRepository<VendorEntity, Long> {
 
     @Transactional
     void deleteByVendorId(String uuid);
+
+    @Transactional
+    void deleteByName(String name);
 }

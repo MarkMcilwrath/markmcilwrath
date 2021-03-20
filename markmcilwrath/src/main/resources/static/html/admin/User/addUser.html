@@ -104,15 +104,21 @@
     var userData = JSON.stringify(object);
     console.log(userData);
 
-<!--    var xmlHttp = new XMLHttpRequest();-->
-<!--    var theUrl = "http://localhost:8080/user/add";-->
-<!--    xmlHttp.open("POST", theUrl);-->
-<!--    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");-->
-<!--    xmlHttp.send(userData);-->
+    var xmlHttp = new XMLHttpRequest();
+    var theUrl = "http://localhost:8080/user/add";
+    xmlHttp.open("POST", theUrl);
+    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlHttp.send(userData);
+
+    document.getElementById("firstname").value = "";
+    document.getElementById("lastname").value = "";
+    document.getElementById("email").value = "";
+    alert("User Added");
+
     }
 
 
 </script>
-
+ 
 </body>
 </html>
