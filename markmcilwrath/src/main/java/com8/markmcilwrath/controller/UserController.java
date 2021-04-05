@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 @RestController
@@ -21,29 +22,27 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user)
+    {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 userService.save(user.getFirstname(), user.getLastname(), user.getEmail(), user.isAdmin()));
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
-        userService.delete(userId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/update")
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user) throws InvocationTargetException, IllegalAccessException {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                userService.update((user)));
     }
 
-    @DeleteMapping("/email/{email}")
+
+    @DeleteMapping("/{userEmail}")
     public ResponseEntity<Void> deleteUserByEmail(@PathVariable String email) {
         userService.deleteByEmail(email);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<User> getUser(@PathVariable String userId) throws NotFoundException {
-        return ResponseEntity.ok().body(userService.getUser(userId));
-    }
 
-    @GetMapping("/email/{userEmail}")
+    @GetMapping("/{userEmail}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String userEmail) throws NotFoundException {
         return ResponseEntity.ok().body(userService.getUserByEmail(userEmail));
     }

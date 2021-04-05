@@ -1,11 +1,14 @@
 package com8.markmcilwrath.service;
 
+import com8.markmcilwrath.domain.User;
 import com8.markmcilwrath.domain.Vendor;
+import com8.markmcilwrath.domain.entity.UserEntity;
 import com8.markmcilwrath.domain.entity.VendorEntity;
 import com8.markmcilwrath.repository.VendoreRepository;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +30,14 @@ public class VendorService {
         return new Vendor(createdEntity.getVendorId(), createdEntity.getName());
     }
 
+    public Vendor update(Vendor vendor) throws InvocationTargetException, IllegalAccessException
+    {
+        VendorEntity updateEntity = vendoreRepository.findByVendorId(vendor.getUuid());
+        updateEntity.setName(vendor.getName());
+
+        vendoreRepository.save(updateEntity);
+        return new Vendor(updateEntity.getVendorId(), updateEntity.getName());
+    }
 
     public void delete(String uuid) {
         vendoreRepository.deleteByVendorId(uuid);

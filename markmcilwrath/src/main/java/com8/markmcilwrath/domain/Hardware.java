@@ -17,21 +17,21 @@ public class Hardware {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
-    @NotBlank(message = "Version is mandatory")
-    private String version;
+    @NotBlank(message = "Model is mandatory")
+    private String model;
 
    // private List<Assets> assets;
 
     public Hardware(
             String uuid,
             String name,
-            String version
+            String model
           //  List assets
     )
     {
         this.uuid = uuid;
         this.name = name;
-        this.version = version;
+        this.model = model;
      //   this.assets = assets;
     }
 }

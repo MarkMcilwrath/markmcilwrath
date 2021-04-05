@@ -18,3 +18,5 @@ CREATE TABLE `vendor` (
     PRIMARY KEY (`internal_id`),
     UNIQUE KEY `vendor_name` (`vendor_name`)
 );
+
+

@@ -40,19 +40,19 @@ public class HardwareEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    @Column(name = "hardware_name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    @Column(name = "hardware_version", nullable = false)
-    private String version;
+    @Column(name = "model", nullable = false)
+    private String model;
 
-    public HardwareEntity(String hardwareID, String name, String version) {
+    public HardwareEntity(String hardwareID, String name, String model) {
         this.hardwareID = hardwareID;
         this.name = name;
-        this.version = version;
+        this.model = model;
     }
 
 }

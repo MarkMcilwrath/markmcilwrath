@@ -7,24 +7,24 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addHardwareModal">Add Hardware</button>
+	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addSoftwareModal">Add Software</button>
 
-	<div id="addHardwareModal" class="modal fade" role="dialog">
+	<div id="addSoftwareModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add Hardware</h4>
+                <h4 class="modal-title">Add Software</h4>
             </div>
             <div class="modal-body">
-                <form id="addHardwareForm" name="addHardwareForm">
+                <form id="addSoftwareForm" name="addSoftwareForm">
                     <div>
                         <label for="name">Name:</label>
                         <input type="text" id="name" name="name">
                     </div>
                     <div>
-                        <label for="model">Model:</label>
-                        <input type="text" id="model" name="model">
+                        <label for="version">Version:</label>
+                        <input type="text" id="version" name="version">
                     </div>
                 </form>
             </div>
@@ -40,19 +40,19 @@
 
 	function validateForm()
     {
-        var vName = document.forms["addHardwareForm"]["name"].value;
+        var vName = document.forms["addSoftwareForm"]["name"].value;
         console.log(vName);
-        var vModel = document.forms["addHardwareForm"]["model"].value;
-        console.log(vModel);
+        var vVersion = document.forms["addSoftwareForm"]["version"].value;
+        console.log(vVersion);
 
         if (vName == "")
         {
             alert("Name Missing");
             console.log("false");
         }
-        else if (vModel == "")
+        else if (vVersion == "")
         {
-            alert("Model Missing");
+            alert("Version Missing");
             console.log("false");
         }
         else
@@ -65,7 +65,7 @@
     function saveForm()
     {
 
-    let myForm = document.getElementById('addHardwareForm');
+    let myForm = document.getElementById('addSoftwareForm');
     let formData = new FormData(myForm);
 
     
@@ -74,18 +74,18 @@
     {
     object[key] = value;
     });
-    var hardwareData = JSON.stringify(object);
-    console.log(hardwareData);
+    var softwareData = JSON.stringify(object);
+    console.log(softwareData);
 
     var xmlHttp = new XMLHttpRequest();
-    var theUrl = "http://localhost:8080/hardware/add";
+    var theUrl = "http://localhost:8080/software/add";
     xmlHttp.open("POST", theUrl);
     xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlHttp.send(hardwareData);
+    xmlHttp.send(softwareData);
 
-    document.getElementById("model").value = "";
+    document.getElementById("version").value = "";
     document.getElementById("name").value = "";
-    alert("Hardware Added");
+    alert("Software Added");
 
     }
 </script>

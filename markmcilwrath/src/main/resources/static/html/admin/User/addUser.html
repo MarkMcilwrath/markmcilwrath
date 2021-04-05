@@ -55,8 +55,7 @@
         console.log(vFirstname);
         var vLastname = document.forms["addUserForm"]["lastname"].value;
         console.log(vLastname);
-        var vEmail = document.forms["addUserForm"]["email"].value;
-        console.log(vEmail);
+    
 
         if (vFirstname == "")
         {
@@ -66,11 +65,6 @@
         else if (vLastname == "")
         {
             alert("Last name must be filled out");
-            console.log("false");
-        }
-        else if (vEmail == "")
-        {
-            alert("Email must be filled out");
             console.log("false");
         }
         else
@@ -108,13 +102,21 @@
     var theUrl = "http://localhost:8080/user/add";
     xmlHttp.open("POST", theUrl);
     xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    xmlHttp.onreadystatechange = function()
+        {
+            if (this.readyState == 4 && this.status == 201)
+            {
+                alert("User Added");
+                document.getElementById("firstname").value = "";
+                document.getElementById("lastname").value = "";
+                document.getElementById("email").value = "";
+            }else if (this.readyState == 4 && this.status == 500)
+            {
+                alert("User Registration Error");
+            }
+        };
     xmlHttp.send(userData);
-
-    document.getElementById("firstname").value = "";
-    document.getElementById("lastname").value = "";
-    document.getElementById("email").value = "";
-    alert("User Added");
-
     }
 
 

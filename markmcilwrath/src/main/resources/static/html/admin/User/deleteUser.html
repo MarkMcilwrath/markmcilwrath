@@ -32,25 +32,23 @@
     </div>
 </div>
 
-<div id="del" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Delete User</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <p id='showData'></p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info btn-lg">Delete</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<div id="ConfirmDeleteModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  
+                  </div>
+                      <div class="modal-body">
+                          <p id="Vinfo"></p>
+                      </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="deleteUser()">Delete</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </div>
+          </div>
+      </div>
+  </div>
 
 <script>
     var object;
@@ -64,7 +62,7 @@
         { object = value; });
         
         var xmlHttp = new XMLHttpRequest();
-        var theURL = "http://localhost:8080/user/email/" + object;
+        var theURL = "http://localhost:8080/user/" + object;
         
         xmlHttp.onreadystatechange = function()
         {
@@ -73,13 +71,12 @@
                 tableData = JSON.parse(this.responseText);
                 console.log(tableData);
                 document.getElementById("userEmail").value = "";
-                $("#del").modal();
-                tableFromJson();
+                confirmDelete();
             }
             else if (this.readyState == 4 && this.status == 500)
             { 
                 alert("User not found");
-                document.getElementById("userEmail").value = "";
+                //document.getElementById("userEmail").value = "";
                 object = null;
             }
         };
@@ -87,60 +84,28 @@
         xmlHttp.send();
     }
 
-    function tableFromJson()
-    {
-        var col = [];
-        for (var i = 0; i < tableData.length; i++) {
-            for (var key in tableData[i]) {
-                if (col.indexOf(key) === -1) {
-                    col.push(key);
-                }
-            }
-        }
-
-
-        var table = document.createElement("table");
-
-
-        var tr = table.insertRow(-1);
-
-        for (var i = 0; i < col.length; i++) {
-            var th = document.createElement("th");
-            th.innerHTML = col[i];
-            tr.appendChild(th);
-        }
-
-
-        for (var i = 0; i < tableData.length; i++) {
-
-            tr = table.insertRow(-1);
-
-            for (var j = 0; j < col.length; j++) {
-                var tabCell = tr.insertCell(-1);
-                tabCell.innerHTML = tableData[i][col[j]];
-            }
-        }
-
-
-        var divShowData = document.getElementById('showData');
-        divShowData.innerHTML = "";
-        divShowData.appendChild(table);
-
+    function confirmDelete()
+    { 
+    
+    document.getElementById("Vinfo").innerHTML = "Are you sure you want to Delete " + object + "?";
+    $("#ConfirmDeleteModal").modal();
     }
+
+    
 
     function deleteUser()
     {
         var xmlHttp = new XMLHttpRequest();
-        var theURL = "http://localhost:8080/user/email/" + object;
+        var theURL = "http://localhost:8080/user/" + object;
         xmlHttp.onreadystatechange = function()
         {
-            if (this.readyState == 4 && this.status == 200)
+            if (this.readyState == 4 && this.status == 204)
             {
                 alert("User succesfully deleted");
                 object = null;
+                $("#ConfirmDeleteModal").modal("hide");
             }
         };
-
         xmlHttp.open("Delete", theURL , true);
         xmlHttp.send();
     }

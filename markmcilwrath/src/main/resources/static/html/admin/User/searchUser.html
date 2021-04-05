@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#searchUser">Edit User</button>
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#searchUser">Search User</button>
 
 <div id="searchUser" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -45,22 +45,21 @@
                 <form id="editUserForm" name="editUserForm">
                     <div>
                         <label for="firstname">First Name: </label>
-                        <input type="text" id="firstname" name="firstname" value="blank">
+                        <input type="text" id="firstname" name="firstname" value="blank" disabled>
                     </div>
                     <div>
                         <label for="lastname">last Name: </label>
-                        <input type="text" id="lastname" name="lastname" value="blank">
+                        <input type="text" id="lastname" name="lastname" value="blank" disabled>
                     </div>
                 </form>
                 <form>
                     <div>
                         <label for="admin">Admin: </label>
-                        <input type="checkbox" name="admin" id="admin">
+                        <input type="checkbox" name="admin" id="admin" disabled>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type ="button" class="btn btn-default" onclick="validateForm()">Submit Changes</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -93,7 +92,7 @@
                     
                 document.getElementById("firstname").value = fNameHold;
                 document.getElementById("lastname").value = lNameHold;
-                document.getElementById("editUserTitle").innerHTML = "Edit User: " + emailHold;
+                document.getElementById("editUserTitle").innerHTML = "User: " + emailHold;
                 document.getElementById("admin").checked = adminHold;
                     
                 $("#edit").modal()
@@ -109,7 +108,7 @@
             else if (this.readyState == 4 && this.status != 200 && this.status != 500)
             { 
             alert("Error");
-            //document.getElementById("userEmail").value = "";
+            document.getElementById("userEmail").value = "";
             object = null;
             }
 
@@ -118,73 +117,6 @@
         xmlHttp.send();
         
     }
-
-    function validateForm()
-    {
-        var vFirstname = document.forms["editUserForm"]["firstname"].value;
-        var vLastname = document.forms["editUserForm"]["lastname"].value;
-
-        if (vFirstname == "")
-        {
-            alert("First name must be filled out");
-            console.log("false");
-        }
-        else if (vLastname == "")
-        {
-            alert("Last name must be filled out");
-        }
-        else
-        {
-            saveForm();
-        }
-    }
-
-    function saveForm()
-    {
-        let myForm = document.getElementById('editUserForm');
-        let formData = new FormData(myForm);
-        formData.append('email', myObj.email );
-        var checkBox = document.getElementById("admin");
-        if (checkBox.checked == true)
-            {
-            formData.append('admin', "true");
-            }
-            else
-            {
-            formData.append('admin', "false");
-            }
-        var object = {};
-        formData.forEach(function(value, key)
-        {
-        object[key] = value;
-        });
-        var userData = JSON.stringify(object);
-
-        console.log(userData);
-
-        var xmlHttp = new XMLHttpRequest();
-        var theUrl = "http://localhost:8080/user/update";
-        xmlHttp.open("PUT", theUrl);
-        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-        xmlHttp.onreadystatechange = function()
-        {
-            if (this.readyState == 4 && this.status == 200)
-            {
-                alert("User updated");
-                document.getElementById("firstname").value = "";
-                document.getElementById("lastname").value = "";
-            }else if (this.readyState == 4 && this.status == 500)
-            {
-                alert("User Update Error");
-            }
-        };
-
-        xmlHttp.send(userData);
-
-        
-    }
-
 
 </script>
 

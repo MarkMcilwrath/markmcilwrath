@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
    <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -8,18 +8,18 @@
 </head>
 <body onload="dropDown()">
 
-  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#DeleteVendorModal">Delete Vendor</button>
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#DeletehardwareModal">Delete Hardware</button>
 
-  <div id="DeleteVendorModal" class="modal fade" role="dialog">
+  <div id="DeletehardwareModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 id="title" class="modal-title">Select Vendor</h4>
+                  <h4 id="title" class="modal-title">Delete Hardware</h4>
                   </div>
                       <div class="modal-body">
                           <select class="selectpicker" id="ddList" name="locality" ></select>
-                           <button type ="button" class="btn btn-default" onclick="confirmDelete()">Delete Vendor</button>
+                           <button type ="button" class="btn btn-default" onclick="confirmDelete()">Delete Hardware</button>
                       </div>
                   <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -39,16 +39,14 @@
                           <p id="Vinfo"></p>
                       </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" onclick="deleteVendor()">Delete</button>
+                    <button type="button" class="btn btn-default" onclick="deleteHardware()">Delete</button>
                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
               </div>
           </div>
       </div>
   </div>
 
-</body>
-
-<script>
+  <script>
 
   var name;
 
@@ -61,30 +59,27 @@
     $("#ConfirmDeleteModal").modal();
   }
 
-
-  function deleteVendor()
+  function deleteHardware()
     {
-      
       var selected = (document.getElementById("ddList"));
-      vendorID = selected.value;
-      console.log(vendorID);
+      hardwareID = selected.value;
       var xmlHttp = new XMLHttpRequest();
-      var theURL = "http://localhost:8080/vendor/" + vendorID;
+      var theURL = "http://localhost:8080/hardware/" + hardwareID;
       xmlHttp.onreadystatechange = function()
       {
         if (this.readyState == 4 && this.status == 204)
         {
-          alert("Vendor succesfully deleted");
+        	alert("Hardware succesfully deleted");
           dropDown();
           $("#ConfirmDeleteModal").modal("hide");
-        }
-        else if (this.readyState == 4 && this.status != 204)
+        } else if (this.readyState == 4 && this.status != 204)
         {
-         alert("ERROR");
+          alert("ERROR");
         }
       };
         xmlHttp.open("Delete", theURL , true);
         xmlHttp.send();
+        
     }
 
   function dropDown()
@@ -93,12 +88,13 @@
     dropdown.length = 0;
 
     // let defaultOption = document.createElement('option');
-    // defaultOption.text = 'Select Vendor';
+    // defaultOption.text = 'Select Hardware';
+    // defaultOption.value = "";
 
     // dropdown.add(defaultOption);
     // dropdown.selectedIndex = 0;
 
-    const url = 'http://localhost:8080/vendor';
+    const url = 'http://localhost:8080/hardware';
 
     const request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -109,7 +105,8 @@
         let option;
         for (let i = 0; i < data.length; i++) {
           option = document.createElement('option');
-          option.text = data[i].name;
+          var fullName = data[i].name + " " + data[i].model;
+          option.text = fullName;
           option.value = data[i].uuid;
           dropdown.add(option);
         }
@@ -125,4 +122,6 @@
   }
        
 </script>
+
+</body>
 </html>

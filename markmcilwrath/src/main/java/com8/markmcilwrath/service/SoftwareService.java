@@ -1,17 +1,21 @@
 package com8.markmcilwrath.service;
 
+
 import com8.markmcilwrath.domain.Software;
+import com8.markmcilwrath.domain.entity.HardwareEntity;
 import com8.markmcilwrath.domain.entity.SoftwareEntity;
 import com8.markmcilwrath.repository.SoftwareRepository;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class SoftwareService {
+
     private SoftwareRepository softwareRepository;
 
     public SoftwareService (SoftwareRepository softwareRepository) {
@@ -22,9 +26,18 @@ public class SoftwareService {
     {
         SoftwareEntity createEntity = new SoftwareEntity(UUID.randomUUID().toString(), name, version);
         SoftwareEntity createdEntity = softwareRepository.save(createEntity);
-        return new Software(createdEntity.getSoftwareID(),
-                createdEntity.getName(), createdEntity.getVersion());
+        return new Software(createdEntity.getSoftwareID(), createdEntity.getName(), createdEntity.getVersion());
     };
+
+    public Software update(Software software) throws InvocationTargetException, IllegalAccessException
+    {
+        SoftwareEntity updateEntity = softwareRepository.findBySoftwareID((software.getUuid()));
+        updateEntity.setName(software.getName());
+        updateEntity.setVersion(software.getVersion());
+
+        softwareRepository.save(updateEntity);
+        return  new Software(updateEntity.getSoftwareID(), updateEntity.getName(), updateEntity.getVersion());
+    }
 
     public void delete(String uuid)
     {

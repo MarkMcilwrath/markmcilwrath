@@ -4,8 +4,10 @@ import com8.markmcilwrath.domain.User;
 import com8.markmcilwrath.domain.entity.UserEntity;
 import com8.markmcilwrath.repository.UserRepository;
 import javassist.NotFoundException;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -13,19 +15,31 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-
     private UserRepository userRepository;
-
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public User save(String firstName, String lastName, String email, boolean admin) {
+    public User save(String firstName, String lastName, String email, boolean admin)
+    {
         UserEntity createEntity = new UserEntity(UUID.randomUUID().toString(), firstName, lastName, email, admin);
         UserEntity createdEntity = userRepository.save(createEntity);
         return new User(createdEntity.getUserId(), createdEntity.getFirstName(), createdEntity.getLastName(),
                 createdEntity.getEmail(), createdEntity.isAdmin());
+    }
+
+
+    public User update(User user) throws InvocationTargetException, IllegalAccessException {
+        UserEntity updateEntity = userRepository.findByEmail(user.getEmail());
+        updateEntity.setFirstName(user.getFirstname());
+        updateEntity.setLastName(user.getLastname());
+        updateEntity.setAdmin(user.isAdmin());
+
+        userRepository.save(updateEntity);
+        return new User(updateEntity.getUserId(), updateEntity.getFirstName(), updateEntity.getLastName(),
+                updateEntity.getEmail(), updateEntity.isAdmin());
+
     }
 
 

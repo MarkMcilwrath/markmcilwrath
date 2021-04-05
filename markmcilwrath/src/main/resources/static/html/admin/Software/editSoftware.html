@@ -8,17 +8,17 @@
 </head>
 <body onload="dropDown()">
 
-  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#selectVendor">Edit Vendor</button>
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#selectSoftwareModal">Edit Software</button>
 
-  <div id="selectVendor" class="modal fade" role="dialog">
+  <div id="selectSoftwareModal" class="modal fade" role="dialog">
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 id="title" class="modal-title">Select Vendor</h4>
+                  <h4 id="title" class="modal-title">Select Software</h4>
                   </div>
                       <div class="modal-body">
-                          <select class="selectpicker" id="ddList" name="locality" onchange="searchVendor()" ></select>
+                          <select class="selectpicker" id="ddList" name="locality" onchange="searchSoftware()" ></select>
                       </div>
                   <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -27,23 +27,27 @@
       </div>
   </div>
 
-  <div id="editVendorModal" class="modal fade" role="dialog">
+  <div id="editSoftwareModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 id="title" class="modal-title">Edit Vendor</h4>
+                <h4 id="title" class="modal-title">Edit Software</h4>
             </div>
             <div class="modal-body">
-                <form id="editVendorForm" name="editVendorForm">
+                <form id="editSoftwareForm" name="editSoftwareForm">
                     <div>
-                        <label for="name">Vendor Name: </label>
+                        <label for="name">Name:</label>
                         <input type="text" id="name" name="name" value="blank">
+                    </div>
+                    <div>
+                        <label for="version">Version:</label>
+                        <input type="text" id="version" name="version" value="blank">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type ="button" class="btn btn-default" onclick="validateForm()">Submit Changes</button>
+                <button type ="button" class="btn btn-default" onclick="validateForm()">Submit Changes </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -53,18 +57,17 @@
 </body>
 
 <script>
-  var gblVendorID;
   var object;
-  var vendorID;
+  var gblSoftwareID;
 
-  function searchVendor()
+  function searchSoftware()
   {
     var selected = (document.getElementById("ddList"));
-    var vendorID = selected.value;
-    gblVendorID = vendorID;
+    var softwareID = selected.value;
+    gblSoftwareID = softwareID;
 
     var xmlHttp = new XMLHttpRequest();
-    var theURL = "http://localhost:8080/vendor/" + vendorID;
+    var theURL = "http://localhost:8080/software/" + softwareID;
 
     xmlHttp.onreadystatechange = function()
     {
@@ -73,7 +76,9 @@
             myObj = JSON.parse(this.responseText);
             var nameHold = myObj.name;
             document.getElementById("name").value = nameHold;
-            $("#editVendorModal").modal()
+            var versionHold = myObj.version;
+            document.getElementById("version").value = versionHold;
+            $("#editSoftwareModal").modal()
             }
             else if (this.readyState == 4 && this.status != 200)
             { 
@@ -82,30 +87,36 @@
         };
         xmlHttp.open("GET", theURL , true);
         xmlHttp.send();
-
-  }
+      }
 
   function validateForm()
     {
-        var vName = document.forms["editVendorForm"]["name"].value;
+
+      var vName = document.forms["editSoftwareForm"]["name"].value;
+      var vVersion = document.forms["editSoftwareForm"]["version"].value;
 
         if (vName == "")
         {
           alert("Name Missing");
         }
+        else if (vVersion == "")
+        {
+          alert("Version Missing");
+        }
         else
         {
-          sendEditVendorForm();
+          sendEditSoftwareForm();
         }
     }
 
-  function sendEditVendorForm()
+    function sendEditSoftwareForm()
   {
-
-        let myForm = document.getElementById('editVendorForm');
+        
+        let myForm = document.getElementById('editSoftwareForm');
         let formData = new FormData(myForm);
 
-        formData.append('uuid', gblVendorID);
+
+        formData.append('uuid', gblSoftwareID);
         
         var newObject = {};
         formData.forEach(function(value, key)
@@ -113,11 +124,11 @@
         newObject[key] = value;
         });
         
-        var vendorData = JSON.stringify(newObject);
-        console.log(vendorData);
+        var softwareData = JSON.stringify(newObject);
+        console.log(softwareData);
 
         var xmlHttp = new XMLHttpRequest();
-        var theUrl = "http://localhost:8080/vendor/update";
+        var theUrl = "http://localhost:8080/software/update";
         xmlHttp.open("PUT", theUrl);
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -126,20 +137,17 @@
           console.log(this.status);
             if (this.readyState == 4 && this.status == 200)
             {
-                alert("Vendor updated");
+                alert("Software updated");
                 dropDown();
                 
             }else if (this.readyState == 4 && this.status == 500)
             {
-                alert("Vendro Update Error");
+                alert("Software Update Error");
             }
         };
 
-        xmlHttp.send(vendorData);
-        
-  }
-
-
+        xmlHttp.send(softwareData);
+      }
 
   function dropDown()
   {
@@ -147,12 +155,12 @@
     dropdown.length = 0;
 
     // let defaultOption = document.createElement('option');
-    // defaultOption.text = 'Select Vendor';
+    // defaultOption.text = 'Select Software';
 
     // dropdown.add(defaultOption);
     // dropdown.selectedIndex = 0;
 
-    const url = 'http://localhost:8080/vendor';
+    const url = 'http://localhost:8080/software';
 
     const request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -163,7 +171,8 @@
         let option;
         for (let i = 0; i < data.length; i++) {
           option = document.createElement('option');
-          option.text = data[i].name;
+          var fullName = data[i].name + " " + data[i].version;
+          option.text = fullName;
           option.value = data[i].uuid;
           dropdown.add(option);
         }
