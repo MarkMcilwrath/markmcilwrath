@@ -7,5 +7,4 @@ CREATE TABLE `software` (
     PRIMARY KEY (`internal_id`),
     UNIQUE KEY `software_id` (`software_id`),
     CONSTRAINT name_version UNIQUE (name,version)
-
 );
