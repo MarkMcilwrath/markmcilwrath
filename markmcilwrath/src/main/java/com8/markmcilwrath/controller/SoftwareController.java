@@ -1,9 +1,6 @@
 package com8.markmcilwrath.controller;
 
-import com8.markmcilwrath.domain.Hardware;
 import com8.markmcilwrath.domain.Software;
-import com8.markmcilwrath.domain.User;
-import com8.markmcilwrath.domain.Vendor;
 import com8.markmcilwrath.service.SoftwareService;
 import javassist.NotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -35,19 +32,20 @@ public class SoftwareController
         this.softwareService = softwareService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Software> addSoftware(@Valid @RequestBody Software software)
+    @PostMapping("/add/{vendorId}")
+    public ResponseEntity<Software> addSoftware(@PathVariable String vendorId,
+                                                @Valid @RequestBody Software software)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                softwareService.save(software.getName(), software.getVersion())
+                softwareService.save(software.getName(), software.getVersion(), vendorId)
         );
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Software> updateSoftware(@Valid @RequestBody Software software) throws InvocationTargetException, IllegalAccessException
+    @PutMapping("/update/{vendorId}")
+    public ResponseEntity<Software> updateSoftware(@PathVariable String vendorId, @Valid @RequestBody Software software) throws InvocationTargetException, IllegalAccessException
     {
         return ResponseEntity.status(HttpStatus.OK).body(
-                softwareService.update((software)));
+                softwareService.update(software, vendorId));
     }
 
     @DeleteMapping("/{softwareId}")

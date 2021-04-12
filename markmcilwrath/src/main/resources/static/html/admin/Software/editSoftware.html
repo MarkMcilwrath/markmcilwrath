@@ -45,6 +45,9 @@
                         <input type="text" id="version" name="version" value="blank">
                     </div>
                 </form>
+                <div>
+                        <select class="selectpicker" id="vendorDdList" name="vendorDdList"></select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type ="button" class="btn btn-default" onclick="validateForm()">Submit Changes </button>
@@ -57,8 +60,8 @@
 </body>
 
 <script>
-  var object;
-  var gblSoftwareID;
+  let object;
+  let gblSoftwareID;
 
   function searchSoftware()
   {
@@ -74,10 +77,21 @@
         if (this.readyState == 4 && this.status == 200)
           {
             myObj = JSON.parse(this.responseText);
+            console.log(myObj);
             var nameHold = myObj.name;
             document.getElementById("name").value = nameHold;
             var versionHold = myObj.version;
             document.getElementById("version").value = versionHold;
+            vendorDropDown();
+
+            var ddTextHold = myObj.vendorName;
+            var ddValueHold = myObj.vendorID;
+            console.log(ddTextHold);
+            console.log(ddValueHold);
+
+            document.getElementById("vendorDdList").text = ddTextHold;
+            document.getElementById("vendorDdList").value = ddValueHold;
+            
             $("#editSoftwareModal").modal()
             }
             else if (this.readyState == 4 && this.status != 200)
@@ -109,15 +123,17 @@
         }
     }
 
-    function sendEditSoftwareForm()
-  {
+  function sendEditSoftwareForm()
+    {
         
         let myForm = document.getElementById('editSoftwareForm');
         let formData = new FormData(myForm);
 
-
         formData.append('uuid', gblSoftwareID);
-        
+
+        var selectedVendor = (document.getElementById("vendorDdList"));
+        var selectedVendorID = selectedVendor.value;
+
         var newObject = {};
         formData.forEach(function(value, key)
         {
@@ -128,7 +144,7 @@
         console.log(softwareData);
 
         var xmlHttp = new XMLHttpRequest();
-        var theUrl = "http://localhost:8080/software/update";
+        var theUrl = "http://localhost:8080/software/update/" + selectedVendorID;
         xmlHttp.open("PUT", theUrl);
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -139,6 +155,7 @@
             {
                 alert("Software updated");
                 dropDown();
+                $("#editSoftwareModal").modal("toggle")
                 
             }else if (this.readyState == 4 && this.status == 500)
             {
@@ -147,6 +164,7 @@
         };
 
         xmlHttp.send(softwareData);
+
       }
 
   function dropDown()
@@ -154,11 +172,10 @@
     let dropdown = document.getElementById('ddList');
     dropdown.length = 0;
 
-    // let defaultOption = document.createElement('option');
-    // defaultOption.text = 'Select Software';
-
-    // dropdown.add(defaultOption);
-    // dropdown.selectedIndex = 0;
+    let defaultOption = document.createElement('option');
+    defaultOption.text = 'Select Software';
+    dropdown.add(defaultOption);
+    dropdown.selectedIndex = 0;
 
     const url = 'http://localhost:8080/software';
 
@@ -178,6 +195,41 @@
         }
        } else {
       }   
+    }
+
+    request.onerror = function() {
+      console.error('An error occurred fetching the JSON from ' + url);
+    };
+
+    request.send();
+  }
+
+  function vendorDropDown()
+  {
+    let vDropDown = document.getElementById('vendorDdList');
+    vDropDown.length = 0;
+
+    const url = 'http://localhost:8080/vendor';
+
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function()
+    {
+      if (request.status === 200)
+      {
+        const data = JSON.parse(request.responseText);
+        let option;
+        for (let i = 0; i < data.length; i++)
+        {
+          option = document.createElement('option');
+          option.text = data[i].name;
+          option.value = data[i].uuid;
+          vDropDown.add(option);
+        }
+      }
+      else
+      {}   
     }
 
     request.onerror = function() {

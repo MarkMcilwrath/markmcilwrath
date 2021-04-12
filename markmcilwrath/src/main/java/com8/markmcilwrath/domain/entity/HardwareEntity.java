@@ -7,12 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -22,6 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class HardwareEntity implements Serializable {
 
     @Id
@@ -49,10 +45,17 @@ public class HardwareEntity implements Serializable {
     @Column(name = "model", nullable = false)
     private String model;
 
-    public HardwareEntity(String hardwareID, String name, String model) {
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn (name = "vendor_id")
+    @Getter
+    @Setter
+    private VendorEntity vendorEntity;
+
+    public HardwareEntity(String hardwareID, String name, String model, VendorEntity vendorEntity) {
         this.hardwareID = hardwareID;
         this.name = name;
         this.model = model;
+        this.vendorEntity = vendorEntity;
     }
 
 }

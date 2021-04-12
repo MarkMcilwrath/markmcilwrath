@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body onload="dropDown()">
 	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addSoftwareModal">Add Software</button>
 
 	<div id="addSoftwareModal" class="modal fade" role="dialog">
@@ -27,6 +27,9 @@
                         <input type="text" id="version" name="version">
                     </div>
                 </form>
+                    <div>
+                        <select class="selectpicker" id="ddList" name="ddList"></select>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button type ="button" class="btn btn-default" value="Submit" onclick=" validateForm()">Submit</button>
@@ -64,30 +67,74 @@
 
     function saveForm()
     {
+        let myForm = document.getElementById('addSoftwareForm');
+        let formData = new FormData(myForm);
 
-    let myForm = document.getElementById('addSoftwareForm');
-    let formData = new FormData(myForm);
+        let selected = (document.getElementById("ddList"));
+        var vendorID = selected.value;
 
+        console.log(vendorID);
+
+        var object = {};
+        formData.forEach(function(value, key)
+        {
+        object[key] = value;
+        });
+        var softwareData = JSON.stringify(object);
+        console.log(softwareData);
+
+        var xmlHttp = new XMLHttpRequest();
+        var theUrl = "http://localhost:8080/software/add/" + vendorID;
+        xmlHttp.open("POST", theUrl);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xmlHttp.onreadystatechange = function()
+        {
+            if (this.readyState == 4 && this.status == 201)
+            {
+                document.getElementById("version").value = "";
+                document.getElementById("name").value = "";
+                alert("Software Added");
+            }else if (this.readyState == 4 && this.status != 201)
+            {
+                alert("Software Registration Error");
+            }
+        };
+
+        xmlHttp.send(softwareData);
     
-    var object = {};
-    formData.forEach(function(value, key)
-    {
-    object[key] = value;
-    });
-    var softwareData = JSON.stringify(object);
-    console.log(softwareData);
-
-    var xmlHttp = new XMLHttpRequest();
-    var theUrl = "http://localhost:8080/software/add";
-    xmlHttp.open("POST", theUrl);
-    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xmlHttp.send(softwareData);
-
-    document.getElementById("version").value = "";
-    document.getElementById("name").value = "";
-    alert("Software Added");
-
     }
+
+    function dropDown()
+  {
+    let dropdown = document.getElementById('ddList');
+    dropdown.length = 0;
+
+    const url = 'http://localhost:8080/vendor';
+
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function() {
+      if (request.status === 200) {
+        const data = JSON.parse(request.responseText);
+        let option;
+        for (let i = 0; i < data.length; i++) {
+          option = document.createElement('option');
+          option.text = data[i].name;
+          option.value = data[i].uuid;
+          dropdown.add(option);
+        }
+       } else {
+      }   
+    }
+
+    request.onerror = function() {
+      console.error('An error occurred fetching the JSON from ' + url);
+    };
+
+    request.send();
+  }
 </script>
 
 </body>

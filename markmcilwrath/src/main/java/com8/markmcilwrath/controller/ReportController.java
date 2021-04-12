@@ -1,4 +1,5 @@
 package com8.markmcilwrath.controller;
 
-public class ReportController {
+public class ReportController
+{
 }

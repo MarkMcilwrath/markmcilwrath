@@ -1,57 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	 <link rel="shortcut icon" href="#">
+     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
     <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+    <style>
+        .wrapper{
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  margin-bottom: : 5px;
+  display: flex;
+  width: 100%;
+}
+    .btn-default {
+            margin-right: 5px;
+            margin-left: 5px;}
     </style>
 </head>
-<body onload="getHardwares()">
-	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#allhardwaresModal" onclick='rebuildTable()' >All Hardware</button>
+<body onload="getLicenses()">
 
-<div id="allhardwaresModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">All Hardware</h4>
-            </div>
-            <div class="modal-body">
-                <div class="wrapper">
-                <button id="download-csv" class="btn btn-default">Download CSV</button>
-                <button id="download-json" class="btn btn-default">Download JSON</button>
-                <button id="download-xlsx" class="btn btn-default">Download XLSX</button>
-                
-                <button id="download-pdf" class="btn btn-default">Download PDF</button>
-                <button id="download-html" class="btn btn-default">Download HTML</button>
-                <button id="print-table"class="btn btn-default" >Print Table</button>
-                </div>
-                <div id="allHardwares-Table"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#allLicenseModal" onclick="rebuildTable()" >All Licenses</button>
+
+	<div id="allLicenseModal" class="modal fade" role="dialog">
+	    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal">&times;</button>
+	                <h4 class="modal-title">All Software</h4>
+	            </div>
+	            <div class="modal-body">
+	                <div class="wrapper">
+		                <button id="download-csv" class="btn btn-default">Download CSV</button>
+		                <button id="download-json" class="btn btn-default">Download JSON</button>
+		                <button id="download-xlsx" class="btn btn-default">Download XLSX</button>
+		                <button id="download-pdf" class="btn btn-default">Download PDF</button>
+		                <button id="download-html" class="btn btn-default">Download HTML</button>
+		                <button id="print-table"class="btn btn-default" >Print Table</button>
+	                </div>
+	               		<div id="allSoftwares-Table"></div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
 <script>
 	var tableData
     var table;
 
-	function getHardwares()
+	function getLicenses()
 	    {
 	        var xmlHttp = new XMLHttpRequest();
-	        var theURL = "http://localhost:8080/hardware"
+	        var theURL = "http://localhost:8080/license"
 	        xmlHttp.onreadystatechange = function()
 	        {
 	            if (this.readyState == 4 && this.status == 200)
 	            {
 	             tableData = JSON.parse(this.responseText);
-                 buildTable();
+	             buildTable();
 	            }
 	            else
 	            {
@@ -63,27 +75,31 @@
 	    }
 
     function rebuildTable()
-        {
-            table.redraw();
-        }
+    {
+        table.redraw();
+    }
 
-        function buildTable()
+    function buildTable()
         {
-            table = new Tabulator("#allHardwares-Table",
-            { data:tableData,
+            table = new Tabulator("#allSoftwares-Table",
+            {
+                data:tableData,
                 layout:"fitColumns",
                 paginationSize:5,
                 movableColumns:true,
                 resizableRows:true,
                 printAsHtml:true,
-                printHeader:"<h1>All Hardware<h1>",
+                printHeader:"<h1>All Software<h1>",
                 columns:[ 
                 // {title:"ID", field:"uuid"},
-                {title:"Name", field:"name", hozAlign:"left"},
-                {title:"Model", field:"model", hozAlign:"left"},
-                {title:"Vendor", field:"vendorName", hozAlign:"left"},]
+                {title:"License Key", field:"licenseKey", hozAlign:"left"},
+                {title:"Purchase Date", field:"purchaseDate", hozAlign:"left"},
+                {title:"Expiry Date", field:"expiryDate", hozAlign:"left"},
+                {title:"Software", field:"softwareName", hozAlign:"left"},
+                {title:"Version", field:"softwareVersion", hozAlign:"left"},]
                     }
                 );
+
         }
 
         document.getElementById("download-csv").addEventListener("click", function(){

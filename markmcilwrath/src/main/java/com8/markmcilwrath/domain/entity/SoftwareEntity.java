@@ -8,12 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 
@@ -48,9 +43,16 @@ public class SoftwareEntity implements Serializable {
     @Column(name = "version", nullable = false)
     private String version;
 
-    public SoftwareEntity(String softwareID, String name, String version) {
+    @ManyToOne (cascade = CascadeType.PERSIST)
+    @JoinColumn (name = "vendor_id")
+    @Getter
+    @Setter
+    private VendorEntity vendorEntity;
+
+    public SoftwareEntity(String softwareID, String name, String version, VendorEntity vendorEntity) {
         this.softwareID = softwareID;
         this.name = name;
         this.version = version;
+        this.vendorEntity = vendorEntity;
     }
 }

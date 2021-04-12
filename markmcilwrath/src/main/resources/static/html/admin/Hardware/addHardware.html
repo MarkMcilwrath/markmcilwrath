@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body onload="dropDown()">
 	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#addHardwareModal">Add Hardware</button>
 
 	<div id="addHardwareModal" class="modal fade" role="dialog">
@@ -27,6 +27,9 @@
                         <input type="text" id="model" name="model">
                     </div>
                 </form>
+                <div>
+                    <select class="selectpicker" id="ddList" name="ddList"></select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type ="button" class="btn btn-default" value="Submit" onclick=" validateForm()">Submit</button>
@@ -68,7 +71,9 @@
     let myForm = document.getElementById('addHardwareForm');
     let formData = new FormData(myForm);
 
-    
+    let selected = (document.getElementById("ddList"));
+    var vendorID = selected.value;
+
     var object = {};
     formData.forEach(function(value, key)
     {
@@ -78,7 +83,7 @@
     console.log(hardwareData);
 
     var xmlHttp = new XMLHttpRequest();
-    var theUrl = "http://localhost:8080/hardware/add";
+    var theUrl = "http://localhost:8080/hardware/add/" + vendorID;
     xmlHttp.open("POST", theUrl);
     xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xmlHttp.send(hardwareData);
@@ -88,6 +93,37 @@
     alert("Hardware Added");
 
     }
+
+    function dropDown()
+      {
+        let dropdown = document.getElementById('ddList');
+        dropdown.length = 0;
+
+        const url = 'http://localhost:8080/vendor';
+
+        const request = new XMLHttpRequest();
+        request.open('GET', url, true);
+
+        request.onload = function() {
+          if (request.status === 200) {
+            const data = JSON.parse(request.responseText);
+            let option;
+            for (let i = 0; i < data.length; i++) {
+              option = document.createElement('option');
+              option.text = data[i].name;
+              option.value = data[i].uuid;
+              dropdown.add(option);
+            }
+           } else {
+          }   
+        }
+
+        request.onerror = function() {
+          console.error('An error occurred fetching the JSON from ' + url);
+        };
+
+        request.send();
+      }
 </script>
 
 </body>

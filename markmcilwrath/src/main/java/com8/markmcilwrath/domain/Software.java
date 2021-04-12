@@ -1,15 +1,14 @@
 package com8.markmcilwrath.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Email;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Software {
 
     private String uuid;
@@ -20,7 +19,9 @@ public class Software {
     @NotBlank(message = "Version is mandatory")
     private String version;
 
-   // private List<License> licenses;
+    private String vendorName;
+
+    private String vendorID;
 
     public Software(
             String uuid,
@@ -31,5 +32,32 @@ public class Software {
         this.name = name;
         this.version = version;
     }
+
+    public Software(
+            String uuid,
+            String name,
+            String version,
+            String vendorName,
+            String vendorID)
+    {
+        this.uuid = uuid;
+        this.name = name;
+        this.version = version;
+        this.vendorName = vendorName;
+        this.vendorID = vendorID;
+    }
+
+    public Software(
+            String uuid,
+            String name,
+            String version,
+            String vendorID)
+    {
+        this.uuid = uuid;
+        this.name = name;
+        this.version = version;
+        this.vendorID = vendorID;
+    }
+
 
 }

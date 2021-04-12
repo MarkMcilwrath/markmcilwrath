@@ -45,6 +45,9 @@
                         <input type="text" id="model" name="model" value="blank">
                     </div>
                 </form>
+                <div>
+                        <select class="selectpicker" id="vendorDdList" name="vendorDdList"></select>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type ="button" class="btn btn-default" onclick="validateForm()">Submit Changes </button>
@@ -78,6 +81,7 @@
             document.getElementById("name").value = nameHold;
             var modelHold = myObj.model;
             document.getElementById("model").value = modelHold;
+            vendorDropDown();
             $("#edithardwareModal").modal()
             }
             else if (this.readyState == 4 && this.status != 200)
@@ -96,7 +100,6 @@
       var vModel = document.forms["editHardwareForm"]["model"].value;
 
         if (vName == "" )
-          //|| vName == undefined)
         {
           alert("Name Missing");
         }
@@ -117,6 +120,9 @@
         let formData = new FormData(myForm);
 
         formData.append('uuid', gblHardwareID);
+
+        var selectedVendor = (document.getElementById("vendorDdList"));
+        var selectedVendorID = selectedVendor.value;
         
         var newObject = {};
         formData.forEach(function(value, key)
@@ -128,7 +134,7 @@
         console.log(hardwareData);
 
         var xmlHttp = new XMLHttpRequest();
-        var theUrl = "http://localhost:8080/hardware/update";
+        var theUrl = "http://localhost:8080/hardware/update/" + selectedVendorID;
         xmlHttp.open("PUT", theUrl);
         xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
@@ -179,6 +185,41 @@
         }
        } else {
       }   
+    }
+
+    request.onerror = function() {
+      console.error('An error occurred fetching the JSON from ' + url);
+    };
+
+    request.send();
+  }
+
+  function vendorDropDown()
+  {
+    let vDropDown = document.getElementById('vendorDdList');
+    vDropDown.length = 0;
+
+    const url = 'http://localhost:8080/vendor';
+
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function()
+    {
+      if (request.status === 200)
+      {
+        const data = JSON.parse(request.responseText);
+        let option;
+        for (let i = 0; i < data.length; i++)
+        {
+          option = document.createElement('option');
+          option.text = data[i].name;
+          option.value = data[i].uuid;
+          vDropDown.add(option);
+        }
+      }
+      else
+      {}   
     }
 
     request.onerror = function() {

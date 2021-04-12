@@ -46,15 +46,20 @@ public class VendorService {
     public void deleteVendorByName(String name) { vendoreRepository.deleteByName(name); }
 
     public Vendor getVendor(String uuid) throws NotFoundException {
-        VendorEntity entity = vendoreRepository.findByVendorId(uuid);
-
-        if (entity == null) {
-            throw new NotFoundException("Vendor: " + uuid + "Not found");
-        }
-
+        VendorEntity entity = getVendorEntity(uuid);
         Vendor vendor = new Vendor(entity.getVendorId(), entity.getName());
         return vendor;
 
+    }
+
+    public VendorEntity getVendorEntity(String uuid) throws NotFoundException
+    {
+        VendorEntity entity = vendoreRepository.findByVendorId(uuid);
+        if (entity == null)
+        {
+            throw new NotFoundException("Vendor: " + uuid + "Not found");
+        }
+        return entity;
     }
 
     public Vendor getVendorByName(String name) throws NotFoundException {

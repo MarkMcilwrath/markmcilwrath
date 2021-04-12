@@ -24,17 +24,18 @@ public class HardwareController {
         this.hardwareService = hardwareService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Hardware> addHardware(@Valid @RequestBody Hardware hardware) {
+    @PostMapping("/add/{vendorId}")
+    public ResponseEntity<Hardware> addHardware(@PathVariable String vendorId, @Valid @RequestBody Hardware hardware)
+    {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                hardwareService.save(hardware.getName(), hardware.getModel())
+                hardwareService.save(hardware.getName(), hardware.getModel(), vendorId)
         );
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Hardware> updateHardware(@Valid @RequestBody Hardware hardware) throws InvocationTargetException, IllegalAccessException {
+    @PutMapping("/update/{vendorId}")
+    public ResponseEntity<Hardware> updateHardware(@PathVariable String vendorId, @Valid @RequestBody Hardware hardware) throws InvocationTargetException, IllegalAccessException {
         return ResponseEntity.status(HttpStatus.OK).body(
-                hardwareService.update((hardware)));
+                hardwareService.update(hardware, vendorId));
     }
 
     @DeleteMapping("/{hardwareId}")

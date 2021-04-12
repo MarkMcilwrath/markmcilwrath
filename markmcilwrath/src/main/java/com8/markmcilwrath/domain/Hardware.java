@@ -1,6 +1,7 @@
 package com8.markmcilwrath.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class Hardware {
 
     private String uuid;
@@ -20,18 +22,46 @@ public class Hardware {
     @NotBlank(message = "Model is mandatory")
     private String model;
 
-   // private List<Assets> assets;
+    private String vendorName;
+
+    private String vendorID;
 
     public Hardware(
             String uuid,
             String name,
             String model
-          //  List assets
     )
     {
         this.uuid = uuid;
         this.name = name;
         this.model = model;
-     //   this.assets = assets;
+    }
+
+    public Hardware(
+            String uuid,
+            String name,
+            String model,
+            String vendorName,
+            String vendorID
+    )
+    {
+        this.uuid = uuid;
+        this.name = name;
+        this.model = model;
+        this.vendorName = vendorName;
+        this.vendorID = vendorID;
+    }
+
+    public Hardware(
+            String uuid,
+            String name,
+            String model,
+            String vendorID
+    )
+    {
+        this.uuid = uuid;
+        this.name = name;
+        this.model = model;
+        this.vendorID = vendorID;
     }
 }
