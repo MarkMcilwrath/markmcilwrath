@@ -67,4 +67,10 @@ public class LicenseController
     {
         return ResponseEntity.ok(licenseService.getAllLicense());
     }
+
+    @GetMapping("/free")
+    public ResponseEntity<Set<License>> getAllFreeLicenses()
+    {
+        return ResponseEntity.ok(licenseService.getAllFreeLicense());
+    }
 }

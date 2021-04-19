@@ -25,6 +25,7 @@ public class License
     private String softwareID;
     private String softwareVersion;
 
+
     public License (
             String licenseKey,
             LocalDate purchaseDate,
@@ -47,19 +48,19 @@ public class License
         this.softwareID = softwareID;
     }
 
-    public License (
-            String licenseKey,
-            LocalDate purchaseDate,
-            LocalDate expiryDate,
-            String softwareName,
-            String softwareID)
-    {
-        this.licenseKey = licenseKey;
-        this.purchaseDate = purchaseDate;
-        this.expiryDate = expiryDate;
-        this.softwareName = softwareName;
-        this.softwareID = softwareID;
-    }
+//    public License (
+//            String licenseKey,
+//            LocalDate purchaseDate,
+//            LocalDate expiryDate,
+//            String softwareID,
+//            String user_ID)
+//    {
+//        this.licenseKey = licenseKey;
+//        this.purchaseDate = purchaseDate;
+//        this.expiryDate = expiryDate;
+//        this.softwareID = softwareID;
+//        this.user_ID = user_ID;
+//    }
 
     public License (
             String licenseKey,
@@ -76,4 +77,7 @@ public class License
         this.softwareID = softwareID;
         this.softwareVersion = softwareVersion;
     }
+
+
+
 }

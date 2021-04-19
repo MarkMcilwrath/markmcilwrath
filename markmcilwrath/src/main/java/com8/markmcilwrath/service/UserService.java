@@ -91,5 +91,15 @@ public class UserService {
         return users;
     }
 
+    public UserEntity getUserEntity(String userID) throws NotFoundException
+    {
+        UserEntity entity = userRepository.findByUserId(userID);
+        if (entity == null)
+        {
+            throw new NotFoundException("Vendor Not found");
+        }
+        return entity;
+    }
+
 
 }

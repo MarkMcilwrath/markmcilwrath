@@ -1,8 +1,10 @@
 package com8.markmcilwrath.service;
 
 import com8.markmcilwrath.domain.License;
+import com8.markmcilwrath.domain.entity.LicenseAssignmentEntity;
 import com8.markmcilwrath.domain.entity.LicenseEntity;
 import com8.markmcilwrath.domain.entity.SoftwareEntity;
+import com8.markmcilwrath.repository.LicenseAssignmentRepository;
 import com8.markmcilwrath.repository.LicenseRepository;
 
 import javassist.NotFoundException;
@@ -18,12 +20,15 @@ import java.util.UUID;
 public class LicenseService {
 
     private LicenseRepository licenseRepository;
+    private LicenseAssignmentRepository licenseAssignmentRepository;
     private SoftwareService softwareService;
 
-    public LicenseService (LicenseRepository licenseRepository, SoftwareService softwareService)
+    public LicenseService (LicenseRepository licenseRepository, SoftwareService softwareService,
+                           LicenseAssignmentRepository licenseAssignmentRepository)
     {
         this.licenseRepository = licenseRepository;
         this.softwareService = softwareService;
+        this.licenseAssignmentRepository = licenseAssignmentRepository;
     }
 
     public License save (String licenseKey , LocalDate purchaseDate, LocalDate expiryDate, String softwareID)
@@ -70,7 +75,8 @@ public class LicenseService {
         {
             throw new NotFoundException("License Not Found");
         }
-        License license = new License(entity.getLicenseKey(), entity.getPurchaseDate(), entity.getExpiryDate(), entity.getSoftwareEntity().getName(), entity.getSoftwareEntity().getSoftwareID());
+        License license = new License(entity.getLicenseKey(),
+                entity.getPurchaseDate(), entity.getExpiryDate(), entity.getSoftwareEntity().getName(), entity.getSoftwareEntity().getSoftwareID(), entity.getSoftwareEntity().getVersion());
         return  license;
     }
 
@@ -78,6 +84,7 @@ public class LicenseService {
     {
         Iterable<LicenseEntity> entityList = licenseRepository.findAll();
         Set<License> licenses = new HashSet<>();
+
         for (LicenseEntity entity : entityList) {
             License license = new License(entity.getLicenseKey(),
                     entity.getPurchaseDate(), entity.getExpiryDate(), entity.getSoftwareEntity().getName(), entity.getSoftwareEntity().getSoftwareID(), entity.getSoftwareEntity().getVersion());
@@ -86,9 +93,48 @@ public class LicenseService {
         return licenses;
     }
 
+    public Set<License> getAllFreeLicense()
+    {
+        Iterable<LicenseEntity> entityList = licenseRepository.findAll();
+        Set<License> licenses = new HashSet<>();
+        Iterable<LicenseAssignmentEntity> assignmentList = licenseAssignmentRepository.findAll();
+
+        for (LicenseEntity entity : entityList)
+        {
+            boolean assigned = false;
+            for (LicenseAssignmentEntity assignmentEntity : assignmentList)
+            {
+                String key = entity.getLicenseKey();
+                String assignKey = assignmentEntity.getLicenseEntity().getLicenseKey();
+                if (key == assignKey)
+                {
+                    assigned = true;
+                }
+            }
+            if (assigned == false)
+            {
+                License license = new License(entity.getLicenseKey(),
+                        entity.getPurchaseDate(), entity.getExpiryDate(), entity.getSoftwareEntity().getName(),
+                        entity.getSoftwareEntity().getSoftwareID(), entity.getSoftwareEntity().getVersion());
+                licenses.add(license);
+            }
+        }
+        return licenses;
+    }
+
     private SoftwareEntity getSoftwareEntity(String softwareID) throws NotFoundException
     {
         return softwareService.getSoftwareEntity(softwareID);
 
+    }
+
+    public LicenseEntity getLicenseEntity(String licenseKey) throws NotFoundException
+    {
+        LicenseEntity entity = licenseRepository.findByLicenseKey(licenseKey);
+        if (entity == null)
+        {
+            throw new NotFoundException("Vendor Not found");
+        }
+        return entity;
     }
 }
