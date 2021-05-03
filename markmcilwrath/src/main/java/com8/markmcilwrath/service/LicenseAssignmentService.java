@@ -59,7 +59,33 @@ public class LicenseAssignmentService {
                 createdEntity.getUserEntity().getUserId(), createdEntity.getAssignmentDate(), createdEntity.getApproved());
     }
 
+    public LicenseAssignment saveAwaitingApproval (String licenseKey, String userID)
+    {
+        LicenseEntity licenseEntity = null;
+        try {
+            licenseEntity = getLicenseEntity(licenseKey);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
 
+        UserEntity userEntity = null;
+        try {
+            userEntity = getUserEntity(userID);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+
+        LocalDate assignmentDate = LocalDate.now();
+        Boolean approved = false;
+
+        LicenseAssignmentEntity createEntity = new LicenseAssignmentEntity(UUID.randomUUID().toString(),
+                licenseEntity,  userEntity,  assignmentDate, approved);
+
+        LicenseAssignmentEntity createdEntity = licenseAssignmentRepository.save(createEntity);
+
+        return new LicenseAssignment(createdEntity.getUUID(), createdEntity.getLicenseEntity().getLicenseKey(),
+                createdEntity.getUserEntity().getUserId(), createdEntity.getAssignmentDate(), createdEntity.getApproved());
+    }
 
     public LicenseAssignment update (LicenseAssignment licenseAssignment)
     {
@@ -86,7 +112,38 @@ public class LicenseAssignmentService {
         return new LicenseAssignment(updateEntity.getUUID(), updateEntity.getLicenseEntity().getLicenseKey(), updateEntity.getUserEntity().getUserId(), updateEntity.getAssignmentDate(), updateEntity.getApproved());
     }
 
+    public LicenseAssignment approval (String assignmentID)
+    {
+        LicenseAssignmentEntity updateEntity = licenseAssignmentRepository.findByUUID(assignmentID);
+        updateEntity.setApproved(true);
+        licenseAssignmentRepository.save(updateEntity);
+        return new LicenseAssignment(updateEntity.getUUID(), updateEntity.getLicenseEntity().getLicenseKey(), updateEntity.getUserEntity().getUserId(), updateEntity.getAssignmentDate(), updateEntity.getApproved());
+    }
 
+    public void delete(String assignmentID)
+    {
+        licenseAssignmentRepository.deleteByUUID(assignmentID);
+    }
+
+    public Set<LicenseAssignment> getAssignmentAsIterable (String assignmentID) throws NotFoundException
+    {
+        Iterable<LicenseAssignmentEntity> entityList = licenseAssignmentRepository.findIterableByUUID(assignmentID);
+        Set<LicenseAssignment> assignments = new HashSet<>();
+
+        for (LicenseAssignmentEntity entity : entityList) {
+            LicenseAssignment assignment = new LicenseAssignment(
+                    entity.getUUID(),
+                    entity.getLicenseEntity().getLicenseKey(),
+                    entity.getUserEntity().getUserId(),
+                    entity.getUserEntity().getEmail(),
+                    entity.getAssignmentDate(),
+                    entity.getApproved(),
+                    entity.getLicenseEntity().getSoftwareEntity().getName(),
+                    entity.getLicenseEntity().getSoftwareEntity().getVersion());
+            assignments.add(assignment);
+        }
+        return assignments;
+    }
 
     public Set<LicenseAssignment> getAllAssignments()
     {
@@ -110,9 +167,16 @@ public class LicenseAssignmentService {
 
     public Set<LicenseAssignment> getAllAssignmentsByUser(String userId)
     {
-        Iterable<LicenseAssignmentEntity> entityList = licenseAssignmentRepository.findByUserID(userId);
-        Set<LicenseAssignment> userAssignments = new HashSet<>();
 
+        UserEntity userEntity = null;
+        try {
+            userEntity = getUserEntity(userId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Iterable<LicenseAssignmentEntity> entityList = licenseAssignmentRepository.findByUserEntity(userEntity);
+        Set<LicenseAssignment> userAssignments = new HashSet<>();
 
         for (LicenseAssignmentEntity entity : entityList)
         {
@@ -129,6 +193,46 @@ public class LicenseAssignmentService {
 
         }
         return userAssignments;
+    }
+
+    public Set<LicenseAssignment> getAllAssignmentsNotApproved ()
+    {
+        Iterable<LicenseAssignmentEntity> entityList = licenseAssignmentRepository.findByApproved(false);
+        Set<LicenseAssignment> userAssignments = new HashSet<>();
+        for (LicenseAssignmentEntity entity : entityList)
+        {
+            LicenseAssignment assignment = new LicenseAssignment(
+                    entity.getUUID(),
+                    entity.getLicenseEntity().getLicenseKey(),
+                    entity.getUserEntity().getUserId(),
+                    entity.getUserEntity().getEmail(),
+                    entity.getAssignmentDate(),
+                    entity.getApproved(),
+                    entity.getLicenseEntity().getSoftwareEntity().getName(),
+                    entity.getLicenseEntity().getSoftwareEntity().getVersion());
+            userAssignments.add(assignment);
+        }
+        return userAssignments;
+    }
+
+    public LicenseAssignment getAssignmentByUUID (String assignmentID) throws NotFoundException
+    {
+        LicenseAssignmentEntity entity = licenseAssignmentRepository.findByUUID(assignmentID);
+
+        if (entity == null)
+        {
+            throw new NotFoundException("License Not Found");
+        }
+
+        LicenseAssignment assignment = new LicenseAssignment(entity.getUUID(),
+                entity.getLicenseEntity().getLicenseKey(),
+                entity.getUserEntity().getUserId(),
+                entity.getUserEntity().getEmail(),
+                entity.getAssignmentDate(),
+                entity.getApproved(),
+                entity.getLicenseEntity().getSoftwareEntity().getName(),
+                entity.getLicenseEntity().getSoftwareEntity().getVersion());
+        return assignment;
     }
 
     private  LicenseEntity getLicenseEntity(String licenseKey) throws NotFoundException

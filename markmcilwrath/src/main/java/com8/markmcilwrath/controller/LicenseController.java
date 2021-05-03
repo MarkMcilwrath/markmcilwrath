@@ -62,6 +62,12 @@ public class LicenseController
         return ResponseEntity.ok().body(licenseService.getLicense(licenseKey));
     }
 
+    @GetMapping("/software/{softwareID}")
+    public ResponseEntity<Set<License>> getAllLicenseBySoftware (@PathVariable String softwareID) throws NotFoundException
+    {
+        return ResponseEntity.ok().body(licenseService.getAllLicenseBySoftware(softwareID));
+    }
+
     @GetMapping()
     public ResponseEntity<Set<License>> getAllLicenses()
     {

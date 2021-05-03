@@ -35,7 +35,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/{userEmail}")
+    @DeleteMapping("/{email}")
     public ResponseEntity<Void> deleteUserByEmail(@PathVariable String email) {
         userService.deleteByEmail(email);
         return ResponseEntity.noContent().build();
@@ -46,6 +46,15 @@ public class UserController {
     public ResponseEntity<User> getUserByEmail(@PathVariable String userEmail) throws NotFoundException {
         return ResponseEntity.ok().body(userService.getUserByEmail(userEmail));
     }
+
+    @GetMapping("/id/{userEmail}")
+    public ResponseEntity<String> getUserIDByEmail(@PathVariable String userEmail) throws NotFoundException
+    {
+        return ResponseEntity.ok().body(userService.getUserByEmail(userEmail).getUuid());
+    }
+    //For the purpose of the functional prototype and demonstration
+    // in a more developed soultion this would be replaced by Login functionality
+
 
     @GetMapping()
     public ResponseEntity<Set<User>> getUsers() {

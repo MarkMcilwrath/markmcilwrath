@@ -49,6 +49,12 @@ public class HardwareController {
         return ResponseEntity.ok().body(hardwareService.getHardware(hardwareId));
     }
 
+    @GetMapping("/vendor/{vendorID}")
+    public ResponseEntity<Set<Hardware>> getHardwareByVendorID (@PathVariable String vendorID) throws NotFoundException
+    {
+        return ResponseEntity.ok(hardwareService.getAllHardwareByVendor(vendorID));
+    }
+
     @GetMapping()
     public ResponseEntity<Set<Hardware>> getHardwares() {
         return ResponseEntity.ok(hardwareService.getAllHardware());

@@ -96,7 +96,7 @@ public class UserService {
         UserEntity entity = userRepository.findByUserId(userID);
         if (entity == null)
         {
-            throw new NotFoundException("Vendor Not found");
+            throw new NotFoundException("User Not found");
         }
         return entity;
     }

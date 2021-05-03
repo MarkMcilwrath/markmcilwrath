@@ -96,11 +96,65 @@
   </div>
 </body>
 
+  <div id="indAssignedLicenses" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Assigned Licneses</h4>
+              </div>
+
+              <div class="modal-body">
+                  <!-- <div class="wrapper">
+                      <button id="download-csv" class="btn btn-default">Download CSV</button>
+                      <button id="download-json" class="btn btn-default">Download JSON</button>
+                      <button id="download-xlsx" class="btn btn-default">Download XLSX</button>
+                      <button id="download-pdf" class="btn btn-default">Download PDF</button>
+                      <button id="download-html" class="btn btn-default">Download HTML</button>
+                      <button id="print-table"class="btn btn-default" >Print Table</button>
+                      <button class="btn btn-default" onclick="showCmds()">Show Filters</button>
+                  </div> -->
+                  <!-- <div id="filterCmds">
+                      <div class="wrapper">
+                          <select id="filter-field" class="form-control">
+                              <option value="firstname">First Name</option>
+                              <option value="lastname">Last Name</option>
+                              <option value="email">Email</option>
+                              <option value="admin">Admin</option>
+                          </select>
+                      </div>
+                      <div class="wrapper">
+                          <select id="filter-type" class="form-control">
+                              <option value="=">=</option>
+                              <option value="<"><</option>
+                              <option value="<="><=</option>
+                              <option value=">">></option>
+                              <option value=">=">>=</option>
+                              <option value="!=">!=</option>
+                              <option value="like">like</option>
+                          </select>
+                      </div>
+
+                      <div class="wrapper">
+                          <input id="filter-value" type="text" class="form-control" placeholder="value to filter">
+                          <button id="filter-clear" type="button" class="btn btn-default">Clear</button>
+                          <button class="btn btn-default" onclick="showCmds()">Hide Filters</button>
+                      </div>
+                  </div> -->
+                  <br>
+                  <div id="indassigned-Table"></div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</body>
 <script>
 
-    var myList1;
-
     var tableData;
+    var tableData2;
 
     var table;
 
@@ -111,13 +165,12 @@
 
     function startPage()
     {
-        getUser();
+        getAssignments();
         cmds = document.getElementById("filterCmds");
         cmds.style.display = ("none");
     }
 
-
-function getUser()
+    function getAssignments()
     {
         var xmlHttp = new XMLHttpRequest();
         var theURL = "http://localhost:8080/license_assign"
@@ -126,10 +179,30 @@ function getUser()
             console.log(this.status);
             if (this.readyState == 4 && this.status == 200)
             {
-             myList1 = (this.responseText);
+             var myList1 = (this.responseText);
              var localTD = JSON.parse(myList1);
              tableData = localTD;
              buildTable();
+            }
+        };
+        xmlHttp.open("GET", theURL , true);
+        xmlHttp.send();
+    }
+
+
+    function getIndAssign(userID)
+    {
+      var xmlHttp = new XMLHttpRequest();
+      var theURL = "http://localhost:8080/license_assign/user/" + userID
+      xmlHttp.onreadystatechange = function()
+      {
+            
+            if (this.readyState == 4 && this.status == 200)
+            {
+             var myList2 = (this.responseText);
+             var localTD = JSON.parse(myList2);
+             tableData2 = localTD;
+             buildIndTable();
             }
         };
         xmlHttp.open("GET", theURL , true);
@@ -174,83 +247,110 @@ function getUser()
                 {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
                 rowClick:function(e, row)
                 {
-                  // var rowData = row.getData();
-                  //   console.log(rowData);
-                    
-                  //   for (var key of Object.keys(p))
-                  //     {
-                  //       console.log(key + " -> " + p[key])
-                  //     }
+                  var rowData = row.getData();
+                  $("#allAssignedLicenses").modal("toggle");
+                  getIndAssign(rowData.user_id);
+                  $("#indAssignedLicenses").modal("toggle");
                 }
             }
         );
 
     }
 
-    document.getElementById("download-csv").addEventListener("click", function(){
-    table.download("csv", "data.csv");});
+    function buildIndTable()
+    {
 
-    //trigger download of data.json file
-    document.getElementById("download-json").addEventListener("click", function(){
-        table.download("json", "data.json");});
+        table = new Tabulator("#indassigned-Table",
+            {
+                data:tableData2,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>Assiged Licneses<h1>",
+                columns:[
+                // {title:"ID", field:"uuid"},
+                {formatter:"rownum", hozAlign:"center", width:40},
+                {title:"User Email", field:"email", hozAlign:"left"},
+                {title:"Software Name", field:"name", hozAlign:"left"},
+                {title:"Version", field:"version", hozAlign:"left"},
+                {title:"License Key", field:"license_key", hozAlign:"left"},
+                {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+                {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+                rowClick:function(e, row)
+                {
 
-    //trigger download of data.xlsx file
-    document.getElementById("download-xlsx").addEventListener("click", function(){
-        table.download("xlsx", "data.xlsx", {sheetName:"My Data"});});
+                }
+            }
+        );
 
-    //trigger download of data.pdf file
-    document.getElementById("download-pdf").addEventListener("click", function(){
-        table.download("pdf", "data.pdf", {
-            orientation:"portrait", //set page orientation to portrait
-            title:"Example Report", //add title to report
-        });});
-
-    //trigger download of data.html file
-    document.getElementById("download-html").addEventListener("click", function(){
-        table.download("html", "data.html", {style:true});});
-
-    document.getElementById("print-table").addEventListener("click", function(){
-   table.print(false, true);});
-
-    //Define variables for input elements
-    var fieldEl = document.getElementById("filter-field");
-    var typeEl = document.getElementById("filter-type");
-    var valueEl = document.getElementById("filter-value");
-
-
-    //Trigger setFilter function with correct parameters
-    function updateFilter(){
-      var filterVal = fieldEl.options[fieldEl.selectedIndex].value;
-      var typeVal = typeEl.options[typeEl.selectedIndex].value;
-
-      var filter = filterVal == "function" ? customFilter : filterVal;
-
-      if(filterVal == "function" ){
-        typeEl.disabled = true;
-        valueEl.disabled = true;
-      }else{
-        typeEl.disabled = false;
-        valueEl.disabled = false;
-      }
-
-      if(filterVal){
-        table.setFilter(filter,typeVal, valueEl.value);
-      }
     }
 
-    //Update filters on value change
-    document.getElementById("filter-field").addEventListener("change", updateFilter);
-    document.getElementById("filter-type").addEventListener("change", updateFilter);
-    document.getElementById("filter-value").addEventListener("keyup", updateFilter);
+   //  document.getElementById("download-csv").addEventListener("click", function(){
+   //  table.download("csv", "data.csv");});
 
-    //Clear filters on "Clear Filters" button click
-    document.getElementById("filter-clear").addEventListener("click", function(){
-      fieldEl.value = "";
-      typeEl.value = "";
-      valueEl.value = "";
+   //  //trigger download of data.json file
+   //  document.getElementById("download-json").addEventListener("click", function(){
+   //      table.download("json", "data.json");});
 
-      table.clearFilter();
-    });
+   //  //trigger download of data.xlsx file
+   //  document.getElementById("download-xlsx").addEventListener("click", function(){
+   //      table.download("xlsx", "data.xlsx", {sheetName:"My Data"});});
+
+   //  //trigger download of data.pdf file
+   //  document.getElementById("download-pdf").addEventListener("click", function(){
+   //      table.download("pdf", "data.pdf", {
+   //          orientation:"portrait", //set page orientation to portrait
+   //          title:"Example Report", //add title to report
+   //      });});
+
+   //  //trigger download of data.html file
+   //  document.getElementById("download-html").addEventListener("click", function(){
+   //      table.download("html", "data.html", {style:true});});
+
+   //  document.getElementById("print-table").addEventListener("click", function(){
+   // table.print(false, true);});
+
+   //  //Define variables for input elements
+   //  var fieldEl = document.getElementById("filter-field");
+   //  var typeEl = document.getElementById("filter-type");
+   //  var valueEl = document.getElementById("filter-value");
+
+
+   //  //Trigger setFilter function with correct parameters
+   //  function updateFilter(){
+   //    var filterVal = fieldEl.options[fieldEl.selectedIndex].value;
+   //    var typeVal = typeEl.options[typeEl.selectedIndex].value;
+
+   //    var filter = filterVal == "function" ? customFilter : filterVal;
+
+   //    if(filterVal == "function" ){
+   //      typeEl.disabled = true;
+   //      valueEl.disabled = true;
+   //    }else{
+   //      typeEl.disabled = false;
+   //      valueEl.disabled = false;
+   //    }
+
+   //    if(filterVal){
+   //      table.setFilter(filter,typeVal, valueEl.value);
+   //    }
+   //  }
+
+   //  //Update filters on value change
+   //  document.getElementById("filter-field").addEventListener("change", updateFilter);
+   //  document.getElementById("filter-type").addEventListener("change", updateFilter);
+   //  document.getElementById("filter-value").addEventListener("keyup", updateFilter);
+
+   //  //Clear filters on "Clear Filters" button click
+   //  document.getElementById("filter-clear").addEventListener("click", function(){
+   //    fieldEl.value = "";
+   //    typeEl.value = "";
+   //    valueEl.value = "";
+
+   //    table.clearFilter();
+   //  });
 </script>
 </body>
 </html>

@@ -90,6 +90,31 @@ public class SoftwareService {
         return softwares;
     }
 
+    public Set<Software> getAllSoftwaresByVendor(String vendorID)
+    {
+        VendorEntity vendorEntity = null;
+        try {
+            vendorEntity = getVendorEntity(vendorID);
+        }catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Iterable<SoftwareEntity> entityList = softwareRepository.findByVendorEntity(vendorEntity);
+        Set <Software> softwareSet = new HashSet<>();
+        for (SoftwareEntity entity : entityList)
+        {
+            Software software = new Software(
+                    entity.getSoftwareID(),
+                    entity.getName(),
+                    entity.getVersion(),
+                    entity.getVendorEntity().getName(),
+                    entity.getVendorEntity().getVendorId()
+            );
+            softwareSet.add(software);
+        }
+        return softwareSet;
+    }
+
     private VendorEntity getVendorEntity(String vendorID) throws NotFoundException
     {
         return vendorService.getVendorEntity(vendorID);

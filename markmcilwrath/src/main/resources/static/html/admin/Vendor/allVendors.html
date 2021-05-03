@@ -12,7 +12,7 @@
 	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#allVendorsModal" onclick='rebuildTable()' >All Vendors</button>
 
 <div id="allVendorsModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -38,8 +38,32 @@
     </div>
 </div>
 
+<div id="vendorSoftwareModal" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4></h4>
+              </div>
+              <div class="modal-body">
+                  <h4>Software</h4>
+                  <div id="software-Table"></div>
+                  <br>
+                  <h4>Hardware</h4>
+                  <div id="hardware-Table"></div>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</body>
+
 <script>
-	var tableData
+	var tableData;
+    var tableData2;
     var table;
 
 	function getVendors()
@@ -81,11 +105,103 @@
                 printHeader:"<h1>All Vendors<h1>",
                     columns:[ 
                     {title:"ID", field:"uuid"},
-                    {title:"Name", field:"name", hozAlign:"left"},]
+                    {title:"Name", field:"name", hozAlign:"left"},],
+                    rowClick:function(e, row)
+                    {
+                        var rowData = row.getData();
+                        getSoftware(rowData.uuid);
+                        getHardware(rowData.uuid);
+                        $("#allVendorsModal").modal("toggle");
+                        $("#vendorSoftwareModal").modal("toggle");
+                    }
                 }
             );
-
     }
+
+    function getSoftware(vendorID)
+        {
+          var xmlHttp = new XMLHttpRequest();
+          var theURL = "http://localhost:8080/software/vendor/" + vendorID
+          xmlHttp.onreadystatechange = function()
+          {
+                
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 var myList2 = (this.responseText);
+                 var localTD = JSON.parse(myList2);
+                 tableData2 = localTD;
+                 console.log(tableData2);
+                 
+                 buildSoftwareTable();
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+
+        function getHardware(vendorID)
+        {
+          var xmlHttp = new XMLHttpRequest();
+          var theURL = "http://localhost:8080/hardware/vendor/" + vendorID
+          xmlHttp.onreadystatechange = function()
+          {
+                
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 var myList2 = (this.responseText);
+                 var localTD = JSON.parse(myList2);
+                 tableData3 = localTD;
+                 console.log(tableData3);
+                 buildHardwareTable();
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+
+        function buildSoftwareTable()
+        {
+            table = new Tabulator("#software-Table",
+            {
+                data:tableData2,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>All Software<h1>",
+                columns:[ 
+                // {title:"ID", field:"uuid"},
+                {title:"Name", field:"name", hozAlign:"left"},
+                {title:"Version", field:"version", hozAlign:"left"},
+                // 
+                ]
+                    }
+                );
+
+        }
+
+        function buildHardwareTable()
+        {
+            table = new Tabulator("#hardware-Table",
+            {
+                data:tableData3,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>All Hardware<h1>",
+                columns:[ 
+                // {title:"ID", field:"uuid"},
+                {title:"Name", field:"name", hozAlign:"left"},
+                {title:"Model", field:"model", hozAlign:"left"},
+                // 
+                ]
+                    }
+                );
+
+        }
 
     document.getElementById("download-csv").addEventListener("click", function(){
     table.download("csv", "data.csv");});

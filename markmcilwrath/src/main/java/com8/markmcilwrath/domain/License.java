@@ -24,6 +24,7 @@ public class License
     private String softwareName;
     private String softwareID;
     private String softwareVersion;
+    private Boolean assigned;
 
 
     public License (

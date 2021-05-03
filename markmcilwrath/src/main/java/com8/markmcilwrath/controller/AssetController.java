@@ -1,6 +1,7 @@
 package com8.markmcilwrath.controller;
 
 import com8.markmcilwrath.domain.Asset;
+import com8.markmcilwrath.domain.License;
 import com8.markmcilwrath.service.AssetService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -51,10 +52,22 @@ public class AssetController
         return ResponseEntity.ok().body(assetService.getAssetbyAssetTag(assetTag));
     }
 
+    @GetMapping("/hardware/{hardwareID}")
+    public ResponseEntity<Set<Asset>> getAllAssetsByHardware(@PathVariable String hardwareID)
+    {
+        return ResponseEntity.ok(assetService.getAllAssetForHardwareID(hardwareID));
+    }
+
     @GetMapping()
     public ResponseEntity<Set<Asset>> getAllAssets()
     {
         return ResponseEntity.ok(assetService.getAllAsset());
+    }
+
+    @GetMapping("/free")
+    public ResponseEntity<Set<Asset>> getAllFreeAssets()
+    {
+        return ResponseEntity.ok(assetService.getAllFreeAsset());
     }
 
 }

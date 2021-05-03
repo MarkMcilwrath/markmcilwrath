@@ -43,6 +43,7 @@
                     <button id="download-html" class="btn btn-default">Download HTML</button>
                     <button id="print-table"class="btn btn-default" >Print Table</button>
                 </div>
+                <br>
                 <div id="allSoftwares-Table"></div>
             </div>
             <div class="modal-footer">
@@ -52,8 +53,38 @@
     </div>
 </div>
 
+<div id="allLicenseModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper">
+                <button id="download-csv" class="btn btn-default">Download CSV</button>
+                <button id="download-json" class="btn btn-default">Download JSON</button>
+                <button id="download-xlsx" class="btn btn-default">Download XLSX</button>
+                <!-- </div>
+                <div class="wrapper"> -->
+                    <button id="download-pdf" class="btn btn-default">Download PDF</button>
+                    <button id="download-html" class="btn btn-default">Download HTML</button>
+                    <button id="print-table"class="btn btn-default" >Print Table</button>
+                </div>
+                <br>
+                <div id="license-Table"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
-	var tableData
+	var tableData;
+    var tableData2;
     var table;
 
 	function getSoftwares()
@@ -76,6 +107,26 @@
 	        xmlHttp.send();
 	    }
 
+    function getLicenses(softwareID)
+        {
+            var xmlHttp = new XMLHttpRequest();
+            var theURL = "http://localhost:8080/license/software/" + softwareID;
+            xmlHttp.onreadystatechange = function()
+            {
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 tableData2 = JSON.parse(this.responseText);
+                 buildLicenseTable();
+                }
+                else
+                {
+                    
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+
     function rebuildTable()
     {
         table.redraw();
@@ -96,7 +147,40 @@
                 // {title:"ID", field:"uuid"},
                 {title:"Name", field:"name", hozAlign:"left"},
                 {title:"Version", field:"version", hozAlign:"left"},
-                {title:"Vendor", field:"vendorName", hozAlign:"left"},]
+                {title:"Vendor", field:"vendorName", hozAlign:"left"},],
+                rowClick:function(e, row)
+                    {
+                        var rowData = row.getData();
+                        getLicenses(rowData.uuid);
+                        $("#allSoftwaresModal").modal("toggle");
+                        $("#allLicenseModal").modal("toggle");
+                    }
+                    }
+                );
+
+        }
+
+        function buildLicenseTable()
+        {
+            table = new Tabulator("#license-Table",
+            {
+                data:tableData2,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>All Software<h1>",
+                columns:[ 
+                // {title:"ID", field:"uuid"},
+                {title:"License Key", field:"licenseKey", hozAlign:"left"},
+                {title:"Purchase Date", field:"purchaseDate", hozAlign:"left"},
+                {title:"Expiry Date", field:"expiryDate", hozAlign:"left"},
+                ],
+                rowClick:function(e, row)
+                    {
+                        
+                    }
                     }
                 );
 

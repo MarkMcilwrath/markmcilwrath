@@ -49,7 +49,11 @@ public class LicenseAssignmentEntity implements Serializable {
     @Column(name = "approved", nullable = false)
     private Boolean approved;
 
-    public LicenseAssignmentEntity (String UUID, LicenseEntity licenseEntity, UserEntity userEntity, LocalDate assignmentDate, Boolean approved)
+    public LicenseAssignmentEntity (String UUID,
+                                    LicenseEntity licenseEntity,
+                                    UserEntity userEntity,
+                                    LocalDate assignmentDate,
+                                    Boolean approved)
     {
         this.UUID = UUID;
         this.licenseEntity = licenseEntity;

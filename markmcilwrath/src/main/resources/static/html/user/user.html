@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" content="width=device-width, initial-scale=1">
+    <title>User</title>
+
+	<link rel="shortcut icon" href="#">
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.5/jspdf.plugin.autotable.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="../../project.css">
+
+    <style>
+        input[type=email]{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  margin-bottom: 20px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+    </style>
+    
+    <script>
+    	$(function(){
+    		$("#includedContent").load("./userMenu2.html");
+        });
+    </script>
+
+</head>
+<body onload="pageLoad()">
+	<div id="includedContent"></div>
+
+    <div id="loginDiv">
+        <div class="container">
+            <div class="center">
+                <div class="menuButtonHolder">
+                    <div>
+                        <p style="text-align:center;">Email</p>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="center">
+                <div class="menuButtonHolder">
+                    <div>
+                        <button id="loginBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="login()">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+    <div>
+    	<div class="container">
+    		<div class="center">
+                <div class="menuButtonHolder">
+                    <button id="viewBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="viewStart()">View my Licenses & Assets</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+    		<div class="center">
+                <div class="menuButtonHolder">
+                   <button id="licReqBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="requestLicenseStart()">Request License</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+    		<div class="center">
+                <div class="menuButtonHolder">
+                   <button id="assReqBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="requestAssetStart()" >Request Asset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+    		<div class="center">
+                <div class="menuButtonHolder">
+                    <button id="retBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="returnStart()">Return License or Asset</button>
+                </div>
+            </div>
+        </div>
+        <div id="logoutDiv">
+            <div class="container">
+                <div class="center">
+                    <div class="menuButtonHolder">
+                        <button id="logoutBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="logout()">logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="viewModal" class="modal fade" role="dialog">
+    	<div class="modal-dialog modal-dialog-scrollable modal-lg">
+    		<div class="modal-content">
+    			<div class="modal-header">
+
+    			</div>
+    			<div class="modal-body">
+    				<h4>Licenses</h4>
+    				<div id="viewUserLicense-Table"></div>
+    				<br>
+    				<h4>Assets</h4>
+    				<div id="viewUserAsset-Table"></div>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  	</div>
+
+  	<div id="allLicenseModal" class="modal fade" role="dialog">
+	    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title">Free licenses</h4>
+	            </div>
+	            <div class="modal-body">
+	                <div class="center2">
+	                    <div id="allFreeLicenses-Table"></div>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	<div id="allAssetsModal" class="modal fade" role="dialog">
+	    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                
+	                <h4 class="modal-title">Free Assets</h4>
+	            </div>
+	            <div class="modal-body">
+	                <div class="center2">
+	                    <div id="allAssets-Table"></div>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	<div id="returnModal" class="modal fade" role="dialog">
+    	<div class="modal-dialog modal-dialog-scrollable modal-lg">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				
+    			</div>
+    			<div class="modal-body">
+    				<h4>Licenses</h4>
+    				<div id="userReturnLicense-Table"></div>
+    				<br>
+    				<h4>Assets</h4>
+    				<div id="userReturnAsset-Table"></div>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  	</div>
+
+	<div id="confirmModal" class="modal fade" role="dialog">
+	    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                
+	            </div>
+	            <div class="modal-body">
+	                <h4 id="confirm"></h4>
+	                <div>
+	                    <button id="licenseRequestBtn" class="btn btn-default" onclick="confirmLicenseRequest()">Confirm License Request</button>
+
+	                    <button id="assetRequestBtn" class="btn btn-default" onclick="confirmAssetRequest()">Confirm Asset Request</button>
+
+	                    <button id = "licenseReturnBtn" class="btn btn-default" onclick="confirmLicenseReturn()">Confirm License Return</button>
+
+                        <button id = "assetReturnBtn" class="btn btn-default" onclick="confirmAssetReturn()">Confirm Asset Return</button>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+</body>
+
+<script>
+    var standardUserID;
+    var standardUserEmail;
+    // = "SUser@company.com";
+
+	var viewLicenseTableData;
+	var viewAssetTableData;
+
+	var freeLicensesTableData;
+    var licenseRequestData;
+
+    var freeAssetTableData
+    var assetRequestData;
+
+    var returnLicenseTableData;
+    var viewAssetTableData;
+    var id;
+
+    var lreqb = document.getElementById("licenseRequestBtn");
+    var areqb = document.getElementById("assetRequestBtn");
+    var lretb = document.getElementById("licenseReturnBtn");
+    var aretb = document.getElementById("assetReturnBtn");
+
+    var viewB = document.getElementById("viewBtn");
+    var licRB = document.getElementById("licReqBtn");
+    var assRB = document.getElementById("assReqBtn");
+    var retb = document.getElementById("retBtn");
+
+    var lgnB = document.getElementById("loginDiv");
+    var lgoB = document.getElementById("logoutDiv");
+
+	    function pageLoad()
+	    {
+            hideButtons();
+            logout();
+    	}
+
+        function hideButtons()
+        {
+            lreqb.style.display = "none";
+            areqb.style.display = "none";
+            lretb.style.display = "none";
+            aretb.style.display = "none";
+        }
+
+        function logout()
+        {
+            viewB.style.display = "none";
+            licRB.style.display = "none";
+            assRB.style.display = "none";
+            retb.style.display = "none";
+            lgoB.style.display = "none";
+
+            lgnB.style.display = "block";
+            standardUserEmail = null;
+        }
+
+        function login()
+        {
+            standardUserEmail = document.getElementById("email").value;
+
+            var xmlHttp = new XMLHttpRequest();
+            var theURL = "http://localhost:8080/user/id/" + standardUserEmail
+            xmlHttp.onreadystatechange = function()
+            {
+                if (this.readyState == 4 && this.status == 200)
+                {
+                    standardUserID = (this.responseText);
+                    viewB.style.display = "block";
+                    licRB.style.display = "block";
+                    assRB.style.display = "block";
+                    retb.style.display = "block";
+                    lgoB.style.display = "block";
+                    lgnB.style.display = "none";
+                }
+                else if ((this.readyState == 4 && this.status != 200))
+                {
+                    alert("Login Error");
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+        //For the purpose of the functional prototype.
+
+		function viewStart()
+		{
+			getUserLicenses();
+			getUserAssets();
+			$("#viewModal").modal("toggle");
+		}
+
+		function getUserLicenses()
+		{
+			var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/license_assign/user/" + standardUserID
+	        xmlHttp.onreadystatechange = function()
+	        {
+	        	if (this.readyState == 4 && this.status == 200)
+	        	{
+	        		var myList2 = (this.responseText);
+	                var localTD = JSON.parse(myList2);
+	                viewLicenseTableData = localTD;
+	                buildLicenseTable();
+	            }
+	        };
+	        xmlHttp.open("GET", theURL , true);
+	        xmlHttp.send();
+	    }
+
+	    function buildLicenseTable()
+	    {
+	        table = new Tabulator("#viewUserLicense-Table",
+	            {
+	                data:viewLicenseTableData,
+	                layout:"fitColumns",
+	                paginationSize:5,
+	                movableColumns:true,
+	                resizableRows:true,
+	                printAsHtml:true,
+	                printHeader:"<h1>Assiged Licneses<h1>",
+	                columns:[
+	                // {title:"ID", field:"uuid"},
+	                {formatter:"rownum", hozAlign:"center", width:40},
+	                {title:"Software Name", field:"name", hozAlign:"left"},
+	                {title:"Version", field:"version", hozAlign:"left"},
+	                {title:"License Key", field:"license_key", hozAlign:"left"},
+	                {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+	                {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+	                rowClick:function(e, row)
+	                {
+
+	                }
+	            }
+	        );
+
+	    }
+
+	     function getUserAssets()
+	    {
+	    	var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/asset_assign/user/" + standardUserID;
+	        xmlHttp.onreadystatechange = function()
+	        {
+	        	if (this.readyState == 4 && this.status == 200)
+	        	{
+	                var myList2 = (this.responseText);
+	                var localTD = JSON.parse(myList2);
+	                assetTableData = localTD;
+	                console.log(assetTableData);
+	                buildAssetTable();
+	            }
+	            };
+	            xmlHttp.open("GET", theURL , true);
+	            xmlHttp.send();
+	        }
+
+	    function buildAssetTable()
+	    {
+
+	        table = new Tabulator("#viewUserAsset-Table",
+	            {
+	                data:assetTableData,
+	                layout:"fitColumns",
+	                paginationSize:5,
+	                movableColumns:true,
+	                resizableRows:true,
+	                printAsHtml:true,
+	                printHeader:"<h1>Assiged Licneses<h1>",
+	                columns:[
+	                // {title:"ID", field:"uuid"},
+	                {formatter:"rownum", hozAlign:"center", width:40},
+	                {title:"Hardware Name", field:"name", hozAlign:"left"},
+	                {title:"Model", field:"model", hozAlign:"left"},
+	                {title:"AssetTag", field:"assetTag", hozAlign:"left"},
+	                // {title:"Serial Number", field:"license_key", hozAlign:"left"},
+	                {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+	                {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+	                rowClick:function(e, row)
+	                {
+
+	                }
+	            }
+	        );
+
+	    }
+
+	    function requestLicenseStart()
+        {
+            $("#allLicenseModal").modal("toggle");
+            getFreeLicenses();
+            hideButtons();
+        }
+
+        function getFreeLicenses()
+	    {
+	        var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/license/free"
+	        xmlHttp.onreadystatechange = function()
+	        {
+	            if (this.readyState == 4 && this.status == 200)
+	            {
+	             freeLicensesTableData = JSON.parse(this.responseText);
+	             buildFreeLicensesTable();
+	            }
+	            else
+	            {
+
+	            }
+	        };
+	        xmlHttp.open("GET", theURL , true);
+	        xmlHttp.send();
+	    }
+
+
+    	function buildFreeLicensesTable()
+        {
+            table = new Tabulator("#allFreeLicenses-Table",
+            {
+                data:freeLicensesTableData,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                columns:[
+                // {title:"ID", field:"uuid"},
+                {title:"Software", field:"softwareName", hozAlign:"left"},
+                {title:"Version", field:"softwareVersion", hozAlign:"left"},
+                {title:"Purchase Date", field:"purchaseDate", hozAlign:"left"},
+                {title:"Expiry Date", field:"expiryDate", hozAlign:"left"},
+                {title:"License Key", field:"licenseKey", hozAlign:"left"},
+                ],
+                rowClick:function(e, row)
+                {
+                    var requestLicenseRowData = row.getData();
+                    assignLicense(requestLicenseRowData);
+                     $("#allLicenseModal").modal("toggle");
+                     $("#confirmModal").modal("toggle");
+                }
+                }
+                );
+        }
+
+        function assignLicense(requestLicenseRowData)
+        {
+            var license_key = requestLicenseRowData.licenseKey;
+            var selectedUserID = standardUserID;
+
+            var newObject = {};
+
+            newObject["license_key"] = license_key;
+            newObject["user_id"] = selectedUserID;
+
+            licenseRequestData = JSON.stringify(newObject);
+
+            lreqb.style.display = "block";
+
+            document.getElementById("confirm").innerHTML = "Request: " + requestLicenseRowData.softwareName + " " + requestLicenseRowData.softwareVersion + " [" + requestLicenseRowData.licenseKey + "]";
+        }
+
+        function confirmLicenseRequest()
+        {
+            var xmlHttp = new XMLHttpRequest();
+
+            var theUrl = "http://localhost:8080/license_assign/add/user";
+            xmlHttp.open("POST", theUrl);
+            xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            xmlHttp.onreadystatechange = function()
+            {
+                if (this.readyState == 4 && this.status == 201)
+                {
+                    alert("License Assigned");
+                    getFreeLicenses();
+                    $("#confirmModal").modal("toggle");
+
+                }else if (this.readyState == 4 && this.status != 201)
+                {
+                    alert("Assignment Registration Error");
+                }
+            };
+
+            xmlHttp.send(licenseRequestData);
+        }
+
+        function requestAssetStart()
+        {
+            $("#allAssetsModal").modal("toggle");
+            getFreeAssets();
+            hideButtons();
+        }
+
+        function getFreeAssets()
+	    {
+	        var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/asset/free"
+	        xmlHttp.onreadystatechange = function()
+	        {
+	            if (this.readyState == 4 && this.status == 200)
+	            {
+	             freeAssetTableData = JSON.parse(this.responseText);
+	             buildFreeAssetsTable();
+	            }
+	            else
+	            {
+
+	            }
+	        };
+	        xmlHttp.open("GET", theURL , true);
+	        xmlHttp.send();
+	    }
+
+	    function buildFreeAssetsTable()
+        {
+            table = new Tabulator("#allAssets-Table",
+            {
+                data:freeAssetTableData,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                columns:[
+                // {title:"ID", field:"uuid"},
+                {title:"Hardware", field:"name", hozAlign:"left"},
+                {title:"Model", field:"model", hozAlign:"left"},
+                {title:"Purchase Date", field:"purchaseDate", hozAlign:"left"},
+                {title:"Serial Number", field:"serialNumber", hozAlign:"left"},
+                {title:"Asset Tag", field:"assetTag", hozAlign:"left"},
+                ],
+                rowClick:function(e, row)
+                {
+                    var requestAssetRowData = row.getData();
+                    console.log(requestAssetRowData);
+                    assignAsset(requestAssetRowData);
+                     $("#allAssetsModal").modal("toggle");
+                     $("#confirmModal").modal("toggle");
+                }
+                }
+                );
+        }
+
+        function assignAsset(requestAssetRowData)
+        {
+            var assetTag = requestAssetRowData.assetTag;
+            var selectedUserID = standardUserID;
+
+            var newObject = {};
+
+            newObject["assetTag"] = assetTag;
+            newObject["userID"] = selectedUserID;
+
+            assetRequestData = JSON.stringify(newObject);
+            console.log(assetRequestData);
+
+            areqb.style.display = "block";
+
+            document.getElementById("confirm").innerHTML = "Request: " + requestAssetRowData.name + " " + requestAssetRowData.model + " [" + requestAssetRowData.assetTag + "]";
+        }
+
+        function confirmAssetRequest()
+        {
+            var xmlHttp = new XMLHttpRequest();
+
+            var theUrl = "http://localhost:8080/asset_assign/add/user";
+            xmlHttp.open("POST", theUrl);
+            xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            xmlHttp.onreadystatechange = function()
+            {
+                if (this.readyState == 4 && this.status == 201)
+                {
+                    alert("Asset Assigned");
+                    getFreeAssets();
+                    $("#confirmModal").modal("toggle");
+
+                }else if (this.readyState == 4 && this.status != 201)
+                {
+                    alert("Assignment Registration Error");
+                }
+            };
+
+            xmlHttp.send(assetRequestData);
+        }
+
+        function returnStart()
+		{
+            hideButtons();
+			getUserLicensesToReturn();
+			getUserAssetsToReturn();
+	        id = null;
+			$("#returnModal").modal("toggle");
+		}
+
+		function getUserLicensesToReturn()
+		{
+			var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/license_assign/user/" + standardUserID;
+	        xmlHttp.onreadystatechange = function()
+	        {
+	        	if (this.readyState == 4 && this.status == 200)
+	        	{
+	        		var myList2 = (this.responseText);
+	                var localTD = JSON.parse(myList2);
+	                returnLicenseTableData = localTD;
+	                console.log(returnLicenseTableData);
+	                buildReturnLicenseTable(returnLicenseTableData);
+	            }
+	        };
+	        xmlHttp.open("GET", theURL , true);
+	        xmlHttp.send();
+	    }
+
+		function buildReturnLicenseTable(returnLicenseTableData)
+	    {
+	        table = new Tabulator("#userReturnLicense-Table",
+	            {
+	                data:returnLicenseTableData,
+	                layout:"fitColumns",
+	                paginationSize:5,
+	                movableColumns:true,
+	                resizableRows:true,
+	                printAsHtml:true,
+	                printHeader:"<h1>Assiged Licneses<h1>",
+	                columns:[
+	                // {title:"ID", field:"uuid"},
+	                {formatter:"rownum", hozAlign:"center", width:40},
+	                {title:"Software Name", field:"name", hozAlign:"left"},
+	                {title:"Version", field:"version", hozAlign:"left"},
+	                {title:"License Key", field:"license_key", hozAlign:"left"},
+	                {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+	                {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+	                rowClick:function(e, row)
+	                {
+	                    returnLicenseRowData = row.getData();
+	                    console.log(returnLicenseRowData);
+	                    id = returnLicenseRowData.uuid;
+	                    $("#returnModal").modal("toggle");
+	                    unassignLicensePrompt(returnLicenseRowData);
+	                    $("#confirmModal").modal("toggle");
+	                }
+	            }
+	        );
+	    }
+
+	    function unassignLicensePrompt(returnLicenseRowData)
+	    {
+            lretb.style.display = "block";
+
+	        document.getElementById("confirm").innerHTML = "Return: " + returnLicenseRowData.name + " " + returnLicenseRowData.version + " [" + returnLicenseRowData.license_key + "]";
+	    }
+
+	    function getUserAssetsToReturn()
+	    {
+	        var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/asset_assign/user/" + standardUserID;
+	        xmlHttp.onreadystatechange = function()
+	        {
+	            if (this.readyState == 4 && this.status == 200)
+	            {
+	                var myList2 = (this.responseText);
+	                var localTD = JSON.parse(myList2);
+	                viewAssetTableData = localTD;
+	                console.log(viewAssetTableData);
+	                buildReturnAssetTable(viewAssetTableData)
+	                
+	            }
+	            };
+	            xmlHttp.open("GET", theURL , true);
+	            xmlHttp.send();
+	        }
+
+	    function buildReturnAssetTable(viewAssetTableData)
+	    {
+
+	        table = new Tabulator("#userReturnAsset-Table",
+	            {
+	                data:viewAssetTableData,
+	                layout:"fitColumns",
+	                paginationSize:5,
+	                movableColumns:true,
+	                resizableRows:true,
+	                printAsHtml:true,
+	                printHeader:"<h1>Assiged Licneses<h1>",
+	                columns:[
+
+	                {formatter:"rownum", hozAlign:"center", width:40},
+	                {title:"Hardware Name", field:"name", hozAlign:"left"},
+	                {title:"Model", field:"model", hozAlign:"left"},
+	                {title:"AssetTag", field:"assetTag", hozAlign:"left"},
+	               
+	                {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+	                {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+	                rowClick:function(e, row)
+	                {
+	                    returnAssetRowData = row.getData();
+	                    console.log(returnAssetRowData);
+	                    id = returnAssetRowData.uuid;
+	                    $("#returnModal").modal("toggle");
+	                    unassignAssetPrompt(returnAssetRowData);
+	                    $("#confirmModal").modal("toggle");
+
+	                }
+
+	                
+	            }
+	        );
+	    }
+
+	    function unassignAssetPrompt(returnAssetRowData)
+	    {
+
+            aretb.style.display = "block";
+
+	        document.getElementById("confirm").innerHTML = "Unassign: " + returnAssetRowData.name + " " + returnAssetRowData.model + " [" + returnAssetRowData.assetTag + "]";
+	        aretb.style.display = "block";
+	    }
+
+	    function confirmLicenseReturn()
+	    {
+	        var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/license_assign/" + id;
+	        xmlHttp.onreadystatechange = function()
+	        {
+	            if (this.readyState == 4 && this.status == 204)
+	            {
+	                alert("License unassigned");
+	                $("#confirmModal").modal("toggle");
+	            }
+	            else if (this.readyState == 4 && this.status != 204)
+	            {
+	                alert("ERROR");
+	            }
+	            };
+	        xmlHttp.open("Delete", theURL , true);
+	        xmlHttp.send();
+	    }
+
+	    function confirmAssetReturn()
+	    {
+	        var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/asset_assign/" + id;
+	        xmlHttp.onreadystatechange = function()
+	        {
+	            if (this.readyState == 4 && this.status == 204)
+	            {
+	                alert("License unassigned");
+	                $("#confirmModal").modal("toggle");
+	            }
+	            else if (this.readyState == 4 && this.status != 204)
+	            {
+	                alert("ERROR");
+	            }
+	            };
+	        xmlHttp.open("Delete", theURL , true);
+	        xmlHttp.send();
+	    }
+
+
+
+
+</script>
+</html>

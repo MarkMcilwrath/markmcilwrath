@@ -59,6 +59,12 @@ public class SoftwareController
         return ResponseEntity.ok().body(softwareService.getSoftware(softwareId));
     }
 
+    @GetMapping("/vendor/{vendorID}")
+    public ResponseEntity<Set<Software>> getSoftwareByVendorID (@PathVariable String vendorID) throws NotFoundException
+    {
+        return ResponseEntity.ok(softwareService.getAllSoftwaresByVendor(vendorID));
+    }
+
     @GetMapping()
     public ResponseEntity<Set<Software>> getSoftwares() {
         return ResponseEntity.ok(softwareService.getAllSoftwares());

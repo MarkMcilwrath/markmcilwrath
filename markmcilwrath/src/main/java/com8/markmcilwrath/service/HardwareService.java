@@ -17,10 +17,16 @@ public class HardwareService {
 
     private HardwareRepository hardwareRepository;
     private VendorService vendorService;
+//    private AssetService assetService;
 
-    public HardwareService(HardwareRepository hardwareRepository, VendorService vendorService) {
+    public HardwareService(HardwareRepository hardwareRepository,
+                           VendorService vendorService
+//                           AssetService assetService
+    )
+    {
         this.hardwareRepository = hardwareRepository;
         this.vendorService = vendorService;
+//        this.assetService = assetService;
     }
 
     public Hardware save(String name, String model,String vendorID)
@@ -80,6 +86,35 @@ public class HardwareService {
         }
         return hardwares;
     }
+
+    public Set<Hardware> getAllHardwareByVendor(String vendorID)
+    {
+        VendorEntity vendorEntity = null;
+        try {
+            vendorEntity = getVendorEntity(vendorID);
+        }catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Iterable<HardwareEntity> entityList = hardwareRepository.findByVendorEntity(vendorEntity);
+        Set <Hardware> hardwareSet = new HashSet<>();
+        for (HardwareEntity entity : entityList)
+        {
+            Hardware hardware = new Hardware(
+                    entity.getHardwareID(),
+                    entity.getName(),
+                    entity.getModel()
+//                    numberOfAssets(entity.getHardwareID())
+            );
+            hardwareSet.add(hardware);
+        }
+        return hardwareSet;
+    }
+
+//    public int numberOfAssets (String uuid)
+//    {
+//        return assetService.numberOfAssets(uuid);
+//    }
 
     private VendorEntity getVendorEntity(String vendorID) throws NotFoundException
     {

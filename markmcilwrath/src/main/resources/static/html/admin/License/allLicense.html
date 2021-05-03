@@ -30,7 +30,7 @@
 	        <div class="modal-content">
 	            <div class="modal-header">
 	                <button type="button" class="close" data-dismiss="modal">&times;</button>
-	                <h4 class="modal-title">All Software</h4>
+	                <h4 class="modal-title">All Licenses</h4>
 	            </div>
 	            <div class="modal-body">
 	                <div class="wrapper">
@@ -41,7 +41,7 @@
 		                <button id="download-html" class="btn btn-default">Download HTML</button>
 		                <button id="print-table"class="btn btn-default" >Print Table</button>
 	                </div>
-	               		<div id="allSoftwares-Table"></div>
+	               		<div id="allLicenses-Table"></div>
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -81,7 +81,7 @@
 
     function buildTable()
         {
-            table = new Tabulator("#allSoftwares-Table",
+            table = new Tabulator("#allLicenses-Table",
             {
                 data:tableData,
                 layout:"fitColumns",

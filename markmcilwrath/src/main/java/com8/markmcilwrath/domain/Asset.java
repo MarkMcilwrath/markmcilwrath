@@ -21,6 +21,8 @@ public class Asset {
     private LocalDate purchaseDate;
 
     private String hardwareID;
+    private String name;
+    private String model;
 
     public Asset (String assetTag,
                   String serialNumber,
@@ -40,5 +42,20 @@ public class Asset {
         this.serialNumber = serialNumber;
         this.purchaseDate = purchaseDate;
         this.hardwareID = hardwareID;
+    }
+
+    public Asset (String assetTag,
+                  String serialNumber,
+                  LocalDate purchaseDate,
+                  String hardwareID,
+                  String name,
+                  String model)
+    {
+        this.assetTag = assetTag;
+        this.serialNumber = serialNumber;
+        this.purchaseDate = purchaseDate;
+        this.hardwareID = hardwareID;
+        this.name = name;
+        this.model = model;
     }
 }

@@ -2,6 +2,7 @@ package com8.markmcilwrath.repository;
 
 import com8.markmcilwrath.domain.LicenseAssignment;
 import com8.markmcilwrath.domain.entity.LicenseAssignmentEntity;
+import com8.markmcilwrath.domain.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
@@ -11,10 +12,11 @@ public interface LicenseAssignmentRepository extends CrudRepository<LicenseAssig
 {
     LicenseAssignmentEntity findByUUID (String UUID);
 
+    Iterable<LicenseAssignmentEntity> findIterableByUUID (String UUID);
 
-    Iterable<LicenseAssignmentEntity> findByUserID(String userId);
+    Iterable<LicenseAssignmentEntity> findByUserEntity(UserEntity userEntity);
 
-
+    Iterable<LicenseAssignmentEntity> findByApproved(Boolean approved);
 
     @Transactional
     void deleteByUUID (String UUID);

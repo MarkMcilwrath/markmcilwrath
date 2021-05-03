@@ -4,6 +4,7 @@ import com8.markmcilwrath.domain.License;
 import com8.markmcilwrath.domain.entity.LicenseAssignmentEntity;
 import com8.markmcilwrath.domain.entity.LicenseEntity;
 import com8.markmcilwrath.domain.entity.SoftwareEntity;
+import com8.markmcilwrath.domain.entity.VendorEntity;
 import com8.markmcilwrath.repository.LicenseAssignmentRepository;
 import com8.markmcilwrath.repository.LicenseRepository;
 
@@ -64,6 +65,7 @@ public class LicenseService {
 
     public void delete(String licenseKey)
     {
+
         licenseRepository.deleteByLicenseKey(licenseKey);
     }
 
@@ -83,6 +85,27 @@ public class LicenseService {
     public Set<License> getAllLicense()
     {
         Iterable<LicenseEntity> entityList = licenseRepository.findAll();
+        Set<License> licenses = new HashSet<>();
+
+        for (LicenseEntity entity : entityList) {
+            License license = new License(entity.getLicenseKey(),
+                    entity.getPurchaseDate(), entity.getExpiryDate(), entity.getSoftwareEntity().getName(), entity.getSoftwareEntity().getSoftwareID(), entity.getSoftwareEntity().getVersion());
+            licenses.add(license);
+        }
+        return licenses;
+    }
+
+    public Set<License> getAllLicenseBySoftware(String softwareID)
+    {
+
+        SoftwareEntity softwareEntity= null;
+        try {
+            softwareEntity = getSoftwareEntity(softwareID);
+        }catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Iterable<LicenseEntity> entityList = licenseRepository.findBySoftwareEntity(softwareEntity);
         Set<License> licenses = new HashSet<>();
 
         for (LicenseEntity entity : entityList) {
@@ -122,6 +145,34 @@ public class LicenseService {
         return licenses;
     }
 
+    public Set<License> getAllAssignedLicense() //NOT Used
+    {
+        Iterable<LicenseEntity> entityList = licenseRepository.findAll();
+        Set<License> licenses = new HashSet<>();
+        Iterable<LicenseAssignmentEntity> assignmentList = licenseAssignmentRepository.findAll();
+
+        for (LicenseEntity entity : entityList)
+        {
+            boolean assigned = false;
+            for (LicenseAssignmentEntity assignmentEntity : assignmentList)
+            {
+                String key = entity.getLicenseKey();
+                String assignKey = assignmentEntity.getLicenseEntity().getLicenseKey();
+                if (key == assignKey)
+                {
+                    assigned = true;
+                }
+            }
+            if (assigned == true)
+            {
+                License license = new License(entity.getLicenseKey(),
+                        entity.getPurchaseDate(), entity.getExpiryDate(), entity.getSoftwareEntity().getName(),
+                        entity.getSoftwareEntity().getSoftwareID(), entity.getSoftwareEntity().getVersion());
+                licenses.add(license);
+            }
+        }
+        return licenses;
+    }
     private SoftwareEntity getSoftwareEntity(String softwareID) throws NotFoundException
     {
         return softwareService.getSoftwareEntity(softwareID);
