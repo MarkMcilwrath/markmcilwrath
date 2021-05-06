@@ -16,7 +16,8 @@ public interface LicenseTagRepository extends CrudRepository<LicenseTagEntity, L
 
     LicenseTagEntity findByTagKey (String tag_Key);
 
-    LicenseTagEntity findByTagKeyAndLicenseAssignmentId(String tagKey, String licenseAssignmentId);
+
+    LicenseTagEntity findByTagKeyAndLicenseAssignmentEntity(String tagKey, LicenseAssignmentEntity licenseAssignmentEntity);
 
     Iterable<LicenseTagEntity> findIterableByLicenseAssignmentEntity (LicenseAssignmentEntity licenseAssignmentEntity);
 

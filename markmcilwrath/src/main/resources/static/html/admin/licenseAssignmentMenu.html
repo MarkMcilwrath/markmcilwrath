@@ -107,11 +107,24 @@
                 	<form>
                 		<div>
 							<label for="assignLicenseLocationTag">Location: </label>
-							<input type="text" id="assignLicenseLocationTag" name="assignLicenseLocationTag">
+							<select id="assignLicenseLocationTag" name="assignLicenseLocationTag">
+                <option value="Belfast">Belfast</option>
+                <option value="London">London</option>
+                <option value="Dublin">Dublin</option>
+                <option value="Edinburgh">Edinburgh</option>
+                <option value="Cardiff">Cardiff</option>
+              </select>
 						</div>
 						<div>
 							<label for="assignLicenseDepartmentTag">Department: </label>
-							<input type="text" id="assignLicenseDepartmentTag" name="assignLicenseDepartmentTag">
+              <select id="assignLicenseDepartmentTag" name="assignLicenseDepartmentTag">
+                <option value="Finance">Finance</option>
+                <option value="Sales">Sales</option>
+                <option value="Facilities">Facilities</option>
+                <option value="IT">IT</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Logisitcs">Logisitcs</option>
+              </select>
 						</div>
 					</form>
                 </div>
@@ -460,8 +473,8 @@
 	    	var location = document.getElementById("assignLicenseLocationTag").value;
 	    	var department = document.getElementById("assignLicenseDepartmentTag").value;
 
-	    	customTagFormData.append("location", location);
-	    	customTagFormData.append("department", department);
+	    	customTagFormData.append("Location", location);
+	    	customTagFormData.append("Department", department);
 
 	    	for (i = 1; i <= tagCounter; i++)
 	    	{

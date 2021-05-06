@@ -41,11 +41,12 @@ public class LicenseAssignment {
 
     private Map<String, String> tags = new HashMap<>();
 
-    public LicenseAssignment(String UUID, String license_key, String user_id)
+    public LicenseAssignment(String UUID, String license_key, String user_id, String location)
     {
         this.UUID = UUID;
         this.license_key = license_key;
         this.user_id = user_id;
+        this.location=location;
     }
 
     public LicenseAssignment(String UUID, String license_key, String user_id, LocalDate assignmentDate, Boolean approved)

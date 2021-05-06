@@ -19,6 +19,7 @@ public interface LicenseAssignmentRepository extends CrudRepository<LicenseAssig
 
     Iterable<LicenseAssignmentEntity> findByUserEntity(UserEntity userEntity);
 
+
     Iterable<LicenseAssignmentEntity> findByApproved(Boolean approved);
 
     @Transactional

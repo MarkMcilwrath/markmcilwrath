@@ -249,14 +249,14 @@ public class LicenseAssignmentService {
     }
 
     private  LicenseEntity getLicenseEntity(String licenseKey) throws NotFoundException
-    {
-        return licenseService.getLicenseEntity(licenseKey);
-    }
+        {
+            return licenseService.getLicenseEntity(licenseKey);
+        }
 
     private UserEntity getUserEntity (String userID) throws NotFoundException
-    {
-        return userService.getUserEntity(userID);
-    }
+        {
+            return userService.getUserEntity(userID);
+        }
 
     public LicenseAssignmentEntity getLicenseAssignmentEntity (String assignmentID) throws NotFoundException
     {
@@ -284,32 +284,23 @@ public class LicenseAssignmentService {
 
     public Set<LicenseAssignment> getAssignmentsWithLocationTag() throws NotFoundException
     {
-        Iterable<LicenseAssignmentEntity> listOfAssignment = licenseAssignmentRepository.findAll();
-        Set<LicenseAssignment> userAssignments = new HashSet<>();
+        Set<LicenseAssignment> locationAssignments = new HashSet<>();
 
+        Iterable<LicenseAssignmentEntity> listOfAssignment = licenseAssignmentRepository.findAll();
         for (LicenseAssignmentEntity entity : listOfAssignment)
         {
-            Iterable<LicenseTagEntity> tags = licenseTagRepository.findIterableByLicenseAssignmentEntity(getLicenseAssignmentEntity(entity.getUUID()));
-            for (LicenseTagEntity tagEntity : tags)
-            {
-                if (tagEntity.getTagKey() == "location")
-                {
-                    LicenseAssignment assignment = new LicenseAssignment(
-                            entity.getUUID(),
-                            entity.getLicenseEntity().getLicenseKey(),
-                            entity.getUserEntity().getUserId(),
-                            entity.getUserEntity().getEmail(),
-                            entity.getAssignmentDate(),
-                            entity.getApproved(),
-                            entity.getLicenseEntity().getSoftwareEntity().getName(),
-                            entity.getLicenseEntity().getSoftwareEntity().getVersion(),
-                            tagEntity.getTagValue());
-                    userAssignments.add((assignment));
-                }
-            }
+            LicenseTagEntity licenseTagEntity= licenseTagRepository.findByTagKeyAndLicenseAssignmentEntity
+                  ("location" ,getLicenseAssignmentEntity(entity.getUUID()));
 
+            LicenseAssignment newLicense = new LicenseAssignment(
+                  licenseTagEntity.getLicenseAssignmentEntity().getUUID(),
+                  licenseTagEntity.getLicenseAssignmentEntity().getLicenseEntity().getLicenseKey(),
+                  licenseTagEntity.getLicenseAssignmentEntity().getUserEntity().getUserId(),
+                  licenseTagEntity.getTagValue());
+
+          locationAssignments.add(newLicense);
         }
-
-        return userAssignments;
+        return locationAssignments;
     }
+
 }

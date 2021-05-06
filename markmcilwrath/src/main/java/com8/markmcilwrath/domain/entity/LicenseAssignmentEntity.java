@@ -49,6 +49,8 @@ public class LicenseAssignmentEntity implements Serializable {
     @Column(name = "approved", nullable = false)
     private Boolean approved;
 
+    // tag entity
+
     public LicenseAssignmentEntity (String UUID,
                                     LicenseEntity licenseEntity,
                                     UserEntity userEntity,

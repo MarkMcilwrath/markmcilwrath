@@ -4,6 +4,7 @@ package com8.markmcilwrath.controller;
 import com8.markmcilwrath.domain.License;
 import com8.markmcilwrath.domain.LicenseAssignment;
 import com8.markmcilwrath.domain.LicenseTag;
+import com8.markmcilwrath.domain.entity.LicenseTagEntity;
 import com8.markmcilwrath.service.LicenseAssignmentService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
