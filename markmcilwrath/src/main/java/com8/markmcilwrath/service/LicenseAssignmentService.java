@@ -2,19 +2,19 @@ package com8.markmcilwrath.service;
 
 import com8.markmcilwrath.domain.License;
 import com8.markmcilwrath.domain.LicenseAssignment;
+import com8.markmcilwrath.domain.LicenseTag;
 import com8.markmcilwrath.domain.entity.LicenseAssignmentEntity;
 import com8.markmcilwrath.domain.entity.LicenseEntity;
+import com8.markmcilwrath.domain.entity.LicenseTagEntity;
 import com8.markmcilwrath.domain.entity.UserEntity;
 import com8.markmcilwrath.repository.LicenseAssignmentRepository;
+import com8.markmcilwrath.repository.LicenseTagRepository;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 
 //import java.time.LocalDate;
 import java.time.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class LicenseAssignmentService {
@@ -22,16 +22,23 @@ public class LicenseAssignmentService {
     private LicenseAssignmentRepository licenseAssignmentRepository;
     private LicenseService licenseService;
     private UserService userService;
+    private LicenseTagRepository licenseTagRepository;
+    private LicenseTagService licenseTagService;
 
-    public LicenseAssignmentService (LicenseAssignmentRepository licenseAssignmentRepository, LicenseService licenseService,
-                                     UserService userService)
+    public LicenseAssignmentService (LicenseAssignmentRepository licenseAssignmentRepository,
+                                     LicenseService licenseService,
+                                     UserService userService,
+                                     LicenseTagService licenseTagService,
+                                     LicenseTagRepository licenseTagRepository)
     {
         this.licenseAssignmentRepository = licenseAssignmentRepository;
         this.licenseService = licenseService;
         this.userService = userService;
+        this.licenseTagService=licenseTagService;
+        this.licenseTagRepository=licenseTagRepository;
     }
 
-    public LicenseAssignment saveApproved (String licenseKey, String userID)
+    public LicenseAssignment saveApproved (String licenseKey, String userID,  Map<String, String> tags)
     {
         LicenseEntity licenseEntity = null;
         try {
@@ -55,11 +62,15 @@ public class LicenseAssignmentService {
 
         LicenseAssignmentEntity createdEntity = licenseAssignmentRepository.save(createEntity);
 
+        licenseTagService.saveTags(createdEntity, tags);
+
         return new LicenseAssignment(createdEntity.getUUID(), createdEntity.getLicenseEntity().getLicenseKey(),
                 createdEntity.getUserEntity().getUserId(), createdEntity.getAssignmentDate(), createdEntity.getApproved());
     }
 
-    public LicenseAssignment saveAwaitingApproval (String licenseKey, String userID)
+    public LicenseAssignment saveAwaitingApproval (String licenseKey, String userID
+//            , Map<String, String> tags
+    )
     {
         LicenseEntity licenseEntity = null;
         try {
@@ -82,6 +93,8 @@ public class LicenseAssignmentService {
                 licenseEntity,  userEntity,  assignmentDate, approved);
 
         LicenseAssignmentEntity createdEntity = licenseAssignmentRepository.save(createEntity);
+
+//        licenseTagService.saveTags(createdEntity, tags);
 
         return new LicenseAssignment(createdEntity.getUUID(), createdEntity.getLicenseEntity().getLicenseKey(),
                 createdEntity.getUserEntity().getUserId(), createdEntity.getAssignmentDate(), createdEntity.getApproved());
@@ -243,5 +256,60 @@ public class LicenseAssignmentService {
     private UserEntity getUserEntity (String userID) throws NotFoundException
     {
         return userService.getUserEntity(userID);
+    }
+
+    public LicenseAssignmentEntity getLicenseAssignmentEntity (String assignmentID) throws NotFoundException
+    {
+        LicenseAssignmentEntity entity = licenseAssignmentRepository.findByUUID(assignmentID);
+        if (entity == null)
+        {
+            throw new NotFoundException("License Assignment Not found");
+        }
+        return entity;
+    }
+
+    public Set<LicenseTag> getTags(String assignmentId) throws NotFoundException {
+
+        Iterable<LicenseTagEntity> tags = licenseTagRepository.findIterableByLicenseAssignmentEntity(getLicenseAssignmentEntity(assignmentId));
+        Set<LicenseTag> tagSet = new HashSet<>();
+
+        for (LicenseTagEntity entity : tags)
+        {
+            LicenseTag licenseTag = new LicenseTag(entity.getLicenseTagId(),
+                    entity.getTagKey(), entity.getTagValue(), assignmentId);
+            tagSet.add(licenseTag);
+        }
+        return tagSet;
+    }
+
+    public Set<LicenseAssignment> getAssignmentsWithLocationTag() throws NotFoundException
+    {
+        Iterable<LicenseAssignmentEntity> listOfAssignment = licenseAssignmentRepository.findAll();
+        Set<LicenseAssignment> userAssignments = new HashSet<>();
+
+        for (LicenseAssignmentEntity entity : listOfAssignment)
+        {
+            Iterable<LicenseTagEntity> tags = licenseTagRepository.findIterableByLicenseAssignmentEntity(getLicenseAssignmentEntity(entity.getUUID()));
+            for (LicenseTagEntity tagEntity : tags)
+            {
+                if (tagEntity.getTagKey() == "location")
+                {
+                    LicenseAssignment assignment = new LicenseAssignment(
+                            entity.getUUID(),
+                            entity.getLicenseEntity().getLicenseKey(),
+                            entity.getUserEntity().getUserId(),
+                            entity.getUserEntity().getEmail(),
+                            entity.getAssignmentDate(),
+                            entity.getApproved(),
+                            entity.getLicenseEntity().getSoftwareEntity().getName(),
+                            entity.getLicenseEntity().getSoftwareEntity().getVersion(),
+                            tagEntity.getTagValue());
+                    userAssignments.add((assignment));
+                }
+            }
+
+        }
+
+        return userAssignments;
     }
 }

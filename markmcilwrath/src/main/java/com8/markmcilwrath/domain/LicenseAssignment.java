@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -36,7 +37,9 @@ public class LicenseAssignment {
     private  String version;
     private  String email;
 
-//    private Map<String, String> tags = new HashMap<>();
+    private String location;
+
+    private Map<String, String> tags = new HashMap<>();
 
     public LicenseAssignment(String UUID, String license_key, String user_id)
     {
@@ -54,6 +57,22 @@ public class LicenseAssignment {
         this.approved = approved;
     }
 
+    public LicenseAssignment(String UUID,
+                             String license_key,
+                             String user_id,
+                             LocalDate assignmentDate,
+                             Boolean approved,
+                             Map tags)
+    {
+        this.UUID = UUID;
+        this.license_key = license_key;
+        this.user_id = user_id;
+        this.assignmentDate = assignmentDate;
+        this.approved = approved;
+        this.tags=tags;
+    }
+
+
     public LicenseAssignment(String UUID, String license_key,
                              String user_id, String email,
                              LocalDate assignmentDate, Boolean approved, String name, String version)
@@ -66,5 +85,22 @@ public class LicenseAssignment {
         this.approved = approved;
         this.name = name;
         this.version = version;
+    }
+
+    public LicenseAssignment(String UUID, String license_key,
+                             String user_id, String email,
+                             LocalDate assignmentDate, Boolean approved,
+                             String name, String version,
+                             String location)
+    {
+        this.UUID = UUID;
+        this.license_key = license_key;
+        this.user_id = user_id;
+        this.email = email;
+        this.assignmentDate = assignmentDate;
+        this.approved = approved;
+        this.name = name;
+        this.version = version;
+        this.location=location;
     }
 }

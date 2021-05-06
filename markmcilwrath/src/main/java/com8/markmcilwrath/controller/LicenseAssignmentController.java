@@ -3,6 +3,7 @@ package com8.markmcilwrath.controller;
 
 import com8.markmcilwrath.domain.License;
 import com8.markmcilwrath.domain.LicenseAssignment;
+import com8.markmcilwrath.domain.LicenseTag;
 import com8.markmcilwrath.service.LicenseAssignmentService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class LicenseAssignmentController
     public ResponseEntity<LicenseAssignment> addLicenseAssignmentAdmin (@Valid @RequestBody LicenseAssignment licenseAssignment)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                licenseAssignmentService.saveApproved(licenseAssignment.getLicense_key(), licenseAssignment.getUser_id()));
+                licenseAssignmentService.saveApproved(licenseAssignment.getLicense_key(), licenseAssignment.getUser_id(), licenseAssignment.getTags()));
 
     }
 
@@ -37,7 +38,9 @@ public class LicenseAssignmentController
     public ResponseEntity<LicenseAssignment> addLicenseAssignmentUser (@Valid @RequestBody LicenseAssignment licenseAssignment)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                licenseAssignmentService.saveAwaitingApproval(licenseAssignment.getLicense_key(), licenseAssignment.getUser_id()));
+                licenseAssignmentService.saveAwaitingApproval(licenseAssignment.getLicense_key(), licenseAssignment.getUser_id()
+//                        , licenseAssignment.getTags()
+                ));
 
     }
 
@@ -86,10 +89,22 @@ public class LicenseAssignmentController
         return ResponseEntity.ok(licenseAssignmentService.getAllAssignmentsByUser(userID));
     }
 
+
+
     @GetMapping("/approve")
     public ResponseEntity<Set<LicenseAssignment>> getAllAssignmentsNotApproved()
     {
         return ResponseEntity.ok(licenseAssignmentService.getAllAssignmentsNotApproved());
+    }
+
+    @GetMapping("/tags/{assignmentID}")
+    public ResponseEntity<Set<LicenseTag>> getTagsForAssignment(@PathVariable String assignmentID) throws NotFoundException {
+        return ResponseEntity.ok(licenseAssignmentService.getTags(assignmentID));
+    }
+
+    @GetMapping("/location")
+    public ResponseEntity<Set<LicenseAssignment>> getTagsForAssignment() throws NotFoundException {
+        return ResponseEntity.ok(licenseAssignmentService.getAssignmentsWithLocationTag());
     }
 
 }

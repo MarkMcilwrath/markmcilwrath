@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<button type="button" class="btn btn-info btn-lg" onclick="startAddSoftware()">Add Software</button>
+
+	<div id="addSoftwareModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Software</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label for="addSoftwareName">Name:</label>
+                    <input type="text" id="addSoftwareName" name="addSoftwareName">
+                </div>
+                
+                <div>
+                    <label for="addSoftwareVersion">Version:</label>
+                    <input type="text" id="addSoftwareVersion" name="addSoftwareVersion">
+                </div>
+                <div>
+                    <select class="selectpicker" id="vendorDDList" name="vendorDDList"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type ="button" class="btn btn-default" value="Submit" onclick=" validateAddSoftwareForm()">Submit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var vAddSoftwareName;
+    var vAddSoftwareVersion; 
+
+    function startAddSoftware()
+        {
+            getVendorsToAdd();
+            $("#addSoftwareModal").modal("toggle");
+        }
+
+    function getVendorsToAdd()
+        {
+            let dropdown = document.getElementById('vendorDDList');
+            dropdown.length = 0;
+
+            const url = 'http://localhost:8080/vendor';
+            const request = new XMLHttpRequest();
+            request.open('GET', url, true);
+
+            request.onload = function(){
+                if (request.status === 200) {
+                    const data = JSON.parse(request.responseText);
+                    let option;
+                    for (let i = 0; i < data.length; i++) {
+                      option = document.createElement('option');
+                      option.text = data[i].name;
+                      option.value = data[i].uuid;
+                      dropdown.add(option);
+                    }
+                   } else {
+                  }   
+                }
+
+                request.onerror = function() {
+                  console.error('An error occurred fetching the JSON from ' + url);
+                };
+
+                request.send();
+        }
+
+	function validateAddSoftwareForm()
+        {
+            vAddSoftwareName = document.getElementById("addSoftwareName").value;
+            vAddSoftwareVersion = document.getElementById("addSoftwareVersion").value;
+
+            if (vAddSoftwareName == "")
+            {
+                alert("Name Missing");
+                console.log("false");
+            }
+            else if (vAddSoftwareVersion == "")
+            {
+                alert("Version Missing");
+                console.log("false");
+            }
+            else
+            {
+                console.log("true");
+                saveAddSoftwareForm();
+            }
+        }
+
+    function saveAddSoftwareForm()
+        {
+            let myAddSoftwareForm;
+            let addSoftwareFormData = new FormData(myAddSoftwareForm);
+
+            let selected = (document.getElementById("vendorDDList"));
+            var vendorID = selected.value;
+
+            addSoftwareFormData.append('name', vAddSoftwareName);
+            addSoftwareFormData.append('version', vAddSoftwareVersion)
+
+            var object = {};
+            addSoftwareFormData.forEach(function(value, key)
+            {
+            object[key] = value;
+            });
+
+            var addSoftwareData = JSON.stringify(object);
+            console.log(addSoftwareData);
+
+            var xmlHttp = new XMLHttpRequest();
+            var theUrl = "http://localhost:8080/software/add/" + vendorID;
+
+            xmlHttp.open("POST", theUrl);
+            xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            xmlHttp.onreadystatechange = function()
+            {
+                if (this.readyState == 4 && this.status == 201)
+                {
+                    document.getElementById("addSoftwareVersion").value = "";
+                    document.getElementById("addSoftwareName").value = "";
+                    alert("Software Added");
+                }else if (this.readyState == 4 && this.status != 201)
+                {
+                    alert("Software Registration Error");
+                }
+            };
+
+            xmlHttp.send(addSoftwareData);
+        
+        }
+
+    
+</script>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com8.markmcilwrath.controller;
 
 import com8.markmcilwrath.domain.AssetAssignment;
+import com8.markmcilwrath.domain.AssetTag;
 import com8.markmcilwrath.service.AssetAssignmentService;
 import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class AssetAssignmentController {
     @PostMapping("/add/admin")
     public ResponseEntity<AssetAssignment> addAssetAssignmentAdmin (@Valid @RequestBody AssetAssignment assetAssignment) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                assetAssignmentService.saveApproved(assetAssignment.getAssetTag(), assetAssignment.getUserID()));
+                assetAssignmentService.saveApproved(assetAssignment.getAssetTag(), assetAssignment.getUserID(), assetAssignment.getTags()));
     }
 
     @PostMapping("/add/user")
@@ -71,5 +72,10 @@ public class AssetAssignmentController {
     public ResponseEntity<Set<AssetAssignment>> getAllAssignmentsNotApproved()
     {
         return ResponseEntity.ok().body(assetAssignmentService.getAllAssignmentsNotApproved());
+    }
+
+    @GetMapping("/tags/{assignmentID}")
+    public ResponseEntity<Set<AssetTag>> getTagsForAssignment(@PathVariable String assignmentID) throws NotFoundException {
+        return ResponseEntity.ok(assetAssignmentService.getTags(assignmentID));
     }
 }

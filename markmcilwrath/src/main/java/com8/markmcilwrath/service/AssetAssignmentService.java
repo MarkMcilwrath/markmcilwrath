@@ -1,16 +1,18 @@
 package com8.markmcilwrath.service;
 
 import com8.markmcilwrath.domain.AssetAssignment;
-import com8.markmcilwrath.domain.entity.AssetAssignmentEntity;
-import com8.markmcilwrath.domain.entity.AssetEntity;
-import com8.markmcilwrath.domain.entity.UserEntity;
+import com8.markmcilwrath.domain.AssetTag;
+import com8.markmcilwrath.domain.LicenseTag;
+import com8.markmcilwrath.domain.entity.*;
 import com8.markmcilwrath.repository.AssetAssignmentRepository;
+import com8.markmcilwrath.repository.AssetTagRepository;
 import javassist.NotFoundException;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,17 +22,23 @@ public class AssetAssignmentService
     private AssetAssignmentRepository assetAssignmentRepository;
     private AssetService assetService;
     private UserService userService;
+    private AssetTagService assetTagService;
+    private AssetTagRepository assetTagRepository;
 
     public AssetAssignmentService (AssetAssignmentRepository assetAssignmentRepository,
                                    AssetService assetService,
-                                   UserService userService)
+                                   UserService userService,
+                                   AssetTagService assetTagService,
+                                   AssetTagRepository assetTagRepository)
     {
         this.assetAssignmentRepository = assetAssignmentRepository;
         this.assetService = assetService;
         this.userService = userService;
+        this.assetTagService=assetTagService;
+        this.assetTagRepository=assetTagRepository;
     }
 
-    public AssetAssignment saveApproved (String assetTag, String userID)
+    public AssetAssignment saveApproved (String assetTag, String userID, Map<String, String> tags)
     {
         AssetEntity assetEntity = null;
         try {
@@ -53,6 +61,8 @@ public class AssetAssignmentService
                 assetEntity, userEntity, assignmentDate, approved);
 
         AssetAssignmentEntity createdEntity = assetAssignmentRepository.save(createEntity);
+
+        assetTagService.saveTags(createdEntity, tags);
 
         return new AssetAssignment(createdEntity.getUUID(), createdEntity.getAssetEntity().getAssetTag(),
                 createdEntity.getUserEntity().getUserId(), createdEntity.getAssignmentDate(), createdEntity.getApproved());
@@ -216,5 +226,28 @@ public class AssetAssignmentService
     private UserEntity getUserEntity (String userID) throws NotFoundException
     {
         return userService.getUserEntity(userID);
+    }
+
+    public AssetAssignmentEntity getAssetAssignmentEntity(String assignmentID) throws NotFoundException
+    {
+        AssetAssignmentEntity assetAssignmentEntity = assetAssignmentRepository.findByUUID(assignmentID);
+        if (assetAssignmentEntity == null)
+        {
+            throw new NotFoundException("License Assignment Not found");
+        }
+        return assetAssignmentEntity;
+    }
+
+    public Set<AssetTag> getTags(String assignmentId) throws NotFoundException {
+        Iterable<AssetTagEntity> tags = assetTagRepository.findIterableByAssetAssignmentEntity(getAssetAssignmentEntity(assignmentId));
+        Set<AssetTag> tagSet = new HashSet<>();
+
+        for (AssetTagEntity entity : tags)
+        {
+            AssetTag assetTag = new AssetTag(entity.getAssetTagId(), entity.getTagKey(),
+                    entity.getTagValue(), assignmentId);
+            tagSet.add(assetTag);
+        }
+        return tagSet;
     }
 }

@@ -79,4 +79,16 @@ public class LicenseController
     {
         return ResponseEntity.ok(licenseService.getAllFreeLicense());
     }
+
+    @GetMapping("/expired")
+    public ResponseEntity<Set<License>> getallExpiredLicenses()
+    {
+        return ResponseEntity.ok(licenseService.getAllExpiredLicenses());
+    }
+
+    @GetMapping("/expiry")
+    public ResponseEntity<Set<License>> getAllLicensesWithExpiryDate()
+    {
+        return ResponseEntity.ok(licenseService.getAllLicensesWithExpiryDates());
+    }
 }

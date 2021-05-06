@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.5/jspdf.plugin.autotable.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="../../project.css">
+
+    <script>
+    	$(function(){
+    		$("#includedContent").load("./adminMenu2.html");
+        });
+    </script>
+</head>
+<body >
+	<div id="includedContent"></div>
+
+	<div class="container">
+    	<div class="center">
+            <div class="menuButtonHolder">
+            	<button type="button" class="btn btn-primary btn-lg btn-block" onclick="startAddHardware()">Add Hardware</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+    	<div class="center">
+            <div class="menuButtonHolder">
+            	<button type="button" class="btn btn-primary btn-lg btn-block" onclick="startEditHardware()">Edit hardware</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+    	<div class="center">
+            <div class="menuButtonHolder">
+            	<button type="button" class="btn btn-primary btn-lg btn-block" onclick="startDeleteHardware()">Delete Hardware</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+    	<div class="center">
+            <div class="menuButtonHolder">
+            	<button type="button" class="btn btn-primary btn-lg btn-block" onclick='startAllHardware()' >All Hardware</button>
+            </div>
+        </div>
+    </div>
+
+	<div id="addHardwareModal" class="modal fade" role="dialog">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title">Add Hardware</h4>
+	            </div>
+	            <div class="modal-body"> 
+	                    <div>
+	                        <label for="addHardwareName">Name:</label>
+	                        <input type="text" id="addHardwareName" name="addHardwareName">
+	                    </div>
+	                    <div>
+	                        <label for="addHardwareModel">Model:</label>
+	                        <input type="text" id="addHardwareModel" name="addHardwareModel">
+	                    </div>
+	                <div>
+	                    <select class="selectpicker" id="vendorDDlist" name="vendorDDlist"></select>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type ="button" class="btn btn-default" value="Submit" onclick=" validateAddHardwareForm()">Submit</button>
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	<div id="selectEditHardwareModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 id="title" class="modal-title">Select Hardware</h4>
+                  </div>
+                      <div class="modal-body">
+                          <select class="selectpicker" id="editHardwareddList" name="locality"></select>
+                      </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="searchHardwareToEdit()">Edit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="editHardwareModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 id="title" class="modal-title">Edit Hardware</h4>
+            </div>
+            <div class="modal-body">
+                    <div>
+                        <label for="editHardwareName">Name:</label>
+                        <input type="text" id="editHardwareName" name="editHardwareName" value="blank">
+                    </div>
+                    <div>
+                        <label for="editHardwareModel">Model:</label>
+                        <input type="text" id="editHardwareModel" name="editHardwareModel" value="blank">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type ="button" class="btn btn-default" onclick="validateEditHardwareForm()">Submit Changes </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+	</div>
+
+	<div id="deleteHardwareModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 id="title" class="modal-title">Delete Hardware</h4>
+                  </div>
+                      <div class="modal-body">
+                          <select class="selectpicker" id="hardwareToDeleteddList" name="locality" ></select>
+                      </div>
+                  <div class="modal-footer">
+                  <button type ="button" class="btn btn-default" onclick="confirmDeleteHardware()">Delete</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="ConfirmDeleteModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 id="title" class="modal-title">Confirm delete</h4>
+                  </div>
+                      <div class="modal-body">
+                          <p id="Vinfo"></p>
+                      </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="deleteHardware()">Delete</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="allHardwaresModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">All Hardware</h4>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper">
+                <button id="download-csv" class="btn btn-default">Download CSV</button>
+                <button id="download-json" class="btn btn-default">Download JSON</button>
+                <button id="download-xlsx" class="btn btn-default">Download XLSX</button>
+                
+                <button id="download-pdf" class="btn btn-default">Download PDF</button>
+                <button id="download-html" class="btn btn-default">Download HTML</button>
+                <button id="print-table"class="btn btn-default" >Print Table</button>
+                </div>
+                <div id="allHardwares-Table"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="assetsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="assets-Table"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+	var vAddHardwareName;
+	var vAddHardwareModel;
+
+	var gblEditHardwareID;
+	var editHardwareVName;
+	var editHardwareVModel;
+	var editHardwareVendorID;
+
+	var allHardwareTableData;
+    var allHardwareAssetsTableData;
+
+	function startAddHardware()
+		{
+			getVendorsToAdd();
+			$("#addHardwareModal").modal("toggle");
+		}
+
+	function validateAddHardwareForm()
+	    {
+	        vAddHardwareName = document.getElementById("addHardwareName").value;
+	        console.log(vAddHardwareName);
+	        vAddHardwareModel = document.getElementById("addHardwareModel").value;
+	        console.log(vAddHardwareModel);
+
+	        if (vAddHardwareName == "")
+	        {
+	            alert("Name Missing");
+	            console.log("false");
+	        }
+	        else if (vAddHardwareModel == "")
+	        {
+	            alert("Model Missing");
+	            console.log("false");
+	        }
+	        else
+	        {
+	            console.log("true");
+	            saveAddHardwareForm();
+	        }
+	    }
+
+    function saveAddHardwareForm()
+	    {
+
+	    let myAddHardwareForm;
+	    let addHardwareFormData = new FormData(myAddHardwareForm);
+
+	    addHardwareFormData.append('name', vAddHardwareName);
+	    addHardwareFormData.append('model', vAddHardwareModel);
+
+	    let selected = (document.getElementById("vendorDDlist"));
+	    var vendorID = selected.value;
+
+	    var object = {};
+	    addHardwareFormData.forEach(function(value, key)
+	    {
+	    object[key] = value;
+	    });
+
+	    var hardwareData = JSON.stringify(object);
+	    console.log(hardwareData);
+
+	    var xmlHttp = new XMLHttpRequest();
+	    var theUrl = "http://localhost:8080/hardware/add/" + vendorID;
+
+	    xmlHttp.open("POST", theUrl);
+	    xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+	    xmlHttp.onreadystatechange = function()
+		    {
+		    	if (this.readyState == 4 && this.status == 201)
+		    		{
+		    			document.getElementById("addHardwareModel").value = "";
+		    			document.getElementById("addHardwareName").value = "";
+		   				alert("Hardware Added");
+		            }
+		        else if (this.readyState == 4 && this.status != 201)
+		            {
+		                    alert("Software Registration Error");
+		            }
+		    };
+
+		    xmlHttp.send(hardwareData);
+
+	    }
+
+    function getVendorsToAdd()
+      {
+        let dropdown = document.getElementById('vendorDDlist');
+        dropdown.length = 0;
+
+        const url = 'http://localhost:8080/vendor';
+
+        const request = new XMLHttpRequest();
+        request.open('GET', url, true);
+
+        request.onload = function() {
+          if (request.status === 200) {
+            const data = JSON.parse(request.responseText);
+            let option;
+            for (let i = 0; i < data.length; i++) {
+              option = document.createElement('option');
+              option.text = data[i].name;
+              option.value = data[i].uuid;
+              dropdown.add(option);
+            }
+           } else {
+          }   
+        }
+
+        request.onerror = function() {
+          console.error('An error occurred fetching the JSON from ' + url);
+        };
+
+        request.send();
+      }
+
+	function startEditHardware()
+	  {
+	    getHardwareToEdit();
+	    $("#selectEditHardwareModal").modal("toggle");
+	  }
+
+  	function searchHardwareToEdit()
+		  {
+		    var selected = (document.getElementById("editHardwareddList"));
+		    var hardwareID = selected.value;
+		    gblEditHardwareID = hardwareID;
+
+		    var xmlHttp = new XMLHttpRequest();
+		    var theURL = "http://localhost:8080/hardware/" + hardwareID;
+
+		    xmlHttp.onreadystatechange = function()
+		    {
+		        if (this.readyState == 4 && this.status == 200)
+		          {
+		            myObj = JSON.parse(this.responseText);
+		            var nameHold = myObj.name;
+		            document.getElementById("editHardwareName").value = nameHold;
+		            var modelHold = myObj.model;
+		            document.getElementById("editHardwareModel").value = modelHold;
+		            console.log(myObj);
+		            editHardwareVendorID = myObj.vendorID;
+		            $("#editHardwareModal").modal("toggle");
+		            }
+		            else if (this.readyState == 4 && this.status != 200)
+		            { 
+		            alert("Error");
+		            }
+		        };
+		        xmlHttp.open("GET", theURL , true);
+		        xmlHttp.send();
+		      }
+
+  	function validateEditHardwareForm()
+	      {
+
+	        editHardwareVName = document.getElementById("editHardwareName").value;
+	        editHardwareVModel = document.getElementById("editHardwareModel").value;
+
+	          if (editHardwareVName == "" )
+	          {
+	            alert("Name Missing");
+	          }
+	          else if (editHardwareVModel == "")
+	          {
+	            alert("model Missing");
+	          }
+	          else
+	          {
+	            sendEditHardwareForm();
+	          }
+	      }
+  
+	function sendEditHardwareForm()
+	  {
+	        
+	        let myEditHardwareForm;
+	        let editHardwareformData = new FormData(myEditHardwareForm);
+
+	        editHardwareformData.append('name', editHardwareVName);
+	        editHardwareformData.append('model', editHardwareVModel);
+	        editHardwareformData.append('uuid', gblEditHardwareID);
+
+	        var selectedVendorID = editHardwareVendorID;
+	        
+	        var newObject = {};
+	        editHardwareformData.forEach(function(value, key)
+	        {
+	        newObject[key] = value;
+	        });
+	        
+	        var editHardwareData = JSON.stringify(newObject);
+	        console.log(editHardwareData);
+
+	        var xmlHttp = new XMLHttpRequest();
+	        var theUrl = "http://localhost:8080/hardware/update/" + selectedVendorID;
+	        xmlHttp.open("PUT", theUrl);
+	        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+	        xmlHttp.onreadystatechange = function()
+	        {
+	          console.log(this.status);
+	            if (this.readyState == 4 && this.status == 200)
+	            {
+	                alert("Hardware updated");
+	                getHardwareToEdit();
+	                $("#editHardwareModal").modal("toggle");
+	                
+	            }else if (this.readyState == 4 && this.status == 500)
+	            {
+	                alert("Hardware Update Error");
+	            }
+	        };
+
+	        xmlHttp.send(editHardwareData);
+	        
+	  }
+
+	function getHardwareToEdit()
+		  {
+		    let dropdown = document.getElementById('editHardwareddList');
+		    dropdown.length = 0;
+
+		    const url = 'http://localhost:8080/hardware';
+
+		    const request = new XMLHttpRequest();
+		    request.open('GET', url, true);
+
+		    request.onload = function() {
+		      if (request.status === 200) {
+		        const data = JSON.parse(request.responseText);
+		        let option;
+		        for (let i = 0; i < data.length; i++) {
+		          option = document.createElement('option');
+		          var fullName = data[i].name + " " + data[i].model;
+		          option.text = fullName;
+		          option.value = data[i].uuid;
+		          dropdown.add(option);
+		        }
+		       } else {
+		      }   
+		    }
+
+		    request.onerror = function() {
+		      console.error('An error occurred fetching the JSON from ' + url);
+		    };
+
+		    request.send();
+		  }
+
+	function startDeleteHardware()
+	    {
+	      getHardwareToDelete();
+	      $("#deleteHardwareModal").modal("toggle");
+	    }
+	
+	function confirmDeleteHardware()
+	  { 
+	    var selected = document.getElementById("hardwareToDeleteddList");
+	    var selectedText = selected.options[selected.selectedIndex].text;
+	    console.log(selectedText);
+	    document.getElementById("Vinfo").innerHTML = "Are you sure you want to Delete " + selectedText + "?";
+	    $("#ConfirmDeleteModal").modal("toggle");
+	  }
+
+	function deleteHardware()
+	    {
+	      var selected = (document.getElementById("hardwareToDeleteddList"));
+	      hardwareID = selected.value;
+	      var xmlHttp = new XMLHttpRequest();
+	      var theURL = "http://localhost:8080/hardware/" + hardwareID;
+	      xmlHttp.onreadystatechange = function()
+	      {
+	        if (this.readyState == 4 && this.status == 204)
+	        {
+	        	alert("Hardware succesfully deleted");
+	          getHardwareToDelete();
+	          $("#ConfirmDeleteModal").modal("toggle");
+	        } else if (this.readyState == 4 && this.status != 204)
+	        {
+	          alert("ERROR");
+	        }
+	      };
+	        xmlHttp.open("Delete", theURL , true);
+	        xmlHttp.send();
+	        
+	    }
+
+  	function getHardwareToDelete()
+		  {
+		    let dropdown = document.getElementById('hardwareToDeleteddList');
+		    dropdown.length = 0;
+
+		    const url = 'http://localhost:8080/hardware';
+
+		    const request = new XMLHttpRequest();
+		    request.open('GET', url, true);
+
+		    request.onload = function() {
+		      if (request.status === 200) {
+		        const data = JSON.parse(request.responseText);
+		        let option;
+		        for (let i = 0; i < data.length; i++) {
+		          option = document.createElement('option');
+		          var fullName = data[i].name + " " + data[i].model;
+		          option.text = fullName;
+		          option.value = data[i].uuid;
+		          dropdown.add(option);
+		        }
+		       } else {
+		      }   
+		    }
+
+		    request.onerror = function() {
+		      console.error('An error occurred fetching the JSON from ' + url);
+		    };
+
+		    request.send();
+		  }
+
+
+    function startAllHardware()
+    {
+        getAllHardwares();
+        $("#allHardwaresModal").modal("toggle");
+    }
+
+	function getAllHardwares()
+	    {
+	        var xmlHttp = new XMLHttpRequest();
+	        var theURL = "http://localhost:8080/hardware"
+	        xmlHttp.onreadystatechange = function()
+	        {
+	            if (this.readyState == 4 && this.status == 200)
+	            {
+	             allHardwareTableData = JSON.parse(this.responseText);
+                 buildAllHardwareTable();
+	            }
+	            else
+	            {
+	            	
+	            }
+	        };
+	        xmlHttp.open("GET", theURL , true);
+	        xmlHttp.send();
+	    }
+
+    function buildAllHardwareTable()
+        {
+            table = new Tabulator("#allHardwares-Table",
+            { data:allHardwareTableData,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>All Hardware<h1>",
+                columns:[ 
+                // {title:"ID", field:"uuid"},
+                {title:"Name", field:"name", hozAlign:"left"},
+                {title:"Model", field:"model", hozAlign:"left"},
+                {title:"Vendor", field:"vendorName", hozAlign:"left"},],
+                rowClick:function(e, row)
+                    {
+                        var rowData = row.getData();
+                        getAssets(rowData.uuid);
+                        $("#allHardwaresModal").modal("toggle");
+                        $("#assetsModal").modal("toggle");
+                       
+                    }
+                    }
+                );
+        }
+
+    function getAssets(hardwareID)
+        {
+            var xmlHttp = new XMLHttpRequest();
+            var theURL = "http://localhost:8080/asset/hardware/" + hardwareID;
+            xmlHttp.onreadystatechange = function()
+            {
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 allHardwareAssetsTableData = JSON.parse(this.responseText);
+                 buildAssetTable();
+                }
+                else
+                {
+                    
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+
+        
+        function buildAssetTable()
+        {
+            table = new Tabulator("#assets-Table",
+            {
+                data:allHardwareAssetsTableData,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>Assets<h1>",
+                columns:[ 
+                // {title:"ID", field:"uuid"},
+                {title:"Hardware Name", field:"name", hozAlign:"left"},
+                {title:"Hardware Model", field:"model", hozAlign:"left"},
+                {title:"Serial Number", field:"serialNumber", hozAlign:"left"},
+                {title:"Purchase Date", field:"purchaseDate", hozAlign:"left"},]
+                    }
+                );
+
+        }
+
+        document.getElementById("download-csv").addEventListener("click", function(){
+        table.download("csv", "data.csv");});
+
+    //trigger download of data.json file
+    document.getElementById("download-json").addEventListener("click", function(){
+        table.download("json", "data.json");});
+
+    //trigger download of data.xlsx file
+    document.getElementById("download-xlsx").addEventListener("click", function(){
+        table.download("xlsx", "data.xlsx", {sheetName:"My Data"});});
+
+    //trigger download of data.pdf file
+    document.getElementById("download-pdf").addEventListener("click", function(){
+        table.download("pdf", "data.pdf", {
+            orientation:"portrait", //set page orientation to portrait
+            title:"Example Report", //add title to report
+        });});
+
+    //trigger download of data.html file
+    document.getElementById("download-html").addEventListener("click", function(){
+        table.download("html", "data.html", {style:true});});
+
+    document.getElementById("print-table").addEventListener("click", function(){
+   table.print(false, true);});
+</script>
+
+</body>
+</html>

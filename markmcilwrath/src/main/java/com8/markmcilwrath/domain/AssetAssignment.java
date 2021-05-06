@@ -8,6 +8,8 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -32,6 +34,8 @@ public class AssetAssignment
     private String name;
     private  String model;
 
+    private Map<String, String> tags = new HashMap<>();
+
     public AssetAssignment (String UUID,
                             String assetTag,
                             String userID,
@@ -44,6 +48,23 @@ public class AssetAssignment
         this.assignmentDate=assignmentDate;
         this.approved=approved;
     }
+
+    public AssetAssignment (String UUID,
+                            String assetTag,
+                            String userID,
+                            LocalDate assignmentDate,
+                            Boolean approved,
+                            Map tags)
+    {
+        this.UUID=UUID;
+        this.assetTag=assetTag;
+        this.userID=userID;
+        this.assignmentDate=assignmentDate;
+        this.approved=approved;
+        this.tags=tags;
+    }
+
+
 
     public AssetAssignment (String UUID,
                             String assetTag,

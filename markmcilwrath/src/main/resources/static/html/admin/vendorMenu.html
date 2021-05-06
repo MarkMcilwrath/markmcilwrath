@@ -1,10 +1,627 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/tabulator-tables@4.9.3/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.3/dist/js/tabulator.min.js"></script>
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.5/jspdf.plugin.autotable.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="../../project.css">
+
+    <script>
+    	$(function(){
+    		$("#includedContent").load("./adminMenu2.html");
+        });
+    </script>
+
 </head>
 <body>
 
+	<div id="includedContent"></div>
+
+	<div class="container">
+    	<div class="center">
+            <div class="menuButtonHolder">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="addVendorStart()">Add Vendor</button>	
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="center">
+            <div class="menuButtonHolder">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startEditVendor()">Edit Vendor</button>
+ 
+            </div>
+        </div>
+    </div>
+
+   <div class="container">
+        <div class="center">
+            <div class="menuButtonHolder">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startDelete()">Delete Vendor</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="center">
+            <div class="menuButtonHolder">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick='getAllVendors()' >All Vendors</button>
+            </div>
+        </div>
+    </div>
+
+	<div id="addVendorModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Vendor</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div>
+                            <label for="addVendorName">Vendor Name:</label>
+                            <input type="text" id="addVendorName" name="addVendorName">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type ="button" class="btn btn-default" value="Submit" onclick=" validateAddVendorForm()">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="allVendorsModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    
+                    <h4 class="modal-title">All Vendors</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper">
+                        <button id="download-csv" class="btn btn-default">Download CSV</button>
+                        <button id="download-json" class="btn btn-default">Download JSON</button>
+                        <button id="download-xlsx" class="btn btn-default">Download XLSX</button>
+                        <!-- </div>
+                        <div class="wrapper"> -->
+                        <button id="download-pdf" class="btn btn-default">Download PDF</button>
+                        <button id="download-html" class="btn btn-default">Download HTML</button>
+                        <button id="print-table"class="btn btn-default" >Print Table</button>
+                        </div>
+                        <br>
+                    <div id="allVendors-Table"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="vendorSoftwareModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body">
+                    <h4>Software</h4>
+                    <div id="software-Table"></div>
+                      <br>
+                      <h4>Hardware</h4>
+                      <div id="hardware-Table"></div>
+                </div>
+                <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="DeleteVendorModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="title" class="modal-title">Select Vendor</h4>
+                </div>
+                <div class="modal-body">
+                    <select id="vendorDropDownList" name="locality" ></select>
+                </div>
+                <div class="modal-footer">
+                    <button type ="button" class="btn btn-default" onclick="confirmDelete()">Delete Vendor</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+          </div>
+      </div>
+    </div>
+
+    <div id="ConfirmDeleteModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      </div>
+                          <div class="modal-body">
+                              <p id="Vinfo"></p>
+                          </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" onclick="deleteVendor()">Delete</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  </div>
+              </div>
+          </div>
+    </div>
+
+    <div id="selectEditVendorModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 id="title" class="modal-title">Select Vendor</h4>
+                  </div>
+                      <div class="modal-body">
+                          <select class="selectpicker" id="editddList" name="locality" ></select>
+                      </div>
+                  <div class="modal-footer">
+                  <button type ="button" class="btn btn-default" onclick="getVendorToEdit()">Edit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <div id="editVendorModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 id="title" class="modal-title">Edit Vendor</h4>
+          </div>
+          <div class="modal-body"> 
+            <div>
+              <label for="name">Vendor Name: </label>
+              <input type="text" id="name" name="name" value="blank">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type ="button" class="btn btn-default" onclick="validateEditVendorForm()">Submit Changes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </body>
+
+<script>
+	var vAddVendorName;
+
+    var vendorTableData;
+    var softwareTableData;
+    var hardwareTableData;
+
+    var gblVendorID;
+
+	function addVendorStart()
+        {
+            $("#addVendorModal").modal("toggle");
+        }
+
+    function validateAddVendorForm()
+        {
+            vAddVendorName = document.getElementById("addVendorName").value;
+
+            if (vAddVendorName == "")
+            {
+                alert("First name must be filled out");
+            }
+            else
+            {
+                saveAddVendorForm();
+            }
+        }
+
+     function saveAddVendorForm()
+        {
+            let myForm;
+            let addVendorFormData = new FormData(myForm);
+
+            addVendorFormData.append('name', vAddVendorName);
+
+            var object = {};
+            addVendorFormData.forEach(function(value, key)
+            {
+            object[key] = value;
+            });
+
+            var vendorData = JSON.stringify(object);
+            console.log(vendorData);
+
+            var xmlHttp = new XMLHttpRequest();
+            var theUrl = "http://localhost:8080/vendor/add";
+            xmlHttp.open("POST", theUrl);
+            xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            xmlHttp.onreadystatechange = function()
+                {
+                    if (this.readyState == 4 && this.status == 201)
+                    {
+                    	alert("Vendor Added");
+                        document.getElementById("addVendorName").value = '';
+                    }else if (this.readyState == 4 && this.status == 500)
+                    {
+                        alert("Vendor Registration Error");
+                    }
+                };
+            xmlHttp.send(vendorData);
+    	}
+
+        var vendorTableData;
+   
+    function getAllVendors()
+        {
+            $("#allVendorsModal").modal("toggle");
+                var xmlHttp = new XMLHttpRequest();
+                var theURL = "http://localhost:8080/vendor"
+                xmlHttp.onreadystatechange = function()
+                {
+                    if (this.readyState == 4 && this.status == 200)
+                    {
+                     vendorTableData = JSON.parse(this.responseText);
+                   buildAllVendorTable();
+                    }
+                    else
+                    {
+                        console.log(this.readyState);
+                        console.log(this.status);
+                    }
+                };
+                xmlHttp.open("GET", theURL , true);
+                xmlHttp.send();
+        }
+
+    function rebuildAllVendorTable()
+        {
+                table.redraw();
+        }
+
+    function buildAllVendorTable()
+            {
+                table = new Tabulator("#allVendors-Table",
+                        {
+                             data:vendorTableData,
+                        layout:"fitColumns",
+                        paginationSize:5,
+                        movableColumns:true,
+                        resizableRows:true,
+                        printAsHtml:true,
+                        printHeader:"<h1>All Vendors<h1>",
+                            columns:[ 
+                            {title:"ID", field:"uuid"},
+                            {title:"Name", field:"name", hozAlign:"left"},],
+                            rowClick:function(e, row)
+                            {
+                                var rowData = row.getData();
+                                getSoftware(rowData.uuid);
+                                getHardwareForVendor(rowData.uuid);
+                                $("#allVendorsModal").modal("toggle");
+                                $("#vendorSoftwareModal").modal("toggle");
+                            }
+                        }
+                    );
+            }
+
+    function getSoftware(vendorID)
+        {
+              var xmlHttp = new XMLHttpRequest();
+              var theURL = "http://localhost:8080/software/vendor/" + vendorID
+              xmlHttp.onreadystatechange = function()
+              {
+                    
+                    if (this.readyState == 4 && this.status == 200)
+                    {
+                     var myList2 = (this.responseText);
+                     var localTD = JSON.parse(myList2);
+                     softwareTableData = localTD;
+                     console.log(softwareTableData);
+                     
+                     buildSoftwareTableForVender();
+                    }
+                };
+                xmlHttp.open("GET", theURL , true);
+                xmlHttp.send();
+        }
+
+    function getHardwareForVendor(vendorID)
+            {
+              var xmlHttp = new XMLHttpRequest();
+              var theURL = "http://localhost:8080/hardware/vendor/" + vendorID
+              xmlHttp.onreadystatechange = function()
+              {
+                    
+                    if (this.readyState == 4 && this.status == 200)
+                    {
+                     var myList2 = (this.responseText);
+                     var localTD = JSON.parse(myList2);
+                     hardwareTableData = localTD;
+                     console.log(hardwareTableData);
+                     buildHardwareTableForVender();
+                    }
+                };
+                xmlHttp.open("GET", theURL , true);
+                xmlHttp.send();
+            }
+
+    function buildSoftwareTableForVender()
+            {
+                table = new Tabulator("#software-Table",
+                {
+                    data:softwareTableData,
+                    layout:"fitColumns",
+                    paginationSize:5,
+                    movableColumns:true,
+                    resizableRows:true,
+                    printAsHtml:true,
+                    printHeader:"<h1>All Software<h1>",
+                    columns:[ 
+                    // {title:"ID", field:"uuid"},
+                    {title:"Name", field:"name", hozAlign:"left"},
+                    {title:"Version", field:"version", hozAlign:"left"},
+                    // 
+                    ]
+                        }
+                    );
+
+            }
+
+    function buildHardwareTableForVender()
+            {
+                table = new Tabulator("#hardware-Table",
+                {
+                    data:hardwareTableData,
+                    layout:"fitColumns",
+                    paginationSize:5,
+                    movableColumns:true,
+                    resizableRows:true,
+                    printAsHtml:true,
+                    printHeader:"<h1>All Hardware<h1>",
+                    columns:[ 
+                    // {title:"ID", field:"uuid"},
+                    {title:"Name", field:"name", hozAlign:"left"},
+                    {title:"Model", field:"model", hozAlign:"left"},
+                    // 
+                    ]
+                        }
+                    );
+
+            }
+
+    function startDelete()
+        {
+                $("#DeleteVendorModal").modal("toggle");
+
+                let vendorDropdown = document.getElementById('vendorDropDownList');
+                vendorDropdown.length = 0;
+
+                const url = 'http://localhost:8080/vendor';
+
+                const request = new XMLHttpRequest();
+                request.open('GET', url, true);
+
+                request.onload = function() {
+                  if (request.status === 200) {
+                    const data = JSON.parse(request.responseText);
+                    let option;
+                    for (let i = 0; i < data.length; i++) {
+                      option = document.createElement('option');
+                      option.text = data[i].name;
+                      option.value = data[i].uuid;
+                      vendorDropdown.add(option);
+                    }
+                   } else {
+                  }   
+                }
+
+            request.onerror = function() {
+              console.error('An error occurred fetching the JSON from ' + url);
+            };
+
+            request.send();
+        }
+
+    function deleteVendor()
+        {
+          var selected = (document.getElementById("vendorDropDownList"));
+          vendorID = selected.value;
+          console.log(vendorID);
+          var xmlHttp = new XMLHttpRequest();
+          var theURL = "http://localhost:8080/vendor/" + vendorID;
+          xmlHttp.onreadystatechange = function()
+          {
+            if (this.readyState == 4 && this.status == 204)
+            {
+              alert("Vendor succesfully deleted");
+              startDelete();
+              $("#ConfirmDeleteModal").modal("hide");
+            }
+            else if (this.readyState == 4 && this.status != 204)
+            {
+             alert("ERROR");
+            }
+          };
+            xmlHttp.open("Delete", theURL , true);
+            xmlHttp.send();
+        }
+
+    function confirmDelete()
+        { 
+            var selected = document.getElementById("vendorDropDownList");
+            var selectedText = selected.options[selected.selectedIndex].text;
+            console.log(selectedText);
+            document.getElementById("Vinfo").innerHTML = "Are you sure you want to Delete " + selectedText + "?";
+            $("#ConfirmDeleteModal").modal();
+          }
+
+    function startEditVendor()
+      {
+        getVendorsForEdit();
+        $("#selectEditVendorModal").modal("toggle");
+
+      }
+
+    function getVendorsForEdit()
+        {
+          let dropdown = document.getElementById('editddList');
+          dropdown.length = 0;
+
+          const url = 'http://localhost:8080/vendor';
+
+          const request = new XMLHttpRequest();
+          request.open('GET', url, true);
+
+          request.onload = function() {
+            if (request.status === 200) {
+              const data = JSON.parse(request.responseText);
+              let option;
+              for (let i = 0; i < data.length; i++) {
+                option = document.createElement('option');
+                option.text = data[i].name;
+                option.value = data[i].uuid;
+                dropdown.add(option);
+              }
+             } else {
+            }   
+          }
+
+          request.onerror = function() {
+            console.error('An error occurred fetching the JSON from ' + url);
+          };
+
+          request.send();
+
+        }
+
+    function getVendorToEdit()
+        {
+            var selected = (document.getElementById("editddList"));
+            var vendorID = selected.value;
+            gblVendorID = vendorID;
+
+            var xmlHttp = new XMLHttpRequest();
+            var theURL = "http://localhost:8080/vendor/" + vendorID;
+
+            xmlHttp.onreadystatechange = function()
+            {
+                if (this.readyState == 4 && this.status == 200)
+                  {
+                    myObj = JSON.parse(this.responseText);
+                    var nameHold = myObj.name;
+                    document.getElementById("name").value = nameHold;
+                    $("#editVendorModal").modal()
+                    }
+                    else if (this.readyState == 4 && this.status != 200)
+                    { 
+                    alert("Error");
+                    }
+                };
+                xmlHttp.open("GET", theURL , true);
+                xmlHttp.send();
+        }
+
+    function validateEditVendorForm()
+        {
+            vName = document.getElementById("name").value;
+
+            if (vName == "")
+            {
+              alert("Name Missing");
+            }
+            else
+            {
+              sendEditVendorForm();
+            }
+        }
+
+    function sendEditVendorForm()
+      {
+
+            let myEditForm;
+            let editFormData = new FormData(myEditForm);
+
+            editFormData.append('uuid', gblVendorID);
+            editFormData.append('name', vName);
+            
+            var newObject = {};
+            editFormData.forEach(function(value, key)
+            {
+            newObject[key] = value;
+            });
+            
+            var vendorData = JSON.stringify(newObject);
+            console.log(vendorData);
+
+            var xmlHttp = new XMLHttpRequest();
+            var theUrl = "http://localhost:8080/vendor/update";
+            xmlHttp.open("PUT", theUrl);
+            xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            xmlHttp.onreadystatechange = function()
+            {
+              console.log(this.status);
+                if (this.readyState == 4 && this.status == 200)
+                {
+                    alert("Vendor updated");
+                    getVendorsForEdit();
+                    $("#editVendorModal").modal("toggle");
+                    
+                }else if (this.readyState == 4 && this.status == 500)
+                {
+                    alert("Vendro Update Error");
+                }
+            };
+
+            xmlHttp.send(vendorData);
+            
+      }
+    
+    document.getElementById("download-csv").addEventListener("click", function(){
+    table.download("csv", "data.csv");});
+
+    
+    document.getElementById("download-json").addEventListener("click", function(){
+        table.download("json", "data.json");});
+
+    document.getElementById("download-xlsx").addEventListener("click", function(){
+        table.download("xlsx", "data.xlsx", {sheetName:"My Data"});});
+
+    document.getElementById("download-pdf").addEventListener("click", function(){
+        table.download("pdf", "data.pdf", {
+            orientation:"portrait",
+            title:"Example Report",
+        });});
+
+    document.getElementById("download-html").addEventListener("click", function(){
+        table.download("html", "data.html", {style:true});});
+
+    document.getElementById("print-table").addEventListener("click", function(){
+    table.print(false, true);});
+
+
+</script>
 </html>

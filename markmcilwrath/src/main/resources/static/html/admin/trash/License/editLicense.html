@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body >
+
+  <button type="button" class="btn btn-info btn-lg" onclick="startEdit()">Edit License</button>
+
+  <div id="selectEditLicenseModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 id="title" class="modal-title">Select License</h4>
+                  </div>
+                      <div class="modal-body">
+                          <select class="selectpicker" id="ddList" name="locality"></select>
+                      </div>
+                  <div class="modal-footer">
+                  	<button type="button" class="btn btn-default" data-dismiss="modal" onclick="searchLicenseToEdit()">Edit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="editLicenseModal" class="modal fade" role="dialog">
+  	<div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 id="editLicenseTitle" class="modal-title">Edit License</h4>
+            </div>
+            <div class="modal-body">
+                <form id="editLicenseForm" name="editLicenseForm">
+                    <div>
+                        <label for="purchaseDate">Purchase Date:</label>
+                        <input type="date" id="purchaseDate" name="purchaseDate">
+                    </div>
+                    <div>
+                        <label for="expiryDate">Expiry Date:</label>
+                        <input type="date" id="expiryDate" name="expiryDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type ="button" class="btn btn-default" onclick="validateEditForm()">Submit Changes </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    	</div>
+	</div>
+
+</body>
+
+<script>
+
+	var gblEditSoftwareID;
+
+
+	function startEdit()
+	{
+		dropEditDown();
+		$("#selectEditLicenseModal").modal("toggle");
+	}
+
+	function searchLicenseToEdit()
+	{
+	    var selected = (document.getElementById("ddList"));
+	    var licenseid = selected.value;
+	    gblLicenseKey = licenseid;
+
+	    var xmlHttp = new XMLHttpRequest();
+	    var theURL = "http://localhost:8080/license/" + licenseid;
+
+	    xmlHttp.onreadystatechange = function()
+	    {
+	        if (this.readyState == 4 && this.status == 200)
+	        {
+	            myObj = JSON.parse(this.responseText);
+	            gblEditSoftwareID = (myObj.softwareID);
+	            document.getElementById("editLicenseTitle").innerHTML = "Edit License: " + gblLicenseKey;
+	           
+	            var licensePDHold = myObj.purchaseDate;
+	            document.getElementById("purchaseDate").value = licensePDHold;
+
+	            var licenseEDHold = myObj.expiryDate;
+	            document.getElementById("expiryDate").value = licenseEDHold;
+
+	            
+	            
+
+	            $("#editLicenseModal").modal()
+	        }
+	        else if (this.readyState == 4 && this.status != 200)
+	        {
+	        	alert("Error");
+	        }
+	    };
+	    xmlHttp.open("GET", theURL , true);
+	    xmlHttp.send();
+	}
+
+	function validateEditForm()
+	{
+	        var vPD = document.forms["editLicenseForm"]["purchaseDate"].value;
+	        var vED = document.forms["editLicenseForm"]["expiryDate"].value;
+
+	        var today = new Date();
+    		var datePD = new Date(vPD);
+    		
+    		if (vPD == "")
+	        {
+	            alert("Purchase date Missing");
+	        }
+	        else if ( datePD.getTime() > today.getTime())
+	        {
+	            alert("Purchase date must be in the past");
+	        }
+	        else if (vED == "")
+	        {
+	            document.forms["editLicenseForm"]["expiryDate"].value = null;
+	            console.log("end null");
+	            sendEditLicenseForm();
+	        }
+	        else 
+	        {
+	        	var dateED = new Date(vED);
+	        	if (dateED.getTime() < today.getTime())
+	        	{
+	        		alert("Expiry Date must be in the future");
+	        	}
+	        	else
+	        	{
+	        		console.log("end date");
+	        		sendEditLicenseForm();
+	        	}
+	        }
+	}
+
+	function sendEditLicenseForm()
+    {
+        
+        let myForm = document.getElementById('editLicenseForm');
+        let formData = new FormData(myForm);
+
+        formData.append('licenseKey', gblLicenseKey);
+
+        var newObject = {};
+        formData.forEach(function(value, key)
+        {
+        newObject[key] = value;
+        });
+        
+        var licenseData = JSON.stringify(newObject);
+        console.log(licenseData);
+
+        var xmlHttp = new XMLHttpRequest();
+        var theUrl = "http://localhost:8080/license/update/" + gblEditSoftwareID;
+        xmlHttp.open("PUT", theUrl);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xmlHttp.onreadystatechange = function()
+        {
+          console.log(this.status);
+            if (this.readyState == 4 && this.status == 200)
+            {
+                alert("License updated");
+                dropEditDown();
+                $("#editLicenseModal").modal("toggle")
+                
+            }else if (this.readyState == 4 && this.status == 500)
+            {
+                alert("License Update Error");
+            }
+        };
+
+        xmlHttp.send(licenseData);
+
+      }
+
+	function dropEditDown()
+	{
+		let dropdown = document.getElementById('ddList');
+	    dropdown.length = 0;
+
+	    const url = 'http://localhost:8080/license';
+
+	    const request = new XMLHttpRequest();
+	    request.open('GET', url, true);
+
+	    request.onload = function()
+	    {
+	    	if (request.status === 200)
+	    	{
+	    		const data = JSON.parse(request.responseText);
+	    		console.log(data);
+        		let option;
+        		for (let i = 0; i < data.length; i++)
+        		{
+        			option = document.createElement('option');
+			        var licenseName = data[i].softwareName + " " + data[i].softwareVersion + " " + data[i].licenseKey;
+			        option.text = licenseName;
+			        option.value = data[i].licenseKey;
+			        dropdown.add(option);
+			    }
+			}
+			else 
+			{
+
+			}   
+		}
+		request.onerror = function()
+		{
+			console.error('An error occurred fetching the JSON from ' + url);
+		};
+		request.send();
+	}
+
+	
+</script>
+</html>
