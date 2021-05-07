@@ -709,13 +709,12 @@
 	        var theURL = "http://localhost:8080/license_archive"
 	        xmlHttp.onreadystatechange = function()
 	          {
-	            console.log(this.status);
 	            if (this.readyState == 4 && this.status == 200)
 	            {
 	            var myList1 = (this.responseText);
 	            var localTD = JSON.parse(myList1);
 	          	archivedLicensesTableData = localTD;
-	          	buildTable("#archivedLicenses-Table, archivedLicensesTableData")
+	          	buildTable("#archivedLicenses-Table", archivedLicensesTableData);
 	            }
 	          };
 	          xmlHttp.open("GET", theURL , true);
