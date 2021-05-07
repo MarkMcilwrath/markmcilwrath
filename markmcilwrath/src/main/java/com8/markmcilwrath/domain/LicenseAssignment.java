@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,17 +38,9 @@ public class LicenseAssignment {
     private  String version;
     private  String email;
 
-    private String location;
+    private Set tagSet;
 
     private Map<String, String> tags = new HashMap<>();
-
-    public LicenseAssignment(String UUID, String license_key, String user_id, String location)
-    {
-        this.UUID = UUID;
-        this.license_key = license_key;
-        this.user_id = user_id;
-        this.location=location;
-    }
 
     public LicenseAssignment(String UUID, String license_key, String user_id, LocalDate assignmentDate, Boolean approved)
     {
@@ -74,9 +67,15 @@ public class LicenseAssignment {
     }
 
 
-    public LicenseAssignment(String UUID, String license_key,
-                             String user_id, String email,
-                             LocalDate assignmentDate, Boolean approved, String name, String version)
+    public LicenseAssignment(String UUID,
+                             String license_key,
+                             String user_id,
+                             String email,
+                             LocalDate assignmentDate,
+                             Boolean approved,
+                             String name,
+                             String version,
+                             Map tags)
     {
         this.UUID = UUID;
         this.license_key = license_key;
@@ -86,13 +85,18 @@ public class LicenseAssignment {
         this.approved = approved;
         this.name = name;
         this.version = version;
+        this.tags=tags;
     }
 
-    public LicenseAssignment(String UUID, String license_key,
-                             String user_id, String email,
-                             LocalDate assignmentDate, Boolean approved,
-                             String name, String version,
-                             String location)
+    public LicenseAssignment(String UUID,
+                             String license_key,
+                             String user_id,
+                             String email,
+                             LocalDate assignmentDate,
+                             Boolean approved,
+                             String name,
+                             String version,
+                             Set tagSet)
     {
         this.UUID = UUID;
         this.license_key = license_key;
@@ -102,6 +106,28 @@ public class LicenseAssignment {
         this.approved = approved;
         this.name = name;
         this.version = version;
-        this.location=location;
+        this.tagSet=tagSet;
+    }
+
+
+    public LicenseAssignment(String UUID,
+                             String license_key,
+                             String user_id,
+                             String email,
+                             LocalDate assignmentDate,
+                             Boolean approved,
+                             String name,
+                             String version)
+    {
+        this.UUID = UUID;
+        this.license_key = license_key;
+        this.user_id = user_id;
+        this.email = email;
+        this.assignmentDate = assignmentDate;
+        this.approved = approved;
+        this.name = name;
+        this.version = version;
+
+
     }
 }

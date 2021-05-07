@@ -223,6 +223,33 @@ public class LicenseService {
         return expiredLicenses;
     }
 
+    public Set<License> getAllExpiringLicenses()
+    {
+        Iterable<LicenseEntity> entityList = licenseRepository.findAll();
+        Set<License> licenses = new HashSet<>();
+        Iterable<LicenseAssignmentEntity> assignmentList = licenseAssignmentRepository.findAll();
+
+        for (LicenseEntity entity : entityList)
+        {
+            if (entity.getExpiryDate() != null)
+            {
+                License license = new License(entity.getLicenseKey(),
+                        entity.getPurchaseDate(), entity.getExpiryDate(), entity.getSoftwareEntity().getName(),
+                        entity.getSoftwareEntity().getSoftwareID(), entity.getSoftwareEntity().getVersion());
+
+                LocalDate expData = entity.getExpiryDate();
+                LocalDate todayPlusMonthDate = LocalDate.now().plusMonths(1);
+
+                int compareValue = expData.compareTo(todayPlusMonthDate);
+                if (compareValue < 0)
+                {
+                    licenses.add(license);
+                }
+            }
+        }
+        return licenses;
+    }
+
     private SoftwareEntity getSoftwareEntity(String softwareID) throws NotFoundException
     {
         return softwareService.getSoftwareEntity(softwareID);

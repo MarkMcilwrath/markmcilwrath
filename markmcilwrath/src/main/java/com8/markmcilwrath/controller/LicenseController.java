@@ -91,4 +91,10 @@ public class LicenseController
     {
         return ResponseEntity.ok(licenseService.getAllLicensesWithExpiryDates());
     }
+
+    @GetMapping("/expiring")
+    public ResponseEntity<Set<License>> getAllExpiringLicenses()
+    {
+        return ResponseEntity.ok(licenseService.getAllExpiringLicenses());
+    }
 }

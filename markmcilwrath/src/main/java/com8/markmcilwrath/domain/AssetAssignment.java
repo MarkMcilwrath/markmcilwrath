@@ -10,6 +10,7 @@ import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,6 +34,8 @@ public class AssetAssignment
     private  String email;
     private String name;
     private  String model;
+
+    private Set tagSet;
 
     private Map<String, String> tags = new HashMap<>();
 
@@ -73,7 +76,8 @@ public class AssetAssignment
                             Boolean approved,
                             String email,
                             String name,
-                            String model)
+                            String model,
+                            Set tagSet)
     {
         this.UUID=UUID;
         this.assetTag=assetTag;
@@ -83,5 +87,8 @@ public class AssetAssignment
         this.email=email;
         this.name=name;
         this.model=model;
+        this.tagSet=tagSet;
     }
+
+
 }

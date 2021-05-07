@@ -103,9 +103,4 @@ public class LicenseAssignmentController
         return ResponseEntity.ok(licenseAssignmentService.getTags(assignmentID));
     }
 
-    @GetMapping("/location")
-    public ResponseEntity<Set<LicenseAssignment>> getTagsForAssignment() throws NotFoundException {
-        return ResponseEntity.ok(licenseAssignmentService.getAssignmentsWithLocationTag());
-    }
-
 }

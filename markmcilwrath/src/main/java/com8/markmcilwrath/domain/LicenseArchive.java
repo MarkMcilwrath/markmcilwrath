@@ -28,9 +28,8 @@ public class LicenseArchive
     private LocalDate expiryDate;
 
     private String softwareName;
-    private String softwareID;
+    private Long softwareID;
     private String softwareVersion;
-    private Boolean assigned;
 
 
     public LicenseArchive(
@@ -47,7 +46,7 @@ public class LicenseArchive
             String licenseKey,
             LocalDate purchaseDate,
             LocalDate expiryDate,
-            String softwareID)
+            Long softwareID)
     {
         this.licenseKey = licenseKey;
         this.purchaseDate = purchaseDate;
@@ -74,7 +73,7 @@ public class LicenseArchive
             LocalDate purchaseDate,
             LocalDate expiryDate,
             String softwareName,
-            String softwareID,
+            Long softwareID,
             String softwareVersion)
     {
         this.licenseKey = licenseKey;
@@ -84,7 +83,5 @@ public class LicenseArchive
         this.softwareID = softwareID;
         this.softwareVersion = softwareVersion;
     }
-
-
 
 }

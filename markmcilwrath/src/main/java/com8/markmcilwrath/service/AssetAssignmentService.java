@@ -126,7 +126,8 @@ public class AssetAssignmentService
                 entity.getApproved(),
                 entity.getUserEntity().getEmail(),
                 entity.getAssetEntity().getHardwareEntity().getName(),
-                entity.getAssetEntity().getHardwareEntity().getModel());
+                entity.getAssetEntity().getHardwareEntity().getModel(),
+                getTags(entity.getUUID()));
         return assignment;
     }
 
@@ -144,14 +145,14 @@ public class AssetAssignmentService
                     entity.getApproved(),
                     entity.getUserEntity().getEmail(),
                     entity.getAssetEntity().getHardwareEntity().getName(),
-                    entity.getAssetEntity().getHardwareEntity().getModel());
+                    entity.getAssetEntity().getHardwareEntity().getModel(),
+                    getTags(entity.getUUID()));
             assignments.add(assignment);
         }
         return assignments;
     }
 
-    public  Set<AssetAssignment> getAllAssignments()
-    {
+    public  Set<AssetAssignment> getAllAssignments() throws NotFoundException {
         Iterable<AssetAssignmentEntity> entityList = assetAssignmentRepository.findAll();
         Set<AssetAssignment> assignments = new HashSet<>();
 
@@ -164,14 +165,14 @@ public class AssetAssignmentService
                     entity.getApproved(),
                     entity.getUserEntity().getEmail(),
                     entity.getAssetEntity().getHardwareEntity().getName(),
-                    entity.getAssetEntity().getHardwareEntity().getModel());
+                    entity.getAssetEntity().getHardwareEntity().getModel(),
+                    getTags(entity.getUUID()));
             assignments.add(assignment);
         }
         return assignments;
     }
 
-    public  Set<AssetAssignment> getAllAssignmentsByUser(String userID)
-    {
+    public  Set<AssetAssignment> getAllAssignmentsByUser(String userID) throws NotFoundException {
         UserEntity userEntity = null;
         try {
             userEntity = getUserEntity(userID);
@@ -191,15 +192,15 @@ public class AssetAssignmentService
                     entity.getApproved(),
                     entity.getUserEntity().getEmail(),
                     entity.getAssetEntity().getHardwareEntity().getName(),
-                    entity.getAssetEntity().getHardwareEntity().getModel());
+                    entity.getAssetEntity().getHardwareEntity().getModel(),
+                    getTags(entity.getUUID()));
             assignments.add(assignment);
         }
 
         return assignments;
     }
 
-    public  Set<AssetAssignment> getAllAssignmentsNotApproved()
-    {
+    public  Set<AssetAssignment> getAllAssignmentsNotApproved() throws NotFoundException {
         Iterable<AssetAssignmentEntity> entityList = assetAssignmentRepository.findByApproved(false);
         Set<AssetAssignment> assignments = new HashSet<>();
 
@@ -212,7 +213,8 @@ public class AssetAssignmentService
                     entity.getApproved(),
                     entity.getUserEntity().getEmail(),
                     entity.getAssetEntity().getHardwareEntity().getName(),
-                    entity.getAssetEntity().getHardwareEntity().getModel());
+                    entity.getAssetEntity().getHardwareEntity().getModel(),
+                    getTags(entity.getUUID()));
             assignments.add(assignment);
         }
         return assignments;

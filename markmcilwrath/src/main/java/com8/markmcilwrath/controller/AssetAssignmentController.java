@@ -57,20 +57,17 @@ public class AssetAssignmentController {
     }
 
     @GetMapping()
-    public ResponseEntity<Set<AssetAssignment>> getAllAssignments()
-    {
+    public ResponseEntity<Set<AssetAssignment>> getAllAssignments() throws NotFoundException {
         return ResponseEntity.ok().body(assetAssignmentService.getAllAssignments());
     }
 
     @GetMapping("/user/{userID}")
-    public ResponseEntity<Set<AssetAssignment>> getAllAssignmentsByUser(@PathVariable String userID)
-    {
+    public ResponseEntity<Set<AssetAssignment>> getAllAssignmentsByUser(@PathVariable String userID) throws NotFoundException {
         return ResponseEntity.ok().body(assetAssignmentService.getAllAssignmentsByUser(userID));
     }
 
     @GetMapping("/approve")
-    public ResponseEntity<Set<AssetAssignment>> getAllAssignmentsNotApproved()
-    {
+    public ResponseEntity<Set<AssetAssignment>> getAllAssignmentsNotApproved() throws NotFoundException {
         return ResponseEntity.ok().body(assetAssignmentService.getAllAssignmentsNotApproved());
     }
 
