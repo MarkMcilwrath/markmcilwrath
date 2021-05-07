@@ -48,10 +48,12 @@
             </div>
         </div>
 
+        
+
         <div class="container">
             <div class="center">
                 <div class="menuButtonHolder">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startAllAssignments()">All Assigned Licenses</button>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startUnassignLicense()">Uassign License</button>
                 </div>
             </div>
         </div>
@@ -59,7 +61,7 @@
         <div class="container">
             <div class="center">
                 <div class="menuButtonHolder">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startUnassignLicense()">Uassign License</button>
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startAllAssignments()">All Assigned Licenses</button>
                 </div>
             </div>
         </div>
@@ -183,6 +185,7 @@
                       <button id="print-table"class="btn btn-default" >Print Table</button>
                       <button class="btn btn-default" onclick="showCmds()">Show Filters</button>
                   </div>
+                  
                   <div id="filterCmds">
                       <div class="wrapper">
                           <select id="filter-field" class="form-control">
@@ -312,13 +315,12 @@
                 <br>
                 <div id="indAssigned-Table"></div>
                 <br>
-                <div id="indassignedTags-Table"></div>
-                <div class="wrapper">
-                  <button onclick="approveRequest()" class="btn btn-default">Approve</button>
-                  <button onclick="rejectRequest()" class="btn btn-default">Reject</button>
-                </div>
+                <div id="indassignedApproveTags-Table"></div>
+
             </div>
             <div class="modal-footer">
+              <button onclick="approveRequest()" class="btn btn-default">Approve</button>
+                <button onclick="rejectRequest()" class="btn btn-default">Reject</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -901,6 +903,7 @@
     
     var unApprovedtableData;
     var unApprovedtableData2;
+    var unApprovedtableData3;
     
     var approveID;
 
@@ -975,6 +978,7 @@
                     var rowData = row.getData();
                     approveID = rowData.uuid;
                     getIndUnapproveAssignment(rowData.uuid);
+                    getTagsForIndAproveAssignment(rowData.uuid)
                     $("#allUnapproveAssignedLicenses").modal("toggle");
                     $("#indUnAssignedLicenses").modal("toggle");
                   }
@@ -1055,6 +1059,55 @@
             xmlHttp.open("Delete", theURL , true);
             xmlHttp.send();
         }
+
+        function getTagsForIndAproveAssignment(assignmentID)
+        {
+          var xmlHttp = new XMLHttpRequest();
+          var theURL = "http://localhost:8080/license_assign/tags/" + assignmentID;
+          xmlHttp.onreadystatechange = function()
+          {
+                
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 var myList2 = (this.responseText);
+                 var localTD = JSON.parse(myList2);
+                 unApprovedtableData3 = localTD;
+                 buildTagAppropveTable();
+                 
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+
+        }
+
+        function buildTagAppropveTable()
+        {
+
+            table = new Tabulator("#indassignedApproveTags-Table",
+                {
+                    data:unApprovedtableData3,
+                    layout:"fitColumns",
+                    paginationSize:5,
+                    movableColumns:true,
+                    resizableRows:true,
+                    printAsHtml:true,
+                    printHeader:"<h1>Assiged Licnese Tags<h1>",
+                    columns:[
+                    // {title:"ID", field:"uuid"},
+                    {formatter:"rownum", hozAlign:"center", width:40},
+                    {title:"Tag", field:"tagKey", hozAlign:"left"},
+                    {title:"Value", field:"tagValue", hozAlign:"left"},],
+                    rowClick:function(e, row)
+                    {
+
+                    }
+                }
+            );
+
+        }
+
+        
 
 </script>
 </body>

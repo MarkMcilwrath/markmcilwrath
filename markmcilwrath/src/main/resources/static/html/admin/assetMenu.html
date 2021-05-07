@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<he<meta charset="UTF-8" content="width=device-width, initial-scale=1">
+<head>
+	<meta charset="UTF-8" content="width=device-width, initial-scale=1">
 	    <title>Asset Menu</title>
 
 		<link rel="shortcut icon" href="#">
@@ -112,9 +113,10 @@
                   </div>
                       <div class="modal-body">
                           <select class="selectpicker" id="ddList" name="locality" ></select>
-                           <button type ="button" class="btn btn-default" onclick="confirmDelete()">Delete Asset</button>
+                           
                       </div>
                   <div class="modal-footer">
+                  <button type ="button" class="btn btn-default" onclick="confirmDelete()">Delete Asset</button>
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
           </div>
@@ -155,6 +157,7 @@
 		                <button id="download-html" class="btn btn-default">Download HTML</button>
 		                <button id="print-table"class="btn btn-default" >Print Table</button>
 	                </div>
+	                <br>
 	               		<div id="allAssets-Table"></div>
 	            </div>
 	            <div class="modal-footer">

@@ -170,7 +170,7 @@
           <div class="modal-content">
               <div class="modal-header">
                   
-                  <h4 class="modal-title">All Assigned Licneses</h4>
+                  <h4 class="modal-title">All Assigned Assets 1</h4>
               </div>
 
               <div class="modal-body">
@@ -246,7 +246,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">All Assigned Licneses</h4>
+                <h4 class="modal-title">Select Licnese to Unassign</h4>
             </div>
 
             <div class="modal-body">
@@ -270,10 +270,11 @@
             <div class="modal-body">
                 <h4 id="confirmtext"></h4>
                 <div>
-                    <button id="download-csv" class="btn btn-default" onclick="confirmUnassign(unassignRowData.uuid)">Confirm</button>
+                  
                 </div>
             </div>
             <div class="modal-footer">
+               <button id="download-csv" class="btn btn-default" onclick="confirmUnassign(unassignRowData.uuid)">Confirm</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -284,14 +285,13 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">Unapproved Licneses</h4>
             </div>
 
             <div class="modal-body">
-                
                 <br>
-                <div id="assigned-Table"></div>
+                <div id="unapprove-Table"></div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -312,7 +312,7 @@
                 <br>
                 <div id="indAssigned-Table"></div>
                 <br>
-                <div id="indassignedTags-Table"></div>
+                <div id="indassignedApproveTags-Table"></div>
                 <div class="wrapper">
                   <button onclick="approveRequest()" class="btn btn-default">Approve</button>
                   <button onclick="rejectRequest()" class="btn btn-default">Reject</button>
@@ -576,7 +576,7 @@
             getAllAssignments();
             cmds = document.getElementById("filterCmds");
             cmds.style.display = ("none");
-            $("#allUnapproveAssignedAssets").modal("toggle");
+            $("#allAssignedAssets").modal("toggle");
         }
 
     function getAllAssignments()
@@ -676,8 +676,8 @@
 	                // {title:"ID", field:"uuid"},
 	                {title:"Name", field:"name", hozAlign:"left"},
 	                {title:"Model", field:"model", hozAlign:"left"},
-	                {title:"Purchase Date", field:"purchaseDate", hozAlign:"left"},
-	                {title:"Serial Number", field:"serialNumber", hozAlign:"left"},
+	                {title:"Purchase Date", field:"assignmentDate", hozAlign:"left"},
+                  {title:"User", field:"email", hozAlign:"left"},
 	                {title:"Asset Tag", field:"assetTag", hozAlign:"left"},
 	                
 	                ],
@@ -851,8 +851,8 @@
                 // {title:"ID", field:"uuid"},
                 {title:"Name", field:"name", hozAlign:"left"},
                 {title:"Model", field:"model", hozAlign:"left"},
-                {title:"Purchase Date", field:"purchaseDate", hozAlign:"left"},
-                {title:"Serial Number", field:"serialNumber", hozAlign:"left"},
+                {title:"Purchase Date", field:"assignmentDate", hozAlign:"left"},
+                {title:"User", field:"email", hozAlign:"left"},
                 {title:"Asset Tag", field:"assetTag", hozAlign:"left"},
                 ],
                     rowClick:function(e, row)
@@ -871,7 +871,7 @@
 
     function unassignAssetPrompt(unassignRowData)
         {
-            document.getElementById("confirmtext").innerHTML = "Unassign: " + unassignRowData.name + " " + unassignRowData.version + " [" + unassignRowData.asset_key + "] from " + unassignRowData.email;
+            document.getElementById("confirmtext").innerHTML = "Unassign: " + unassignRowData.name + " " + unassignRowData.model + " [" + unassignRowData.assetTag + "] from " + unassignRowData.email;
         }
 
     function confirmUnassign(assignmentID)
@@ -897,7 +897,7 @@
     
     var unApprovedtableData;
     var unApprovedtableData2;
-    
+    var unApprovedtableData3;    
     var approveID;
 
     function startApprove()
@@ -948,7 +948,7 @@
     function buildUnapprovedTable()
       {
 
-          table = new Tabulator("#assigned-Table",
+          table = new Tabulator("#unapprove-Table",
               {
                   data:unApprovedtableData,
                   layout:"fitColumns",
@@ -961,9 +961,9 @@
                   // {title:"ID", field:"uuid"},
                   {formatter:"rownum", hozAlign:"center", width:40},
                   {title:"User Email", field:"email", hozAlign:"left"},
-                  {title:"Software Name", field:"name", hozAlign:"left"},
-                  {title:"Version", field:"version", hozAlign:"left"},
-                  {title:"Asset Key", field:"asset_key", hozAlign:"left"},
+                  {title:"Name", field:"name", hozAlign:"left"},
+                  {title:"Model", field:"model", hozAlign:"left"},
+                  {title:"Asset Tag", field:"assetTag", hozAlign:"left"},
                   {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
                   {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
                   rowClick:function(e, row)
@@ -971,6 +971,7 @@
                     var rowData = row.getData();
                     approveID = rowData.uuid;
                     getIndUnapproveAssignment(rowData.uuid);
+                    getTagsForIndAproveAssignment(rowData.uuid);
                     $("#allUnapproveAssignedAssets").modal("toggle");
                     $("#indunAssignedAssets").modal("toggle");
                   }
@@ -993,12 +994,13 @@
                       printHeader:"",
                       columns:[
                       // {title:"ID", field:"uuid"},
-                      {title:"User Email", field:"email", hozAlign:"left"},
-                      {title:"Software Name", field:"name", hozAlign:"left"},
-                      {title:"Version", field:"version", hozAlign:"left"},
-                      {title:"Asset Key", field:"asset_key", hozAlign:"left"},
-                      {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
-                      {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+                      {formatter:"rownum", hozAlign:"center", width:40},
+                  {title:"User Email", field:"email", hozAlign:"left"},
+                  {title:"Name", field:"name", hozAlign:"left"},
+                  {title:"Model", field:"model", hozAlign:"left"},
+                  {title:"Asset Tag", field:"assetTag", hozAlign:"left"},
+                  {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+                  {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"}],
                       rowClick:function(e, row)
                       {
                         
@@ -1020,7 +1022,6 @@
             if (this.readyState == 4 && this.status == 200)
               {
                 alert("Asset Approved");
-                getOpenAssignments();
                 $("#indAssignedAssets").modal("toggle");
               }
               else if (this.readyState == 4 && this.status != 200)
@@ -1050,6 +1051,53 @@
                 };
             xmlHttp.open("Delete", theURL , true);
             xmlHttp.send();
+        }
+
+        function getTagsForIndAproveAssignment(assignmentID)
+        {
+          var xmlHttp = new XMLHttpRequest();
+          var theURL = "http://localhost:8080/asset_assign/tags/" + assignmentID;
+          xmlHttp.onreadystatechange = function()
+          {
+                
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 var myList2 = (this.responseText);
+                 var localTD = JSON.parse(myList2);
+                 unApprovedtableData3 = localTD;
+                 buildTagAppropveTable();
+                 
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+
+        }
+
+        function buildTagAppropveTable()
+        {
+
+            table = new Tabulator("#indassignedApproveTags-Table",
+                {
+                    data:unApprovedtableData3,
+                    layout:"fitColumns",
+                    paginationSize:5,
+                    movableColumns:true,
+                    resizableRows:true,
+                    printAsHtml:true,
+                    printHeader:"<h1>Assiged Licnese Tags<h1>",
+                    columns:[
+                    // {title:"ID", field:"uuid"},
+                    {formatter:"rownum", hozAlign:"center", width:40},
+                    {title:"Tag", field:"tagKey", hozAlign:"left"},
+                    {title:"Value", field:"tagValue", hozAlign:"left"},],
+                    rowClick:function(e, row)
+                    {
+
+                    }
+                }
+            );
+
         }
 
 </script>
