@@ -26,7 +26,7 @@ public class Hardware {
 
     private String vendorID;
 
-    private int numberOfAssets;
+//    private int numberOfAssets;
 
     public Hardware(
             String uuid,
@@ -49,7 +49,7 @@ public class Hardware {
         this.uuid = uuid;
         this.name = name;
         this.model = model;
-        this.numberOfAssets = numberOfAssets;
+//        this.numberOfAssets = numberOfAssets;
     }
 
     public Hardware(

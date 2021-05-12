@@ -281,25 +281,6 @@ public class LicenseAssignmentService {
         return tagSet;
     }
 
-//    public Set<LicenseAssignment> getAssignmentsWithLocationTag() throws NotFoundException
-//    {
-//        Set<LicenseAssignment> locationAssignments = new HashSet<>();
-//
-//        Iterable<LicenseAssignmentEntity> listOfAssignment = licenseAssignmentRepository.findAll();
-//        for (LicenseAssignmentEntity entity : listOfAssignment)
-//        {
-//            LicenseTagEntity licenseTagEntity= licenseTagRepository.findByTagKeyAndLicenseAssignmentEntity
-//                  ("location" ,getLicenseAssignmentEntity(entity.getUUID()));
-//
-//            LicenseAssignment newLicense = new LicenseAssignment(
-//                  licenseTagEntity.getLicenseAssignmentEntity().getUUID(),
-//                  licenseTagEntity.getLicenseAssignmentEntity().getLicenseEntity().getLicenseKey(),
-//                  licenseTagEntity.getLicenseAssignmentEntity().getUserEntity().getUserId(),
-//                  licenseTagEntity.getTagValue());
-//
-//          locationAssignments.add(newLicense);
-//        }
-//        return locationAssignments;
-//    }
+
 
 }

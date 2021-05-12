@@ -42,14 +42,15 @@ public class UserController {
     }
 
 
-//    @GetMapping("/{userEmail}")
-//    public ResponseEntity<User> getUserByEmail(@PathVariable String userEmail) throws NotFoundException {
-//        return ResponseEntity.ok().body(userService.getUserByEmail(userEmail));
-//    }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<User> getUserByUUID(@PathVariable String uuid) throws NotFoundException {
         return ResponseEntity.ok().body(userService.getUser(uuid));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) throws NotFoundException {
+        return ResponseEntity.ok().body(userService.getUserByEmail(email));
     }
 
     @GetMapping("/id/{userEmail}")

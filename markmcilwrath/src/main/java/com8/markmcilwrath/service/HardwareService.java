@@ -111,10 +111,7 @@ public class HardwareService {
         return hardwareSet;
     }
 
-//    public int numberOfAssets (String uuid)
-//    {
-//        return assetService.numberOfAssets(uuid);
-//    }
+
 
     private VendorEntity getVendorEntity(String vendorID) throws NotFoundException
     {

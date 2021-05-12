@@ -59,7 +59,7 @@
         <div class="container">
     		<div class="center">
                 <div class="menuButtonHolder">
-                    <button id="delUserBtn" type="button" class="btn btn-primary btn-lg btn-block">Delete User</button>
+                    <button id="delUserBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="startDeleteUser()">Delete User</button>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
         <div class="container">
     		<div class="center">
                 <div class="menuButtonHolder">
-                   <button id="allUserBtn" type="button" class="btn btn-primary btn-lg btn-block">All Users</button>
+                   <button id="allUserBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="startGetAllUsers()">All Users</button>
                 </div>
             </div>
         </div>
@@ -148,6 +148,93 @@
             </div>
         </div>
     </div>
+
+    <div id="searchDeleteUserModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <h4 class="modal-title">Delete user: Search email</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="userEmailForm" name="userEmailForm">
+                        <div>
+                            <label for="userEmail">Email: </label>
+                            <input type="email" id="userEmail" name="userEmail">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="searchIDtoDelete()" >Search</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ConfirmDeleteModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      </div>
+                          <div class="modal-body">
+                              <p id="VDelinfo"></p>
+                          </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" onclick="deleteUser()">Delete</button>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div id="allUsersModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">All User</h4>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper">
+                    <button id="download-csv" class="btn btn-default">Download CSV</button>
+                    <button id="download-json" class="btn btn-default">Download JSON</button>
+                    <button id="download-xlsx" class="btn btn-default">Download XLSX</button>
+                    <button id="download-pdf" class="btn btn-default">Download PDF</button>
+                    <button id="download-html" class="btn btn-default">Download HTML</button>
+                    <button id="print-table"class="btn btn-default" >Print Table</button>
+                </div>
+                <br>
+                <div id="allUsers-Table"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="userInfoModal" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-dialog-scrollable modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="usermodal-title">User Information</h4>
+              </div>
+              <div class="modal-body">
+                <div id="userData"></div>
+                  <br>
+                  <h4>Licenses</h4>
+                  <div id="userLicense-Table"></div>
+                  <br>
+                  <h4>Assets</h4>
+                  <div id="userAsset-Table"></div>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
 
 
 </body>
@@ -405,6 +492,273 @@
 
             xmlHttp.send(editUserData);
         }
+
+         var deleteUserID;
+    var deleteUserTableData;
+
+
+    function startDeleteUser()
+    {
+
+        $("#searchDeleteUserModal").modal("toggle");
+    }
+
+    function searchIDtoDelete()
+    {
+        let myForm = document.getElementById('userEmailForm');
+        let formData = new FormData(myForm);
+        formData.forEach(function(value, key)
+        { deleteUserID = value; });
+        
+        var xmlHttp = new XMLHttpRequest();
+        var theURL = "http://localhost:8080/user/id/" + deleteUserID;
+        
+        xmlHttp.onreadystatechange = function()
+        {
+            if (this.readyState == 4 && this.status == 200)
+            {
+
+                deleteUserTableData = (this.responseText);
+                console.log(deleteUserTableData);
+                document.getElementById("userEmail").value = "";
+                confirmDelete();
+            }
+            else if (this.readyState == 4 && this.status == 500)
+            { 
+                alert("User not found");
+                //document.getElementById("userEmail").value = "";
+                deleteUserID = null;
+            }
+        };
+        xmlHttp.open("GET", theURL , true);
+        xmlHttp.send();
+    }
+
+    function confirmDelete()
+    { 
+    
+    document.getElementById("VDelinfo").innerHTML = "Are you sure you want to Delete " + deleteUserID + "?";
+    $("#ConfirmDeleteModal").modal();
+    }
+
+    
+
+    function deleteUser()
+    {
+        var xmlHttp = new XMLHttpRequest();
+        var theURL = "http://localhost:8080/user/" + deleteUserID;
+        xmlHttp.onreadystatechange = function()
+        {
+            if (this.readyState == 4 && this.status == 204)
+            {
+                alert("User succesfully deleted");
+                deleteUserID = null;
+                $("#ConfirmDeleteModal").modal("hide");
+            }
+        };
+        xmlHttp.open("Delete", theURL , true);
+        xmlHttp.send();
+    }
+
+    var allUsertableData;
+    var allUsertableData2;
+    var allUsertableData3;
+
+
+
+    function startGetAllUsers()
+    {
+
+        getAllUsers();
+        $("#allUsersModal").modal("toggle");
+
+    }
+
+
+    function getAllUsers()
+        {
+            var xmlHttp = new XMLHttpRequest();
+            var theURL = "http://localhost:8080/user"
+            xmlHttp.onreadystatechange = function()
+            {
+                console.log(this.status);
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 var myList1 = (this.responseText);
+                 var localTD = JSON.parse(myList1);
+                 allUsertableData = localTD;
+                 buildTable();
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+
+
+
+
+    function buildTable()
+    {
+
+        table = new Tabulator("#allUsers-Table",
+            {
+                data:allUsertableData,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>All Users<h1>",
+                columns:[
+                //{title:"ID", field:"uuid"},
+                {title:"First Name", field:"firstname", hozAlign:"left"},
+                {title:"Lastname", field:"lastname", hozAlign:"left"},
+                {title:"Email", field:"email", hozAlign:"left"},
+                {title:"Is Admin", field:"admin", hozAlign:"center", formatter:"tickCross"},],
+                rowClick:function(e, row)
+                {
+                    
+                    var rowData = row.getData();
+                    var email = rowData.email;
+                    
+                    getAllUsersLicenses(rowData.uuid);
+                    getAllUsersAssets(rowData.uuid);
+                    // div.innerHTML = 'Name: ' + rowData.firstname + ' ' + rowData.lastname + ' Email: '+ rowData.email + ' Admin: ' + rowData.admin; 
+                    
+                    $("#allUsersModal").modal("toggle");
+                    $("#userInfoModal").modal("toggle");
+                }
+            }
+        );
+
+    }
+
+
+
+    function buildLicenseTable()
+    {
+
+        table = new Tabulator("#userLicense-Table",
+            {
+                data:allUsertableData2,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>Assiged Licneses<h1>",
+                columns:[
+                // {title:"ID", field:"uuid"},
+                {formatter:"rownum", hozAlign:"center", width:40},
+                {title:"Software Name", field:"name", hozAlign:"left"},
+                {title:"Version", field:"version", hozAlign:"left"},
+                {title:"License Key", field:"license_key", hozAlign:"left"},
+                {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+                {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+                rowClick:function(e, row)
+                {
+
+                }
+            }
+        );
+
+    }
+
+    function buildAssetTable()
+    {
+
+        table = new Tabulator("#userAsset-Table",
+            {
+                data:allUsertableData3,
+                layout:"fitColumns",
+                paginationSize:5,
+                movableColumns:true,
+                resizableRows:true,
+                printAsHtml:true,
+                printHeader:"<h1>Assiged Licneses<h1>",
+                columns:[
+                // {title:"ID", field:"uuid"},
+                {formatter:"rownum", hozAlign:"center", width:40},
+                {title:"Hardware Name", field:"name", hozAlign:"left"},
+                {title:"Model", field:"model", hozAlign:"left"},
+                {title:"AssetTag", field:"assetTag", hozAlign:"left"},
+                // {title:"Serial Number", field:"license_key", hozAlign:"left"},
+                {title:"Assignment Date", field:"assignmentDate", hozAlign:"left"},
+                {title:"Approved?", field:"approved", hozAlign:"center", formatter:"tickCross"},],
+                rowClick:function(e, row)
+                {
+
+                }
+
+                
+            }
+        );
+
+    }
+
+    function getAllUsersLicenses(userID)
+        {
+          var xmlHttp = new XMLHttpRequest();
+          var theURL = "http://localhost:8080/license_assign/user/" + userID
+          xmlHttp.onreadystatechange = function()
+          {
+                
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 var myList2 = (this.responseText);
+                 var localTD = JSON.parse(myList2);
+                 allUsertableData2 = localTD;
+                 buildLicenseTable();
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+
+        function getAllUsersAssets(userID)
+        {
+          var xmlHttp = new XMLHttpRequest();
+          var theURL = "http://localhost:8080/asset_assign/user/" + userID
+          xmlHttp.onreadystatechange = function()
+          {
+                
+                if (this.readyState == 4 && this.status == 200)
+                {
+                 var myList2 = (this.responseText);
+                 var localTD = JSON.parse(myList2);
+                 allUsertableData3 = localTD;
+                 console.log(allUsertableData3);
+                 buildAssetTable();
+                }
+            };
+            xmlHttp.open("GET", theURL , true);
+            xmlHttp.send();
+        }
+
+    document.getElementById("download-csv").addEventListener("click", function(){
+    table.download("csv", "data.csv");});
+
+    //trigger download of data.json file
+    document.getElementById("download-json").addEventListener("click", function(){
+        table.download("json", "data.json");});
+
+    //trigger download of data.xlsx file
+    document.getElementById("download-xlsx").addEventListener("click", function(){
+        table.download("xlsx", "data.xlsx", {sheetName:"My Data"});});
+
+    //trigger download of data.pdf file
+    document.getElementById("download-pdf").addEventListener("click", function(){
+        table.download("pdf", "data.pdf", {
+            orientation:"portrait", //set page orientation to portrait
+            title:"Example Report", //add title to report
+        });});
+
+    //trigger download of data.html file
+    document.getElementById("download-html").addEventListener("click", function(){
+        table.download("html", "data.html", {style:true});});
+
+    document.getElementById("print-table").addEventListener("click", function(){
+   table.print(false, true);});
 
 </script>
 </html>

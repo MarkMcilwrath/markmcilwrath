@@ -41,7 +41,7 @@
 <div class="container">
     		<div class="center">
                 <div class="menuButtonHolder">
-                   <button type="button" class="btn btn-info btn-lg btn-block" onclick="startAddAsset()">Add Asset</button>
+                   <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startAddAsset()">Add Asset</button>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
         <div class="container">
     		<div class="center">
                 <div class="menuButtonHolder">
-                  <button type="button" class="btn btn-info btn-lg btn-block" onclick="startDelete()">Delete Asset</button>
+                  <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startDelete()">Delete Asset</button>
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="container">
     		<div class="center">
                 <div class="menuButtonHolder">
-                  <button type="button" class="btn btn-info btn-lg btn-block" >Edit Asset (Not done)</button>
+                  <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startEdit()">Edit Asset</button>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
         <div class="container">
     		<div class="center">
                 <div class="menuButtonHolder">
-                  <button type="button" class="btn btn-info btn-lg btn-block" onclick="startGetAllAssets()" >All Assets</button>
+                  <button type="button" class="btn btn-primary btn-lg btn-block" onclick="startGetAllAssets()" >All Assets</button>
                 </div>
             </div>
         </div>
@@ -165,6 +165,50 @@
 	            </div>
 	        </div>
 	    </div>
+	</div>
+
+	<div id="selectEditAssetModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 id="title" class="modal-title">Select Asset</h4>
+                  </div>
+                      <div class="modal-body">
+                          <select class="selectpicker" id="editassetddList" name="locality"></select>
+                      </div>
+                  <div class="modal-footer">
+                  	<button type="button" class="btn btn-default" data-dismiss="modal" onclick="searchAssetToEdit()">Edit</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div id="editAssetModal" class="modal fade" role="dialog">
+  	<div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                
+                <h4 id="editLicenseTitle" class="modal-title">Edit License</h4>
+            </div>
+            <div class="modal-body">
+                <form id="editLicenseForm" name="editLicenseForm">
+                	<div>
+                        <label for="serialNumber">Serial Number:</label>
+                        <input type="text" id="serialEditNumber" name="serialNumber">
+                    </div>
+                    <div>
+                        <label for="purchaseDate">Purchase Date:</label>
+                        <input type="date" id="purchaseEditDate" name="purchaseDate">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type ="button" class="btn btn-default" onclick="validateEditForm()">Submit Changes </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    	</div>
 	</div>
 
 
@@ -432,5 +476,155 @@
 
     document.getElementById("print-table").addEventListener("click", function(){
    table.print(false, true);});
+
+    var gblEditAssetID;
+    var editHARDWAREid;
+
+
+	function startEdit()
+	{
+		dropEditDown();
+		$("#selectEditAssetModal").modal("toggle");
+	}
+
+	function searchAssetToEdit()
+	{
+	    var selected = (document.getElementById("editassetddList"));
+	    var licenseid = selected.value;
+	    gblEditAssetID = licenseid;
+
+	    var xmlHttp = new XMLHttpRequest();
+	    var theURL = "http://localhost:8080/asset/" + gblEditAssetID;
+
+	    xmlHttp.onreadystatechange = function()
+	    {
+	        if (this.readyState == 4 && this.status == 200)
+	        {
+	            myObj = JSON.parse(this.responseText);
+	            document.getElementById("editLicenseTitle").innerHTML = "Edit asset: " + gblEditAssetID;
+	           console.log(myObj);
+	            var licensePDHold = myObj.purchaseDate;
+	            document.getElementById("purchaseEditDate").value = licensePDHold;
+
+	            var licenseEDHold = myObj.serialNumber;
+	            document.getElementById("serialEditNumber").value = licenseEDHold;
+	            editHARDWAREid = myObj.hardwareID;
+
+	            
+	            $("#editAssetModal").modal()
+	        }
+	        else if (this.readyState == 4 && this.status != 200)
+	        {
+	        	alert("Error");
+	        }
+	    };
+	    xmlHttp.open("GET", theURL , true);
+	    xmlHttp.send();
+	}
+
+	function validateEditForm()
+	{
+	        var vPD = document.forms["editLicenseForm"]["purchaseEditDate"].value;
+	        var vSN = document.forms["editLicenseForm"]["serialEditNumber"].value;
+
+	        var today = new Date();
+    		var datePD = new Date(vPD);
+    		
+    		if (vPD == "")
+	        {
+	            alert("Purchase date Missing");
+	        }
+	        else if ( datePD.getTime() > today.getTime())
+	        {
+	            alert("Purchase date must be in the past");
+	        }
+	        else if (vSN == "")
+	        {
+	            alert("Serial Number Missing");
+	        }
+	        else 
+	        {
+	        	sendEditLicenseForm();
+	        }
+	}
+
+	function sendEditLicenseForm()
+    {
+        
+        let myForm = document.getElementById('editLicenseForm');
+        let formData = new FormData(myForm);
+
+        formData.append('assetTag', gblEditAssetID);
+
+        var newObject = {};
+        formData.forEach(function(value, key)
+        {
+        newObject[key] = value;
+        });
+        
+        var licenseData = JSON.stringify(newObject);
+        console.log(licenseData);
+
+        var xmlHttp = new XMLHttpRequest();
+        var theUrl = "http://localhost:8080/asset/update/" + editHARDWAREid;
+        xmlHttp.open("PUT", theUrl);
+        xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+        xmlHttp.onreadystatechange = function()
+        {
+          console.log(this.status);
+            if (this.readyState == 4 && this.status == 200)
+            {
+                alert("Asset updated");
+                dropEditDown();
+                $("#editAssetModal").modal("toggle")
+                
+            }else if (this.readyState == 4 && this.status == 500)
+            {
+                alert("Asset Update Error");
+            }
+        };
+
+        xmlHttp.send(licenseData);
+
+      }
+
+	function dropEditDown()
+	{
+		let dropdown = document.getElementById('editassetddList');
+	    dropdown.length = 0;
+
+	    const url = 'http://localhost:8080/asset';
+
+	    const request = new XMLHttpRequest();
+	    request.open('GET', url, true);
+
+	    request.onload = function()
+	    {
+	    	if (request.status === 200)
+	    	{
+	    		const data = JSON.parse(request.responseText);
+	    		console.log(data);
+        		let option;
+        		for (let i = 0; i < data.length; i++)
+        		{
+        			option = document.createElement('option');
+			        var licenseName = data[i].name + " " + data[i].model + " " + data[i].assetTag;
+			        option.text = licenseName;
+			        option.value = data[i].assetTag;
+			        dropdown.add(option);
+			    }
+			}
+			else 
+			{
+
+			}   
+		}
+		request.onerror = function()
+		{
+			console.error('An error occurred fetching the JSON from ' + url);
+		};
+		request.send();
+	}
 </script>
 </html>
