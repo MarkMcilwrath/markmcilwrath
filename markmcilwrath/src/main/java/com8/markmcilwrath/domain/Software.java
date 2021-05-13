@@ -34,6 +34,17 @@ public class Software {
     }
 
     public Software(
+
+            String name,
+            String version)
+    {
+
+        this.name = name;
+        this.version = version;
+    }
+
+
+    public Software(
             String uuid,
             String name,
             String version,

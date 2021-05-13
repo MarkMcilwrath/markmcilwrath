@@ -1,10 +1,11 @@
 package com8.markmcilwrath.controller;
 
-import com8.markmcilwrath.domain.User;
-import com8.markmcilwrath.service.UserService;
+import com8.markmcilwrath.domain.AssetAssignment;
+import com8.markmcilwrath.service.AssetAssignmentService;
+import com8.markmcilwrath.service.AssetService;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.Rule;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -13,6 +14,7 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDate;
 import java.util.Collections;
 
 import static com8.markmcilwrath.helper.toJson;
@@ -21,28 +23,27 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserControllerTest {
-
+public class AssetAssignmentControllerTest {
     private MockMvc mvc;
 
     @Mock
-    private UserService userService;
+    private AssetAssignmentService assetAssignmentService;
 
     @Rule
-    public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("target/generated-snippets/users");
+    public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("target/generated-snippets/asset_assign");
 
-    private static final String BASE_URL = "/user";
-
+    private static final String BASE_URL = "/asset_assign";
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserController userController = new UserController(userService);
+        AssetAssignmentController assetAssignmentController = new AssetAssignmentController(assetAssignmentService);
         mvc = MockMvcBuilders
-                .standaloneSetup(userController)
+                .standaloneSetup(assetAssignmentController)
                 .apply(documentationConfiguration(this.restDocumentation))
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .alwaysDo(document(
@@ -53,101 +54,73 @@ public class UserControllerTest {
 
     }
 
-
-
     @Test
-    public void addUsersTest() throws Exception {
-        when(userService.getAllUsers()).thenReturn(Collections.emptySet());
+    public void getAssignentByAssignmentID() throws Exception {
+        when(assetAssignmentService.getAssignmentByUUID(any())).thenReturn(assetAssignment());
 
         mvc.perform(
-                post(BASE_URL + "/add")
+                get(BASE_URL + "/1234")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-        .content(toJson(user())))
-                .andExpect(status().isCreated())
-                .andReturn();
-    }
-
-    @Test
-    public void updateUsersTest() throws Exception {
-        when(userService.getAllUsers()).thenReturn(Collections.emptySet());
-
-        mvc.perform(
-                put(BASE_URL + "/update")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(user())))
+                        .content(toJson(assetAssignment())))
                 .andExpect(status().isOk())
                 .andReturn();
     }
 
     @Test
-    public void deleteUsersTest() throws Exception {
-        when(userService.getAllUsers()).thenReturn(Collections.emptySet());
+    public void getAssignmentByAssignmentIDasIterable() throws Exception {
+        when(assetAssignmentService.getAssignmentAsIterable(any())).thenReturn(Collections.emptySet());
 
         mvc.perform(
-                delete(BASE_URL + "/asd")
+                get(BASE_URL + "/1234")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(user())))
-                .andExpect(status().is2xxSuccessful())
-                .andReturn();
-    }
-
-    @Test
-    public void getAllUsersTest() throws Exception {
-        when(userService.getAllUsers()).thenReturn(Collections.emptySet());
-
-        mvc.perform(
-                get(BASE_URL)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(user())))
+                        .content(toJson(assetAssignment())))
                 .andExpect(status().isOk())
                 .andReturn();
     }
 
     @Test
-    public void getUserByIDTest() throws Exception {
-        when(userService.getAllUsers()).thenReturn(Collections.emptySet());
+    public void getAssignmentsByUserTest() throws Exception {
+        when(assetAssignmentService.getAssignmentAsIterable(any())).thenReturn(Collections.emptySet());
 
         mvc.perform(
-                get(BASE_URL + "/1")
+                get(BASE_URL + "/user/1234")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(user())))
+                        .content(toJson(assetAssignment())))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+    @Test
+    public void getAllAssignmentsNotApprovedTest() throws Exception {
+        when(assetAssignmentService.getAllAssignmentsNotApproved()).thenReturn(Collections.emptySet());
+
+        mvc.perform(
+                get(BASE_URL + "/approve")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(assetAssignment())))
                 .andExpect(status().isOk())
                 .andReturn();
     }
 
     @Test
-    public void getUserIDByEmail() throws Exception {
-        when(userService.getUserByEmail(any())).thenReturn(user());
+    public void getAllAssignmentTags() throws Exception {
+        when(assetAssignmentService.getTags(any())).thenReturn(Collections.emptySet());
+
         mvc.perform(
-                get(BASE_URL + "/id/fristLast@test.com")
+                get(BASE_URL + "/1234")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(user())))
+                        .content(toJson(assetAssignment())))
                 .andExpect(status().isOk())
                 .andReturn();
     }
 
-    @Test
-    public void getUserByEmailTest() throws Exception {
-        when(userService.getAllUsers()).thenReturn(Collections.emptySet());
-
-        mvc.perform(
-                get(BASE_URL + "/fristLast@test.com")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJson(user())))
-                .andExpect(status().isOk())
-                .andReturn();
+    public AssetAssignment assetAssignment()
+    {
+        return new AssetAssignment("assetTag", "UserID", LocalDate.now());
     }
-
-    private User user() {
-        return new User("firstName", "LastName", "fristLast@test.com", true);
-    }
-
 
 }

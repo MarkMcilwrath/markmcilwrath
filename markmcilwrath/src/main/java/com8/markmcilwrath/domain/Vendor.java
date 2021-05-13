@@ -18,6 +18,10 @@ public class Vendor {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
+    public Vendor(String name)
+    {
+        this.name=name;
+    }
 
     public Vendor(String uuid,
                   String name)

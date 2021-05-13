@@ -39,6 +39,18 @@ public class AssetAssignment
 
     private Map<String, String> tags = new HashMap<>();
 
+    public AssetAssignment (
+                            String assetTag,
+                            String userID,
+                            LocalDate assignmentDate)
+    {
+
+        this.assetTag=assetTag;
+        this.userID=userID;
+        this.assignmentDate=assignmentDate;
+
+    }
+
     public AssetAssignment (String UUID,
                             String assetTag,
                             String userID,

@@ -1,6 +1,7 @@
 package com8.markmcilwrath.service;
 
 import com8.markmcilwrath.domain.User;
+import com8.markmcilwrath.domain.Vendor;
 import com8.markmcilwrath.domain.entity.UserEntity;
 import com8.markmcilwrath.repository.UserRepository;
 import javassist.NotFoundException;
@@ -100,6 +101,8 @@ public class UserService {
         }
         return entity;
     }
+
+
 
 
 }

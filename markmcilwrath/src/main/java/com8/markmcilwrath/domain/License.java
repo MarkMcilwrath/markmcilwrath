@@ -1,6 +1,7 @@
 package com8.markmcilwrath.domain;
 
 import lombok.*;
+import org.codehaus.jackson.annotate.JsonCreator;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class License
     private Boolean assigned;
 
 
+    @JsonCreator
     public License (
             String licenseKey,
             LocalDate purchaseDate,

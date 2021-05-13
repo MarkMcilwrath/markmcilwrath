@@ -1,16 +1,18 @@
 package com8.markmcilwrath.domain;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import javax.validation.constraints.NotBlank;
+
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class User {
 
     private String uuid;
@@ -37,6 +39,19 @@ public class User {
     )
     {
         this.uuid = uuid;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.admin = admin;
+    }
+
+    public User(
+            String firstname,
+            String lastname,
+            String email,
+            boolean admin
+    )
+    {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;

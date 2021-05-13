@@ -51,6 +51,14 @@ public class LicenseAssignment {
         this.approved = approved;
     }
 
+    public LicenseAssignment(String license_key, String user_id, LocalDate assignmentDate, Boolean approved)
+    {
+        this.license_key = license_key;
+        this.user_id = user_id;
+        this.assignmentDate = assignmentDate;
+        this.approved = approved;
+    }
+
     public LicenseAssignment(String UUID,
                              String license_key,
                              String user_id,
